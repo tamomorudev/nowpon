@@ -4,9 +4,11 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap.js');
+commentout
+require('bootstrap.js');
 
 window.Vue = require('vue').default;
+
 
 /**
  * The following block of code may be used to automatically register your
