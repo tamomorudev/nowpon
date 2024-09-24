@@ -39,6 +39,7 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        $this->middleware('guest:store_user');
     }
 
     /**
@@ -67,7 +68,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         if(!isset($data['email'])) {
-            $data['email'] = ''; //メールは一旦取得しない？
+            $data['email'] = null; //メールは一旦取得しない？
         }
         return User::create([
             'name' => $data['name'],
