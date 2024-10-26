@@ -11,8 +11,12 @@ class Coupons extends Authenticatable
 
     protected $table = 'coupons';
 
+    /*
     protected $fillable = [
        
+    ];*/
+    protected $guarded = [
+        'id'
     ];
 
     protected $hidden = [

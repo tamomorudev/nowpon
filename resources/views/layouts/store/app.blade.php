@@ -29,7 +29,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: #996c57;background-image: linear-gradient(180deg, #996c57 10%, #cc9074 100%);">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/store">
@@ -71,11 +71,16 @@
                     <span>店舗登録</span></a>
             </li>
 
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="/store/shop/menu">
+                <a class="nav-link" href="/store/account">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>コース登録</span></a>
+                    <span>店舗ユーザー一覧</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/store/account/create">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>店舗ユーザー登録</span></a>
             </li>
 
             <!-- Nav Item - Pages Collapse Menu
@@ -154,6 +159,21 @@
                 <a class="nav-link" href="/store/coupon/create">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>クーポン登録</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                マスタ管理
+            </div>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="/store/cource">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>コース登録</span></a>
             </li>
 
             <!-- Divider -->

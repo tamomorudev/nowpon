@@ -52,11 +52,15 @@ Route::group(['prefix' => 'store'], function () {
 
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Store\StoreShopController@index')->name('store.shop.index');
-        Route::get('/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
-        Route::get('/shop/menu', 'App\Http\Controllers\Store\StoreShopController@menuCreate')->name('store.shop.menu');
+        Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
+        Route::get('/account', 'App\Http\Controllers\Store\StoreShopController@account')->name('store.account.index');
+        Route::match(['get', 'post'], '/account/create', 'App\Http\Controllers\Store\StoreShopController@accountCreate')->name('store.account.create');
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Store\StoreCouponController@index')->name('store.coupon');
-        Route::get('/coupon/create', 'App\Http\Controllers\Store\StoreCouponController@create')->name('store.coupon.create');
+        Route::match(['get', 'post'], '/coupon/create', 'App\Http\Controllers\Store\StoreCouponController@create')->name('store.coupon.create');
+        // マスタ
+        Route::match(['get', 'post'], '/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
+        //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
         
     });
 });
