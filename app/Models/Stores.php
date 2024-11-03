@@ -11,9 +11,10 @@ class Stores extends Authenticatable
 
     protected $table = 'stores';
 
-    protected $fillable = [
-       
+    protected $guarded = [
+       'id'
     ];
+
 
     protected $hidden = [
         

@@ -14,7 +14,29 @@
             <h1 class="h3 mb-0 text-gray-800">店舗一覧</h1>
         </div>
 
-        {{$user->name}}の店舗
-
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>店舗名</th>
+                                <th>メールアドレス</th>
+                                <th>電話番号</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($stores as $store)
+                            <tr>
+                                <td>{{$store->store_name}}</td>
+                                <td>{{$store->email}}</td>
+                                <td>{{$store->phone_number}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

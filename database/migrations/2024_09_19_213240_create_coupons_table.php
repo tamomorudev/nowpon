@@ -25,8 +25,8 @@ class CreateCouponsTable extends Migration
             $table->integer('discount_price')->default(0);
             $table->text('detail')->nullable();
             $table->string('img_url')->nullable();
-            $table->dateTime('expire_start_date');
-            $table->dateTime('expire_end_date');
+            $table->dateTime('expire_start_date')->nullable();
+            $table->dateTime('expire_end_date')->nullable();
             $table->integer('sort_order')->default(0);
             $table->integer('status')->default(0);
             $table->tinyinteger('delete_flg')->default(0);
