@@ -33,28 +33,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">メニュー名</label>
+                    <label for="cource_name" class="col-md-4 col-form-label text-md-end">メニュー名</label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <input type="text" class="form-control" name="cource_name"
                             placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン金額</label>
+                    <label for="price" class="col-md-4 col-form-label text-md-end">クーポン金額</label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="text" class="form-control" name="price"
                             placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン割引額</label>
+                    <label for="discount" class="col-md-4 col-form-label text-md-end">クーポン割引額</label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="text" class="form-control" name="discount"
                             placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">説明</label>
+                    <label for="detail" class="col-md-4 col-form-label text-md-end">説明</label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <textarea class="form-control" rows="10" cols="60" name="detail"></textarea>
                     </div>

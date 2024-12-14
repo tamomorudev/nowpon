@@ -42,15 +42,39 @@
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン金額</label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
-                        <input type="number" class="form-control" name="price"
+                        <input type="number" class="form-control" name="price" id="price"
                             placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン割引額</label>
+                    <div class="row"style="margin-left:0px">
+                        <div class="col-sm-3 mb-3 mb-sm-0">
+                            <input type="number" class="form-control" name="discount_price" id="discount_price"
+                                placeholder="">
+                        </div>
+                        <div class="col-sm-1 mb-3 mb-sm-0">
+                            <select name="discount_type" id="discount_type" class="form-control">
+                                <option value="0">円</option>
+                                <option value="1">％</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間</label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
-                        <input type="number" class="form-control" name="discount_price"
-                            placeholder="">
+                        <input type="number" class="form-control" name="cource_time" id="cource_time"
+                            min="10" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間</label>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <input type="datetime-local" class="form-control" id="cource_start" name="cource_start">
                     </div>
                 </div>
                 <div class="form-group">
@@ -90,8 +114,83 @@
 
     <script>
         $(function(){
-            $(".text-gray-800").on("click", function(){
-                alert("jstest")
+            $("#coupon_commit").text('0');
+            $('#price').change(function() {
+                current_price = $("#price").val();
+                current_discount_price = $("#discount_price").val();
+                current_discount_type = $("#discount_type").val();
+
+                $("#coupon_commit").text('0');
+
+                if (current_discount_price && current_discount_type) {
+                    if (current_discount_type == 1) {
+                        commit = Math.round(parseInt(current_price) * (1 - (parseInt(current_discount_price) / 100)));
+                    } else {
+                        commit = Math.round(parseInt(current_price) - parseInt(current_discount_price));
+                    }
+                    if (commit <= 0) {
+                        $("#coupon_commit").text('0');
+                    } else {
+                        $("#coupon_commit").text(commit);
+                    }
+                } else if (current_price) {
+                    $("#coupon_commit").text(current_price);
+                } else {
+                    $("#coupon_commit").text('0');
+                }
+                
+            });
+
+            $('#discount_price').change(function() {
+                current_price = $("#price").val();
+                current_discount_price = $("#discount_price").val();
+                current_discount_type = $("#discount_type").val();
+
+                $("#coupon_commit").text('0');
+
+                if (current_discount_price && current_discount_type) {
+                    if (current_discount_type == 1) {
+                        commit = Math.round(parseInt(current_price) * (1 - (parseInt(current_discount_price) / 100)));
+                    } else {
+                        commit = Math.round(parseInt(current_price) - parseInt(current_discount_price));
+                    }
+                    if (commit <= 0) {
+                        $("#coupon_commit").text('0');
+                    } else {
+                        $("#coupon_commit").text(commit);
+                    }
+                } else if (current_price) {
+                    $("#coupon_commit").text(current_price);
+                } else {
+                    $("#coupon_commit").text('0');
+                }
+                
+            });
+
+            $('#discount_type').change(function() {
+                current_price = $("#price").val();
+                current_discount_price = $("#discount_price").val();
+                current_discount_type = $("#discount_type").val();
+
+                $("#coupon_commit").text('0');
+
+                if (current_discount_price && current_discount_type) {
+                    if (current_discount_type == 1) {
+                        commit = Math.round(parseInt(current_price) * (1 - (parseInt(current_discount_price) / 100)));
+                    } else {
+                        commit = Math.round(parseInt(current_price) - parseInt(current_discount_price));
+                    }
+                    if (commit <= 0) {
+                        $("#coupon_commit").text('0');
+                    } else {
+                        $("#coupon_commit").text(commit);
+                    }
+                } else if (current_price) {
+                    $("#coupon_commit").text(current_price);
+                } else {
+                    $("#coupon_commit").text('0');
+                }
+                
             });
         });
     </script>

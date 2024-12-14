@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use App\Models\Stores;
 use App\Models\StoreServices;
+use App\Models\StoreUser;
 
 class StoreShopController extends Controller
 {
@@ -67,6 +69,7 @@ class StoreShopController extends Controller
             $create_shop_array['address1'] = $request['address1'];
             $create_shop_array['address2'] = $request['address2'];
             $create_shop_array['address3'] = $request['address3'];
+            $create_shop_array['url'] = $request['url'];
             $create_shop_array['phone_number'] = $request['phone_number'];
             $create_shop_array['created_by'] = $user->id;
             $create_shop_array['updated_by'] = $user->id;
@@ -82,13 +85,41 @@ class StoreShopController extends Controller
     public function account()
     {
         $user = Auth::user(); //ユーザー情報
-        return view('store.shop.account', compact('user'));
+        $store_users = StoreUser::select()->where('company_id', $user->company_id)->get(); //storeuser
+        return view('store.shop.account', compact('user', 'store_users'));
     }
 
     public function accountCreate(Request $request)
     {
         $user = Auth::user(); //ユーザー情報
         $request = $request->all();
+
+        if ($_POST) {
+            if (isset($request['name']) || isset($request['password'])) {
+                $validated_data = Validator::make($request, [
+                    'name' => 'required|max:190:',
+                    'password' => 'required',
+                ]);
+                
+                if ($validated_data->fails()) {
+                    $error = true;
+                    return view('store.shop.account_create', compact('error', 'user'));
+                } else {
+                    $store_user = StoreUser::create([
+                        'name' => $request['name'],
+                        'email' => '',
+                        'password' => Hash::make($request['password']),
+                        'company_id' => (int)$user->company_id,
+                        'parent_user_id' => $user->id,
+                    ]);
+        
+                    return redirect('/store/account');
+                }
+            } else {
+                $error = true;
+                return view('store.shop.account_create', compact('error', 'user'));
+            }
+        }
 
         return view('store.shop.account_create', compact('user'));
     }
@@ -97,6 +128,7 @@ class StoreShopController extends Controller
     {
         $user = Auth::user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        
         return view('store.shop.cource', compact('user'));
     }
 
@@ -107,20 +139,32 @@ class StoreShopController extends Controller
 
         $request = $request->all();
 
-        if (isset($request['store_name'])) {
-            $validated_data = Validator::make($request, [
-                'store_name' => 'required',
-                'cource_name' => 'required|max:190:',
-                'price' => 'required|regex:/^[1-9][0-9]*/|not_in:0',
-                'detail' => 'required'
-            ]);
-            
-            if ($validated_data->fails()) {
-                $error = true;
-                return view('store.shop.cource_create', compact('error', 'stores'));
-            }
+        if ($_POST) {
+            if (isset($request['store_name'])) {
+                $validated_data = Validator::make($request, [
+                    'store_name' => 'required',
+                    'cource_name' => 'required|max:190:',
+                    'price' => 'required|regex:/^[1-9][0-9]*/|not_in:0',
+                    'detail' => 'required'
+                ]);
+                
+                if ($validated_data->fails()) {
+                    $error = true;
+                    return view('store.shop.cource_create', compact('error', 'stores'));
+                } else {
+                    $store_user = StoreUser::create([
+                        'name' => $request['name'],
+                        'email' => '',
+                        'password' => Hash::make($request['password']),
+                        'company_id' => (int)$user->company_id,
+                        'parent_user_id' => $user->id,
+                    ]);
+        
+                    return redirect('/store/cource');
+                }
 
-            return redirect('/store/cource');
+                return redirect('/store/cource');
+            }
         }
 
         return view('store.shop.cource_create', compact('stores'));

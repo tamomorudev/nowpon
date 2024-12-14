@@ -72,6 +72,13 @@
                         placeholder="">
                 </div>
             </div>
+            <div class="form-group">
+                <label for="name" class="col-md-4 col-form-label text-md-end">URL</label>
+                <div class="col-sm-10 mb-3 mb-sm-0">
+                    <input type="text" class="form-control" name="url"
+                        placeholder="">
+                </div>
+            </div>
             <div class="form-group row"style="margin-left:10px">
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="submit" class="form-control btn btn-success btn-block" id="" placeholder="">
