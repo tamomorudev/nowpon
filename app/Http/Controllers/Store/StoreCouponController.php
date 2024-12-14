@@ -74,6 +74,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['store_id'] = $request['store_name'];
                 $create_coupon_array['price'] = $request['price'];
                 $create_coupon_array['discount_price'] = $request['discount_price'];
+                $create_coupon_array['discount_type'] = $request['discount_type'];
                 $create_coupon_array['detail'] = $request['detail'];
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;

@@ -14,6 +14,10 @@
             <h1 class="h3 mb-0 text-gray-800">店舗ユーザー登録</h1>
         </div>
 
+        @if(isset($error))
+            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">ユーザー名、パスワードは必須入力です</div>
+        @endif
+
         <form class="user" method="POST" action="{{ route('store.account.create') }}">
             @csrf
             <div class="form-group">
