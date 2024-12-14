@@ -65,6 +65,19 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label>
                 </div>
                 <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間</label>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <input type="number" class="form-control" name="cource_time" id="cource_time"
+                            min="10" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間</label>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <input type="datetime-local" class="form-control" id="cource_start" name="cource_start">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">説明</label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <textarea class="form-control" rows="10" cols="60" name="detail"></textarea>

@@ -30,6 +30,8 @@
                                 <th>金額</th>
                                 <th>割引金額</th>
                                 <th>掲載金額</th>
+                                <th>コース時間</th>
+                                <th>コース開始時間</th>
                                 <th>発行開始時間</th>
                                 <th>発行終了時間</th>
                             </tr>
@@ -48,6 +50,8 @@
                                     <td>{{$coupon->discount_price}}円</td>
                                     <td>{{ $coupon->price - $coupon->discount_price }}円</td>
                                 @endif
+                                <td>{{$coupon->cource_time}}</td>
+                                <td>{{$coupon->cource_start}}</td>
                                 <td>{{$coupon->expire_start_date}}</td>
                                 <td>{{$coupon->expire_end_date}}</td>
                             </tr>
