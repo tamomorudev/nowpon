@@ -57,10 +57,11 @@ class StoreCouponController extends Controller
                 'start_date' => 'required',
                 'end_date' => 'required'
             ]);
-            
+
             if ($validated_data->fails()) {
-                $error = true;
-                return view('store.coupon.create', compact('error', 'stores'));
+                return redirect()->route('store.coupon.create')
+                    ->withErrors($validated_data)
+                    ->withInput();
             }
 
             //date covert
