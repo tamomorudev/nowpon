@@ -52,12 +52,24 @@ class StoreShopController extends Controller
                 'address1' => 'required',
                 'address2' => 'required',
                 'address3' => 'required',
-                'phone_number' => 'required|max:11'
+                'phone_number' => 'required|max:11',
+                'genre' => 'required',
             ]);
             
             if ($validated_data->fails()) {
                 $error = true;
                 return view('store.shop.create', compact('error'));
+            }
+
+            if (isset($request['images']) && $request['images']) {
+                $img = $request['images'];
+                if (strpos($request['images']->getMimeType(), 'image') !== false) {
+                    $img_path = $img->store('store_image','public');
+                } else {
+                    $img_path = '';
+                }
+            } else {
+                $img_path = '';
             }
 
             //店舗登録
@@ -70,6 +82,8 @@ class StoreShopController extends Controller
             $create_shop_array['address2'] = $request['address2'];
             $create_shop_array['address3'] = $request['address3'];
             $create_shop_array['url'] = $request['url'];
+            $create_shop_array['genre'] = $request['genre'];
+            $create_shop_array['image'] = $img_path;
             $create_shop_array['phone_number'] = $request['phone_number'];
             $create_shop_array['created_by'] = $user->id;
             $create_shop_array['updated_by'] = $user->id;
