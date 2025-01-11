@@ -10,6 +10,30 @@
                 <div class="card-body">
                     ユーザー名：{{ $user->name }}
                 </div>
+                <div class="card-body">
+                    ニックネーム：{{ $user->nickname }}
+                </div>
+                <div class="card-body">
+                    メールアドレス：{{ $user->email }}
+                </div>
+                <div class="card-body">
+                    郵便番号：{{ $user->postal_code }}
+                </div>
+                <div class="card-body">
+                    都道府県：{{ config('commons.prefectures')[$user->prefecture] }}
+                </div>
+                <div class="card-body">
+                    市区町村：{{ $user->city }}
+                </div>
+                <div class="card-body">
+                    電話番号：{{ $user->phone_number }}
+                </div>
+                <div class="card-body">
+                    性別：{{ config('commons.sexs')[$user->sex] }}
+                </div>
+                <div class="card-body">
+                    年齢：{{ $user->age }}
+                </div>
             </div>
         </div>
     </div>

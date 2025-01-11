@@ -23,6 +23,8 @@
                                 <th>店舗名</th>
                                 <th>メールアドレス</th>
                                 <th>電話番号</th>
+                                <th>ジャンル</th>
+                                <th>画像</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,6 +33,12 @@
                                 <td>{{$store->store_name}}</td>
                                 <td>{{$store->email}}</td>
                                 <td>{{$store->phone_number}}</td>
+                                <td>{{ config('commons.genre')[$store->genre] }}</td>
+                                <td>
+                                    @if($store->image)
+                                        <img width="50" height="50" src="{{ asset('/storage/'. $store->image) }}" >
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

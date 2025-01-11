@@ -52,10 +52,17 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             //'name' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255', 'alpha_num', 'unique:users'],
+            'name' => ['required', 'string', 'max:191', 'alpha_num'],
+            'nickname' => ['required', 'string', 'max:191', 'alpha_num'],
             //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'postal_code' => ['required', 'max:10'],
+            'prefecture' => ['required'],
+            'city' => ['required', 'string', 'max:50'],
+            'phone_number' => ['required', 'max:50'],
+            'sex' => ['required'],
+            'age' => ['required'],
         ]);
     }
 
@@ -72,8 +79,15 @@ class RegisterController extends Controller
         }
         return User::create([
             'name' => $data['name'],
+            'nickname' => $data['nickname'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'postal_code' => $data['postal_code'],
+            'prefecture' => $data['prefecture'],
+            'city' => $data['city'],
+            'phone_number' => $data['phone_number'],
+            'sex' => $data['sex'],
+            'age' => $data['age'],
         ]);
     }
 }
