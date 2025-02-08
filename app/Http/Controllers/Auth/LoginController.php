@@ -39,6 +39,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('guest:store_user')->except('logout');
+        $this->middleware('guest:admin_user')->except('logout');
     }
 
     /**

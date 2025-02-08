@@ -1,7 +1,7 @@
-@extends('layouts.store.app', ['authgroup'=>'store_user'])
+@extends('layouts.admin.app', ['authgroup'=>'admin_user'])
 
 @section('title')
-店舗作成
+店舗情報
 @endsection
 
 @section('content')
@@ -21,6 +21,7 @@
                         <thead>
                             <tr>
                                 <th>店舗名</th>
+                                <th>企業ID</th>
                                 <th>メールアドレス</th>
                                 <th>電話番号</th>
                                 <th>ジャンル</th>
@@ -31,6 +32,7 @@
                             @foreach($stores as $store)
                             <tr>
                                 <td>{{$store->store_name}}</td>
+                                <td>{{$store->company_id}}</td>
                                 <td>{{$store->email}}</td>
                                 <td>{{$store->phone_number}}</td>
                                 <td>{{ config('commons.genre')[$store->genre] }}</td>

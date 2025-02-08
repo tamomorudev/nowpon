@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Store;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class StoreLoginController extends Controller
+class AdminLoginController extends Controller
 {
 
     use AuthenticatesUsers;
@@ -33,7 +33,7 @@ class StoreLoginController extends Controller
     // ログイン画面呼び出し
     public function showLoginPage(): View
     {
-        return view('store.auth.login');
+        return view('admin.auth.login');
     }
 
     // ログイン実行
@@ -53,8 +53,8 @@ class StoreLoginController extends Controller
             $credential = [$this->username() => $username, 'password' => $password];
         }
 
-        if (Auth::guard('store_user')->attempt($credentials)) {
-            return redirect()->route('store.home')->with([
+        if (Auth::guard('admin_user')->attempt($credentials)) {
+            return redirect()->route('admin.home')->with([
                 'login_msg' => 'ログインしました。',
             ]);
         }

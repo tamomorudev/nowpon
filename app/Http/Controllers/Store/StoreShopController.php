@@ -64,7 +64,7 @@ class StoreShopController extends Controller
             if (isset($request['images']) && $request['images']) {
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('store_image','public');
+                    $img_path = $img->store('store_image','pub_images');
                 } else {
                     $img_path = '';
                 }
