@@ -63,7 +63,7 @@ class RegisterController extends Controller
             'city' => ['required', 'string', 'max:50'],
             'phone_number' => ['required', 'max:50'],
             'sex' => ['required'],
-            'age' => ['required'],
+            'birth_date' => ['required'],
         ]);
     }
 
@@ -88,7 +88,7 @@ class RegisterController extends Controller
             'city' => $data['city'],
             'phone_number' => $data['phone_number'],
             'sex' => $data['sex'],
-            'age' => $data['age'],
+            'birth_date' => $data['birth_date'],
         ]);
     }
 }

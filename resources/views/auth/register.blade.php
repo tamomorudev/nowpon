@@ -124,10 +124,16 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="city" class="col-md-4 col-form-label text-md-end">年齢</label>
+                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">生年月日</label>
 
                             <div class="col-md-6">
-                                <input id="age" type="number" class="form-control @error('age') is-invalid @enderror" name="age" required>
+                                <input id="birth_date" type="date" class="form-control @error('birth_date') is-invalid @enderror"
+                                       name="birth_date" value="{{ old('birth_date') }}" required>
+                                @error('birth_date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
 
