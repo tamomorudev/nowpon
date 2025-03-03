@@ -55,10 +55,11 @@ class StoreShopController extends Controller
                 'phone_number' => 'required|max:11',
                 'genre' => 'required',
             ]);
-            
+
             if ($validated_data->fails()) {
-                $error = true;
-                return view('store.shop.create', compact('error'));
+                return redirect()->route('store.shop.create')
+                    ->withErrors($validated_data)
+                    ->withInput();
             }
 
             if (isset($request['images']) && $request['images']) {
@@ -114,7 +115,7 @@ class StoreShopController extends Controller
                     'name' => 'required|max:190:',
                     'password' => 'required',
                 ]);
-                
+
                 if ($validated_data->fails()) {
                     $error = true;
                     return view('store.shop.account_create', compact('error', 'user'));
@@ -126,7 +127,7 @@ class StoreShopController extends Controller
                         'company_id' => (int)$user->company_id,
                         'parent_user_id' => $user->id,
                     ]);
-        
+
                     return redirect('/store/account');
                 }
             } else {
@@ -142,7 +143,7 @@ class StoreShopController extends Controller
     {
         $user = Auth::user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
-        
+
         return view('store.shop.cource', compact('user'));
     }
 
@@ -161,7 +162,7 @@ class StoreShopController extends Controller
                     'price' => 'required|regex:/^[1-9][0-9]*/|not_in:0',
                     'detail' => 'required'
                 ]);
-                
+
                 if ($validated_data->fails()) {
                     $error = true;
                     return view('store.shop.cource_create', compact('error', 'stores'));
@@ -173,7 +174,7 @@ class StoreShopController extends Controller
                         'company_id' => (int)$user->company_id,
                         'parent_user_id' => $user->id,
                     ]);
-        
+
                     return redirect('/store/cource');
                 }
 
