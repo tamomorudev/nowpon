@@ -95,9 +95,9 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="/admin">
+                <a class="nav-link" href="/admin/images">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>test</span></a>
+                    <span>画像管理</span></a>
             </li>
 
             <!-- Divider -->
