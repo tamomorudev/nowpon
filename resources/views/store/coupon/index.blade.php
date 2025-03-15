@@ -34,6 +34,8 @@
                                 <th>コース開始時間</th>
                                 <th>発行開始時間</th>
                                 <th>発行終了時間</th>
+                                <th>画像</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +56,12 @@
                                 <td>{{$coupon->cource_start}}</td>
                                 <td>{{$coupon->expire_start_date}}</td>
                                 <td>{{$coupon->expire_end_date}}</td>
+                                <td>
+                                    @if($coupon->img_url)
+                                        <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon->img_url) }}" >
+                                    @endif
+                                </td>
+                                <td><a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a></td>
                             </tr>
                             @endforeach
                         </tbody>

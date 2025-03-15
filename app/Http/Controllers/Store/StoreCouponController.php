@@ -69,6 +69,25 @@ class StoreCouponController extends Controller
             $end_date = str_replace('T', ' ', $request['end_date']).':59';
             $cource_start = str_replace('T', ' ', $request['cource_start']).':00';
 
+            if (isset($request['images']) && $request['images']) {
+                //画像チェック
+                $fileSize = $request['images']->getSize();
+                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                if ($fileSize > $maxSize) {
+                    return redirect()->route('store.coupon.create')
+                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    ->withInput();
+                } 
+                $img = $request['images'];
+                if (strpos($request['images']->getMimeType(), 'image') !== false) {
+                    $img_path = $img->store('coupon_image','pub_images');
+                } else {
+                    $img_path = '';
+                }
+            } else {
+                $img_path = '';
+            }
+
             //クーポン登録
             DB::beginTransaction();
             try {
@@ -84,6 +103,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['detail'] = $request['detail'];
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;
+                $create_coupon_array['img_url'] = $img_path;
                 $create_coupon_array['created_by'] = $user->id;
                 $create_coupon_array['updated_by'] = $user->id;
 
@@ -107,5 +127,93 @@ class StoreCouponController extends Controller
         }
 
         return view('store.coupon.create', compact('user', 'stores'));
+    }
+
+    public function edit(Request $request)
+    {
+        $user = Auth::user(); //ユーザー情報
+        $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $request = $request->all();
+
+        $coupon_id = $request['ci'];
+        $coupon_data = Coupons::where('id', $coupon_id)->first(); //クーポン情報
+        $coupon_data->expire_start_date = date('Y-m-d H:i', strtotime($coupon_data->expire_start_date));
+        $coupon_data->expire_end_date = date('Y-m-d H:i', strtotime($coupon_data->expire_end_date));
+
+        if (isset($request['store_name']) && isset($request['p_type']) && $request['p_type'] == 'edit') {
+            $validated_data = Validator::make($request, [
+                'store_name' => 'required',
+                'coupon_name' => 'required|max:190',
+                'price' => 'required',
+                'discount_price' => 'required',
+                'cource_time' => 'required',
+                'cource_start' => 'required',
+                'detail' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required'
+            ]);
+
+            if ($validated_data->fails()) {
+                return redirect()->route('store.coupon.create')
+                    ->withErrors($validated_data)
+                    ->withInput();
+            }
+
+            //date covert
+            $start_date = str_replace('T', ' ', $request['start_date']).':00';
+            $end_date = str_replace('T', ' ', $request['end_date']).':59';
+            $cource_start = str_replace('T', ' ', $request['cource_start']).':00';
+
+            if (isset($request['images']) && $request['images']) {
+                //画像チェック
+                $fileSize = $request['images']->getSize();
+                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                if ($fileSize > $maxSize) {
+                    return redirect()->route('store.coupon.create')
+                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    ->withInput();
+                } 
+                $img = $request['images'];
+                if (strpos($request['images']->getMimeType(), 'image') !== false) {
+                    $img_path = $img->store('coupon_image','pub_images');
+                } else {
+                    $img_path = $coupon_data->img_url;
+                }
+            } else {
+                $img_path = $coupon_data->img_url;
+            }
+
+            //クーポン編集
+            DB::beginTransaction();
+            try {
+                $create_coupon_array = array();
+                $create_coupon_array['coupon_name'] = $request['coupon_name'];
+                $create_coupon_array['company_id'] = $user->company_id;
+                $create_coupon_array['store_id'] = $request['store_name'];
+                $create_coupon_array['price'] = $request['price'];
+                $create_coupon_array['discount_price'] = $request['discount_price'];
+                $create_coupon_array['discount_type'] = $request['discount_type'];
+                $create_coupon_array['cource_time'] = $request['cource_time'];
+                $create_coupon_array['cource_start'] = $cource_start;
+                $create_coupon_array['detail'] = $request['detail'];
+                $create_coupon_array['expire_start_date'] = $start_date;
+                $create_coupon_array['expire_end_date'] = $end_date;
+                $create_coupon_array['img_url'] = $img_path;
+                $create_coupon_array['created_by'] = $user->id;
+                $create_coupon_array['updated_by'] = $user->id;
+
+                Coupons::where('id', $coupon_data->id)->update($create_coupon_array);
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+                echo $e;
+                exit;
+            }
+
+            return redirect('/store/coupon');
+        }
+
+        return view('store.coupon.edit', compact('user', 'stores', 'coupon_data'));
     }
 }

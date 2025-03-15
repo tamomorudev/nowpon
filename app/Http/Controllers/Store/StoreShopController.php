@@ -63,6 +63,14 @@ class StoreShopController extends Controller
             }
 
             if (isset($request['images']) && $request['images']) {
+                //画像チェック
+                $fileSize = $request['images']->getSize();
+                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                if ($fileSize > $maxSize) {
+                    return redirect()->route('store.coupon.create')
+                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    ->withInput();
+                } 
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
                     $img_path = $img->store('store_image','pub_images');

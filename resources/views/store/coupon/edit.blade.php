@@ -1,7 +1,7 @@
 @extends('layouts.store.app', ['authgroup'=>'store_user'])
 
 @section('title')
-クーポン作成
+クーポン編集
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">クーポン登録</h1>
+            <h1 class="h3 mb-0 text-gray-800">クーポン編集</h1>
         </div>
 
         @if (isset($stores) && count($stores) > 0)
@@ -20,14 +20,14 @@
             <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">入力値に誤りがあります。</div>
             @endif
 
-            <form class="user" method="POST" action="{{ route('store.coupon.create') }}" enctype="multipart/form-data">
+            <form class="user" method="POST" action="{{ route('store.coupon.edit') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">店舗<span class="text-danger">*</span></label>
                     <div class="col-sm-6 mb-3 mb-sm-0">
                         <select name="store_name" id="name" class="form-control">
                             @foreach($stores as $store)
-                                <option value="{{$store->id}}">{{$store->store_name}}</option>
+                                <option value="{{$store->id}}" @if($coupon_data->store_id == $store->id) selected @endif >{{$store->store_name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -36,14 +36,14 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン名<span class="text-danger">*</span></label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <input type="text" class="form-control" name="coupon_name"
-                               value="{{ old('coupon_name') }}" placeholder="">
+                        value="{{ old('coupon_name', $coupon_data->coupon_name) }}" placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン金額<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control" name="price" id="price"
-                               value="{{ old('price', 0) }}" min="0" step="1" placeholder="価格を入力してください">
+                               value="{{ old('price', (int)$coupon_data->price) }}" min="0" step="1" placeholder="価格を入力してください">
                     </div>
                 </div>
                 <div class="form-group">
@@ -51,12 +51,12 @@
                     <div class="row"style="margin-left:0px">
                         <div class="col-sm-3 mb-3 mb-sm-0">
                             <input type="number" class="form-control" name="discount_price" id="discount_price"
-                                   value="{{ old('discount_price', 0) }}" min="0" step="1" placeholder="割引額を入力してください">
+                                   value="{{ old('discount_price', $coupon_data->discount_price) }}" min="0" step="1" placeholder="割引額を入力してください">
                         </div>
                         <div class="col-sm-1 mb-3 mb-sm-0">
                             <select name="discount_type" id="discount_type" class="form-control">
-                                <option value="0" {{ old('discount_type') == '0' ? 'selected' : '' }}>円</option>
-                                <option value="1" {{ old('discount_type') == '1' ? 'selected' : '' }}>％</option>
+                                <option value="0" {{ old('discount_type', $coupon_data->discount_type) == '0' ? 'selected' : '' }}>円</option>
+                                <option value="1" {{ old('discount_type', $coupon_data->discount_type) == '1' ? 'selected' : '' }}>％</option>
                             </select>
                         </div>
                     </div>
@@ -68,41 +68,48 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース時間<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control" name="cource_time" id="cource_time"
-                            min="10" value="{{ old('cource_time') }}" placeholder="">
+                            min="10" value="{{ old('cource_time', $coupon_data->cource_time) }}" placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース開始時間<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
-                        <input type="datetime-local" class="form-control" id="cource_start" name="cource_start" value="{{ old('cource_start') }}">
+                        <input type="datetime-local" class="form-control" id="cource_start" name="cource_start" value="{{ old('cource_start', $coupon_data->cource_start) }}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">説明<span class="text-danger">*</span></label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
-                        <textarea class="form-control" rows="10" cols="60" name="detail">{{ old('detail') }}</textarea>
+                        <textarea class="form-control" rows="10" cols="60" name="detail">{{ old('detail', $coupon_data->detail) }}</textarea>
                     </div>
                 </div>
                 <div class="form-group">
                 <label for="name" class="col-md-4 col-form-label text-md-end">有効期限<span class="text-danger">*</span></label>
                     <div class="row"style="margin-left:0px">
                         <div class="col-sm-3 mb-3 mb-sm-0">
-                            <input type="datetime-local" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') }}">
+                            <input type="datetime-local" class="form-control" id="start_date" name="start_date" value="{{ old('start_date', $coupon_data->expire_start_date) }}">
                         </div>
                         ～
                         <div class="col-sm-3">
-                            <input type="datetime-local" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') }}">
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date" value="{{ old('end_date', $coupon_data->expire_end_date) }}">
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="images" class="col-md-4 col-form-label text-md-end">画像</label>
+                    @if($coupon_data->img_url)
+                    <div class="col-sm-10 mb-3 mb-sm-0">
+                        <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url) }}" >
+                    </div>
+                    @endif
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <input type="file" class="form-control" name="images">
                     </div>
                 </div>
                 <div class="form-group row" style="margin-left:10px">
                     <div class="col-sm-3 mb-3 mb-sm-0">
+                        <input type="hidden" id="p_type" name="p_type" value="edit">
+                        <input type="hidden" id="ci" name="ci" value="{{$coupon_data->id}}">
                         <input type="submit" class="form-control btn btn-success btn-block" id="">
                     </div>
                 </div>
@@ -115,9 +122,9 @@
     <script>
         $(function() {
             // old() の値を保持し、存在しない場合のみ初期化
-            let priceInitial = "{{ old('price', 0) }}";
-            let discountPriceInitial = "{{ old('discount_price', 0) }}";
-            let discountTypeInitial = "{{ old('discount_type', 0) }}";
+            let priceInitial = "{{ old('price', $coupon_data->price) }}";
+            let discountPriceInitial = "{{ old('discount_price', $coupon_data->discount_price) }}";
+            let discountTypeInitial = "{{ old('discount_type', $coupon_data->discount_price) }}";
 
             $("#price").val(priceInitial);
             $("#discount_price").val(discountPriceInitial);
