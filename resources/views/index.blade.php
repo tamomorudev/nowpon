@@ -486,6 +486,10 @@
             slidesPerView: 3,
             spaceBetween: 20,
             loop: true,
+            autoplay: {
+                delay: 2500, // 2.5秒ごとに自動スライド（ミリ秒単位）
+                disableOnInteraction: false // ユーザー操作後も自動スライド継続
+            },
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev'
