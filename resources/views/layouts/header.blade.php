@@ -5,6 +5,9 @@
 
 <!-- 共通のヘッダースタイル -->
 <style>
+    html, body {
+        overflow-x: hidden;
+    }
     body {
         font-family: 'Nunito', sans-serif;
         background-color: #f3f4f6;

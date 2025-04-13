@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
      <style>
+        /* カルーセル ここから */
         .carousel-wrapper {
             padding: 20px 0;
         }
@@ -40,13 +41,15 @@
             right: 0;
             text-align: center;
         }
+        /* カルーセル ここまで */
+
+        /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここから */
         .filter-buttons {
             display: flex;
             justify-content: flex-start;
             gap: 12px;
             margin: 30px 0;
         }
-
         .filter-buttons button {
             padding: 12px 24px;
             border-radius: 9999px;
@@ -60,19 +63,35 @@
             cursor: pointer;
             transition: background 0.3s, color 0.3s;
         }
-
         .filter-buttons button:hover,
         .filter-buttons button:focus {
             background: #d2a679;
             color: white;
             outline: none;
         }
-
         .filter-buttons button.active {
             background: #d2a679;
             color: white;
         }
+        @media (max-width: 767px) {
+            .filter-buttons {
+                flex-wrap: wrap; /* ← 折り返し許可 */
+                justify-content: center; /* ← 全体を中央寄せ */
+                gap: 8px;
+            }
 
+            .filter-buttons button {
+                min-width: unset; /* ← 固定幅を外す */
+                padding: 12px 16px;
+                font-size: 14px;
+                word-break: keep-all;
+                white-space: nowrap; /* ← 文字の折り返し防止 */
+                flex: 1 1 auto; /* ← フレキシブルな横幅で伸縮 */
+            }
+        }
+        /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここまで */
+
+        /* 検索スペース ここから */
         .search-panel {
             background: #e5e7eb;
             border-radius: 12px;
@@ -174,8 +193,80 @@
             align-items: center;
             gap: 4px;
         }
+        @media (max-width: 767px) {
+            .search-panel {
+                padding: 12px;
+            }
+            .search-tags {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-tag-box,
+            .search-icon-box {
+                width: 100%;
+                justify-content: center;
+            }
+            .search-keyword-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .keyword-tags-box {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 12px;
+            }
+            .keyword-tags-box button {
+                width: auto;
+                flex-shrink: 0;
+            }
+            .search-keyword-box,
+            .recent-search-box {
+                width: 100%;
+            }
+        }
+        @media (max-width: 767px) {
+            .search-panel {
+                padding: 20px 16px;
+            }
+            .search-tags {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+            .search-tag-box,
+            .search-icon-box {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+        .keyword-tags-box {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        @media (max-width: 767px) {
+            .keyword-tags-box {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center; /* ← 中央寄せに */
+                gap: 8px;
+                padding: 12px;
+                background: #b08968;
+                border-radius: 12px;
+                width: 100%;             /* ← これがないと横スク発生する場合あり */
+                box-sizing: border-box;  /* ← paddingの幅を含める */
+            }
+            .keyword-tags-box button {
+                flex-shrink: 0;
+                width: auto;
+            }
+        }
+        /* 検索スペース ここまで */
 
-
+        /* 特集 ここから */
         .feature-section {
             margin-top: 60px;
         }
@@ -187,10 +278,14 @@
         }
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* ← ここを2列に固定 */
+            grid-template-columns: repeat(2, 1fr); /* 通常は2列 */
             gap: 20px;
         }
-
+        @media (max-width: 767px) {
+            .feature-grid {
+                grid-template-columns: 1fr; /* スマホでは1列 */
+            }
+        }
         .feature-card {
             background: white;
             border-radius: 12px;
@@ -211,6 +306,9 @@
             margin: 0;
             line-height: 1.6;
         }
+        /* 特集 ここまで */
+
+        /* 「まずは会員登録」「ログイン」ここから */
         .bottom-buttons {
             margin-top: 40px;
             background: #e5e7eb;
@@ -230,7 +328,6 @@
             text-decoration: none;     /* ← 下線消す */
             display: inline-block;     /* ← ボタン風維持 */
         }
-
         .bottom-buttons .btn-login {
             background: white;
             color: #6b7280;
@@ -242,6 +339,7 @@
             text-decoration: none;     /* ← 下線消す */
             display: inline-block;     /* ← ボタン風維持 */
         }
+        /* 「まずは会員登録」「ログイン」ここまで */
     </style>
 </head>
 <body>
@@ -344,6 +442,7 @@
         const swiper = new Swiper('.swiper-container', {
             slidesPerView: 3,
             spaceBetween: 20,
+            centeredSlides: true, // ← 中央寄せ
             loop: true,
             autoplay: {
                 delay: 2500, // 2.5秒ごとに自動スライド（ミリ秒単位）
@@ -354,8 +453,9 @@
                 prevEl: '.swiper-button-prev'
             },
             breakpoints: {
-                0: { slidesPerView: 1 },
-                768: { slidesPerView: 2 },
+                0: { slidesPerView: 2, spaceBetween: 40},
+                480: {slidesPerView: 2, spaceBetween: 40},
+                768: { slidesPerView: 2.5 },
                 1024: { slidesPerView: 3 }
             }
         });
