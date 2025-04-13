@@ -4,89 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #f3f4f6;
-            margin-top: 10px;
-            margin-right: 10px;
-            margin-left: 10px;
-            margin-bottom: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* ヘッター ここから*/
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px 12px; /* ← 上方向0に、左右は24px、下だけ余白 */
-            border-bottom: 3px solid #c29663;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 10px; /* ← 念のため追加 */
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 16px;
-            color: #6b4e3d;
-        }
-        .user-icon {
-            font-size: 20px;
-            color: #b08968;
-        }
-        .header-search {
-            flex: 1;
-            display: flex;
-            justify-content: flex-start; /* ← 左寄せ */
-        }
-        .search-box {
-            background: #d1dbe9;
-            border-radius: 9999px;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 320px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            flex: 1;
-            font-size: 16px;
-        }
-        .search-icon {
-            color: #b08968;
-            font-size: 18px;
-            margin-right: 8px;
-        }
-        .header-nav {
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-            align-items: center;
-            white-space: nowrap;
-        }
-        .header-nav a {
-            color: #111;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .header-nav a.active {
-            color: #b08968;
-            font-weight: bold;
-        }
-        /* ヘッター ここまで*/
-
+     <style>
         .carousel-wrapper {
             padding: 20px 0;
         }
@@ -324,70 +242,11 @@
             text-decoration: none;     /* ← 下線消す */
             display: inline-block;     /* ← ボタン風維持 */
         }
-
-        /* フッターここから */
-        .site-footer {
-            background-color: #b08968;
-            color: white;
-            padding: 24px 0;
-            margin-top: 60px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-            opacity: 0.9;
-        }
-        .copyright {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-        /* フッター ここまで */
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="header-left">
-            <span class="user-icon">👤</span>
-            <span class="username">guest</span>
-        </div>
-
-        <div class="header-search">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Search" />
-            </div>
-        </div>
-
-        <div class="header-nav">
-            <a href="#" class="active">HOME</a>
-            <a href="#">カート</a>
-            <a href="#">購入履歴</a>
-            <a href="#">CONTACT</a>
-        </div>
-    </div>
-
+    @include('layouts.header')
     <div class="carousel-wrapper">
         <div class="swiper-container">
             <div class="swiper-wrapper">
@@ -510,15 +369,5 @@
     });
 </script>
 </body>
-
-<footer class="site-footer">
-    <div class="footer-container">
-        <div class="footer-links">
-            <a href="#">利用規約</a>
-            <a href="#">プライバシーポリシー</a>
-            <a href="#">お問い合わせ</a>
-        </div>
-        <p class="copyright">© 2025 ナウポン</p>
-    </div>
-</footer>
+@include('layouts.footer')
 </html>
