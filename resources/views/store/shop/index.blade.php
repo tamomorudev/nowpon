@@ -25,6 +25,7 @@
                                 <th>電話番号</th>
                                 <th>ジャンル</th>
                                 <th>画像</th>
+                                <th>編集</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,6 +40,7 @@
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
                                     @endif
                                 </td>
+                                <td><a class="form-control btn btn-success btn-block" href="shop/edit?si={{$store->id}}">編集</a></td>
                             </tr>
                             @endforeach
                         </tbody>

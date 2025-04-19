@@ -38,7 +38,16 @@
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
                                     @endif
                                 </td>
-                                <td>削除</td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
+                                        @csrf
+                                        <div>
+                                            <input type="hidden" id="d_type" name="d_type" value="store">
+                                            <input type="hidden" id="id" name="id" value="{{$store->id}}">
+                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                             @foreach($coupons as $coupon)
@@ -47,11 +56,20 @@
                                 <td>{{$store->company_id}}</td>
                                 <td>クーポン</td>
                                 <td>
-                                    @if($store->image)
+                                    @if($coupon->img_url)
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon->img_url) }}" >
                                     @endif
                                 </td>
-                                <td>削除</td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
+                                        @csrf
+                                        <div>
+                                            <input type="hidden" id="d_type" name="d_type" value="coupon">
+                                            <input type="hidden" id="id" name="id" value="{{$coupon->id}}">
+                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

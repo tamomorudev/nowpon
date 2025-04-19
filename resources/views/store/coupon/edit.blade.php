@@ -65,7 +65,7 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間<span class="text-danger">*</span></label>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">コース時間(分)<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control" name="cource_time" id="cource_time"
                             min="10" value="{{ old('cource_time', $coupon_data->cource_time) }}" placeholder="">
@@ -124,7 +124,7 @@
             // old() の値を保持し、存在しない場合のみ初期化
             let priceInitial = "{{ old('price', $coupon_data->price) }}";
             let discountPriceInitial = "{{ old('discount_price', $coupon_data->discount_price) }}";
-            let discountTypeInitial = "{{ old('discount_type', $coupon_data->discount_price) }}";
+            let discountTypeInitial = "{{ old('discount_type', $coupon_data->discount_type) }}";
 
             $("#price").val(priceInitial);
             $("#discount_price").val(discountPriceInitial);

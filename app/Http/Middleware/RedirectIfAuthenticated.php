@@ -22,6 +22,7 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         //管理ユーザー、店舗ユーザー、一般ユーザーで同時ログイン不可
+        /*
         foreach ($guards as $guard) {
             if ($guard == "store_user" && Auth::guard($guard)->check()) {
                 //return redirect(route('store-home'));
@@ -33,7 +34,7 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 return redirect('/home');
             }
-        }
+        }*/
 
         return $next($request);
     }

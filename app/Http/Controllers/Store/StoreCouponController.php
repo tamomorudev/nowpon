@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
 use App\Models\Coupons;
 use App\Models\Stores;
@@ -72,10 +74,10 @@ class StoreCouponController extends Controller
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
-                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
                 if ($fileSize > $maxSize) {
                     return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    ->withErrors("ファイルサイズが1GBを超えています。")
                     ->withInput();
                 } 
                 $img = $request['images'];
@@ -135,8 +137,17 @@ class StoreCouponController extends Controller
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         $request = $request->all();
 
+        if(!isset($request['ci'])) {
+            abort(404);
+        }
+
         $coupon_id = $request['ci'];
-        $coupon_data = Coupons::where('id', $coupon_id)->first(); //クーポン情報
+        $coupon_data = Coupons::where('id', $coupon_id)->where('company_id', $user->company_id)->first(); //クーポン情報
+
+        if(!$coupon_data) {
+            abort(404);
+        }
+
         $coupon_data->expire_start_date = date('Y-m-d H:i', strtotime($coupon_data->expire_start_date));
         $coupon_data->expire_end_date = date('Y-m-d H:i', strtotime($coupon_data->expire_end_date));
 
@@ -154,7 +165,7 @@ class StoreCouponController extends Controller
             ]);
 
             if ($validated_data->fails()) {
-                return redirect()->route('store.coupon.create')
+                return redirect()->back()
                     ->withErrors($validated_data)
                     ->withInput();
             }
@@ -167,10 +178,10 @@ class StoreCouponController extends Controller
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
-                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
                 if ($fileSize > $maxSize) {
-                    return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    return redirect()->back()
+                    ->withErrors("ファイルサイズが1GBを超えています。")
                     ->withInput();
                 } 
                 $img = $request['images'];
@@ -215,5 +226,27 @@ class StoreCouponController extends Controller
         }
 
         return view('store.coupon.edit', compact('user', 'stores', 'coupon_data'));
+    }
+
+    public function delete(Request $request)
+    {
+        $user = Auth::user(); //ユーザー情報
+        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->get(); //クーポン情報
+        $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $request = $request->all();
+
+        $coupon_id = $request['ci'];
+        $coupon_data = Coupons::where('id', $coupon_id)->first(); //クーポン情報
+
+        if ($coupon_data) {
+            //一旦物理削除
+            Coupons::where('id', $coupon_id)->delete();
+
+            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url)) {
+                File::delete('assets/images/'. $coupon_data->img_url);
+            }
+        }
+
+        return redirect('/store/coupon');
     }
 }
