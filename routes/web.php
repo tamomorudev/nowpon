@@ -56,12 +56,14 @@ Route::group(['prefix' => 'store'], function () {
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Store\StoreShopController@index')->name('store.shop.index');
         Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
+        Route::match(['get', 'post'], '/shop/edit', 'App\Http\Controllers\Store\StoreShopController@edit')->name('store.shop.edit');
         Route::get('/account', 'App\Http\Controllers\Store\StoreShopController@account')->name('store.account.index');
         Route::match(['get', 'post'], '/account/create', 'App\Http\Controllers\Store\StoreShopController@accountCreate')->name('store.account.create');
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Store\StoreCouponController@index')->name('store.coupon');
         Route::match(['get', 'post'], '/coupon/create', 'App\Http\Controllers\Store\StoreCouponController@create')->name('store.coupon.create');
         Route::match(['get', 'post'], '/coupon/edit', 'App\Http\Controllers\Store\StoreCouponController@edit')->name('store.coupon.edit');
+        Route::post('/coupon/delete', 'App\Http\Controllers\Store\StoreCouponController@delete')->name('store.coupon.delete');
         // マスタ
         Route::match(['get', 'post'], '/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
         //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
@@ -97,6 +99,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/coupon', 'App\Http\Controllers\Admin\AdminCouponController@index')->name('admin.coupon');
         // マスタ
         Route::match(['get', 'post'], '/images', 'App\Http\Controllers\Admin\AdminMasterController@images')->name('admin.master.images');
+        Route::post('/images_delete', 'App\Http\Controllers\Admin\AdminMasterController@images_delete')->name('admin.master.images_delete');
         //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
     });
 });

@@ -30,11 +30,12 @@
                                 <th>金額</th>
                                 <th>割引金額</th>
                                 <th>掲載金額</th>
-                                <th>コース時間</th>
+                                <th>コース時間(分)</th>
                                 <th>コース開始時間</th>
                                 <th>発行開始時間</th>
                                 <th>発行終了時間</th>
                                 <th>画像</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -62,6 +63,16 @@
                                     @endif
                                 </td>
                                 <td><a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a></td>
+                                <td>
+                                    <form method="POST" action="{{ route('store.coupon.delete') }}">
+                                        @csrf
+                                        <div>
+                                            <input type="hidden" id="p_type" name="p_type" value="edit">
+                                            <input type="hidden" id="ci" name="ci" value="{{$coupon->id}}">
+                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

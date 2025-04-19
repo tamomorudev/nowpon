@@ -65,10 +65,10 @@ class StoreShopController extends Controller
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
-                $maxSize = 1 * 1024 * 1024; // 一旦1MB制限
+                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
                 if ($fileSize > $maxSize) {
                     return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1MBを超えています。")
+                    ->withErrors("ファイルサイズが1GBを超えています。")
                     ->withInput();
                 } 
                 $img = $request['images'];
@@ -103,6 +103,83 @@ class StoreShopController extends Controller
         }
 
         return view('store.shop.create', compact('user'));
+    }
+
+    public function edit(Request $request)
+    {
+        $user = Auth::user(); //ユーザー情報
+        $request = $request->all();
+
+        if(!isset($request['si'])) {
+            abort(404);
+        }
+
+        $store_id = $request['si'];
+        $store_data = Stores::select()->where('id', $store_id)->where('company_id', $user->company_id)->first(); //stores情報
+
+        if(!$store_data) {
+            abort(404);
+        }
+
+        if (isset($request['address1']) && isset($request['p_type']) && $request['p_type'] == 'edit') {
+            $validated_data = Validator::make($request, [
+                'store_name' => 'required',
+                'email' => 'required|max:190',
+                'postal_code' => 'required',
+                'address1' => 'required',
+                'address2' => 'required',
+                'address3' => 'required',
+                'phone_number' => 'required|max:11',
+                'genre' => 'required',
+            ]);
+
+            if ($validated_data->fails()) {
+                return redirect()->back()
+                    ->withErrors($validated_data)
+                    ->withInput();
+            }
+
+            if (isset($request['images']) && $request['images']) {
+                //画像チェック
+                $fileSize = $request['images']->getSize();
+                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
+                if ($fileSize > $maxSize) {
+                    return redirect()->back()
+                    ->withErrors("ファイルサイズが1GBを超えています。")
+                    ->withInput();
+                } 
+                $img = $request['images'];
+                if (strpos($request['images']->getMimeType(), 'image') !== false) {
+                    $img_path = $img->store('store_image','pub_images');
+                } else {
+                    $img_path = '';
+                }
+            } else {
+                $img_path = '';
+            }
+
+            //店舗編集
+            $create_shop_array = array();
+            $create_shop_array['company_id'] = $user->company_id;
+            $create_shop_array['store_name'] = $request['store_name'];
+            $create_shop_array['email'] = $request['email'];
+            $create_shop_array['postal_code'] = $request['postal_code'];
+            $create_shop_array['address1'] = $request['address1'];
+            $create_shop_array['address2'] = $request['address2'];
+            $create_shop_array['address3'] = $request['address3'];
+            $create_shop_array['url'] = $request['url'];
+            $create_shop_array['genre'] = $request['genre'];
+            $create_shop_array['image'] = $img_path;
+            $create_shop_array['phone_number'] = $request['phone_number'];
+            $create_shop_array['created_by'] = $user->id;
+            $create_shop_array['updated_by'] = $user->id;
+
+            Stores::where('id', $store_data->id)->update($create_shop_array);
+
+            return redirect('/store/shop');
+        }
+
+        return view('store.shop.edit', compact('user', 'store_data'));
     }
 
     public function account()
