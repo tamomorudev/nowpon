@@ -6,19 +6,15 @@
 <!-- 共通のヘッダースタイル -->
 <style>
     html, body {
-        overflow-x: hidden;
+        height: 100%;
     }
+
     body {
-        font-family: 'Nunito', sans-serif;
-        background-color: #f3f4f6;
-        margin-top: 10px;
-        margin-right: 10px;
-        margin-left: 10px;
-        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
     }
     .container {
-        max-width: 1200px;
-        margin: 0 auto;
+        flex: 1;
     }
 
     /* ヘッダー ここから */
@@ -102,8 +98,8 @@
     </div>
 
     <div class="header-nav">
-        <a href="#" class="active">HOME</a>
-        <a href="#">カート</a>
+        <a href="/" class="active">HOME</a>
+        <a href="/site/cart">カート</a>
         <a href="#">購入履歴</a>
         <a href="#">CONTACT</a>
     </div>

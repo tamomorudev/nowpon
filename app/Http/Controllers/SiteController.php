@@ -27,4 +27,17 @@ class SiteController extends Controller
         $category = 'hair';
         return view('site.list', compact('category'));
     }
+
+    public function cart(Request $request)
+    {
+        $category = 'hair';
+        return view('site.cart', compact('category'));
+    }
+
+    public function checkout(Request $request)
+    {
+        $category = 'hair';
+        return view('site.checkout', compact('category'));
+    }
+
 }

@@ -26,7 +26,8 @@ Route::get('/', function () {
 */
 Route::get('/', [App\Http\Controllers\TopController::class, 'index'])->name('top');
 Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->name('site_list');
-
+Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
+Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
 
 Auth::routes();
 
@@ -48,11 +49,10 @@ Route::group(['prefix' => 'store'], function () {
 
     // 以下ストアユーザー認証必須のルーティング
     Route::middleware(['auth:store_user'])->group(function () {
-        
+
         // ダッシュボード
         Route::get('/', 'App\Http\Controllers\Store\StoreHomeController@index')->name('store.home');
         Route::get('/home', 'App\Http\Controllers\Store\StoreHomeController@index')->name('store.home2');
-
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Store\StoreShopController@index')->name('store.shop.index');
         Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
@@ -86,7 +86,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     // 以下adminユーザー認証必須のルーティング
     Route::middleware(['auth:admin_user'])->group(function () {
-        
+
         // ダッシュボード
         Route::get('/', 'App\Http\Controllers\Admin\AdminHomeController@index')->name('admin.home');
         Route::get('/home', 'App\Http\Controllers\Admin\AdminHomeController@index')->name('admin.home2');
