@@ -98,8 +98,8 @@
     </div>
 
     <div class="header-nav">
-        <a href="/" class="active">HOME</a>
-        <a href="/site/cart">カート</a>
+        <a href="/" class="{{ isActive(['/']) }}">HOME</a>
+        <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a>
         <a href="#">購入履歴</a>
         <a href="#">CONTACT</a>
     </div>
