@@ -24,6 +24,7 @@
                                 <th>メールアドレス</th>
                                 <th>電話番号</th>
                                 <th>ジャンル</th>
+                                <th>最寄り駅</th>
                                 <th>画像</th>
                                 <th>編集</th>
                             </tr>
@@ -35,6 +36,12 @@
                                 <td>{{$store->email}}</td>
                                 <td>{{$store->phone_number}}</td>
                                 <td>{{ config('commons.genre')[$store->genre] }}</td>
+                                <td>
+                                    {{ $store->line }} {{ $store->station }}
+                                    @if($store->station_2)
+                                        <br>{{ $store->line_2 }} {{ $store->station_2 }}
+                                    @endif
+                                </td>
                                 <td>
                                     @if($store->image)
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >

@@ -69,6 +69,8 @@ Route::group(['prefix' => 'store'], function () {
         //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
         
     });
+
+    Route::post('/shop/check_station', 'App\Http\Controllers\Store\StoreShopController@checkStation')->name('store.shop.check_station');
 });
 
 Route::group(['prefix' => 'admin'], function () {
