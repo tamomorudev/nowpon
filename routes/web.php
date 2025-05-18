@@ -28,6 +28,7 @@ Route::get('/', [App\Http\Controllers\TopController::class, 'index'])->name('top
 Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->name('site_list');
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
 Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
+Route::get('site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 
 Auth::routes();
 
@@ -67,7 +68,7 @@ Route::group(['prefix' => 'store'], function () {
         // マスタ
         Route::match(['get', 'post'], '/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
         //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
-        
+
     });
 
     Route::post('/shop/check_station', 'App\Http\Controllers\Store\StoreShopController@checkStation')->name('store.shop.check_station');

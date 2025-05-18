@@ -340,7 +340,71 @@
             display: inline-block;     /* ← ボタン風維持 */
         }
         /* 「まずは会員登録」「ログイン」ここまで */
-    </style>
+
+
+        /* クーポンリストここから */
+        .coupon-list {
+            border: 2px solid #d4a373;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 30px 0;
+            background: #fff8f0;
+        }
+        .coupon-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #666666;
+        }
+        .coupon-item:last-child {
+            border-bottom: none;
+        }
+        .coupon-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+        .coupon-price {
+            font-size: 14px;
+            color: #555;
+        }
+        .discount-rate {
+            color: #e63946;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .price-before {
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 8px;
+        }
+        .price-after {
+            color: #e63946;
+            font-weight: bold;
+        }
+        .new-badge {
+            background-color: #ff2e00; /* 明るめの赤 */
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 999px; /* 丸くする */
+            display: inline-block;
+            line-height: 1;
+        }
+
+        /* 残り時間のフェードインフェードアウト */
+        .fading-text {
+            animation: fadePulse 2s ease-in-out infinite;
+            font-weight: bold;
+        }
+        @keyframes fadePulse {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.1; }
+            100% { opacity: 1; }
+        }
+        /* クーポンリストここまで */
+     </style>
 </head>
 <body>
 <div class="container">
@@ -373,11 +437,48 @@
     </div>
 
     <div class="filter-buttons">
-        <button class="active">お気に入り</button>
-        <button>エリア</button>
-        <button>割引率</button>
-        <button>ジャンル</button>
+        <button class="active" onclick="location.href='/site/couponlist'">新着</button>
+        <button onclick="location.href='/site/couponlist'">お気に入り</button>
+        <button onclick="location.href='/site/couponlist'">マイエリア</button>
+        <button onclick="location.href='/site/couponlist'">お得なクーポン</button>
     </div>
+
+    <!-- クーポンリスト -->
+    <div class="coupon-list">
+        <div class="coupon-item">
+            <div class="coupon-title">
+                <span class="new-badge">NEW!</span>
+                <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
+            </div>
+            <div class="coupon-price">
+                <span class="discount-rate">50%OFF</span>
+                <span class="price-before">通常6,000円</span>
+                <span class="price-after">→ 3,000円</span>
+            </div>
+        </div>
+        <div class="coupon-item">
+            <div class="coupon-title">
+                <span class="new-badge">NEW!</span>
+                <span class="fading-text">残り110分</span>｜ジェルネイル（ワンカラー）｜表参道ネイルルーム｜表参道駅 徒歩2分
+            </div>
+            <div class="coupon-price">
+                <span class="discount-rate">40%OFF</span>
+                <span class="price-before">通常5,000円</span>
+                <span class="price-after">→ 3,000円</span>
+            </div>
+        </div>
+        <div class="coupon-item">
+            <div class="coupon-title">
+                <span class="fading-text">あと30分</span>｜カット＋パーマ（男性歓迎）｜池袋ヘアサロンM｜池袋駅 徒歩5分
+            </div>
+            <div class="coupon-price">
+                <span class="discount-rate">30%OFF</span>
+                <span class="price-before">通常7,800円</span>
+                <span class="price-after">→ 5,460円</span>
+            </div>
+        </div>
+    </div>
+
     <div class="search-panel">
         <div class="search-tags">
             <div class="search-tag-box">📦 ジャンル ×</div>
