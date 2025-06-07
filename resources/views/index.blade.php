@@ -91,7 +91,55 @@
         }
         /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここまで */
 
-        /* 検索スペース ここから */
+        /* カテゴリ検索ここから */
+        .category-search-section {
+            margin: 50px 0;
+            padding: 0 5px;
+        }
+        .category-list {
+            display: flex;
+            overflow-x: auto; /* 横スクロール有効化 */
+            -webkit-overflow-scrolling: touch;/* iOS の慣性スクロール */
+            gap: 12px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: white;
+        }
+        .category-list::-webkit-scrollbar {
+            height: 6px; /* スクロールバーの高さ */
+        }
+        .category-list::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+        .category-item {
+            flex: 0 0 auto;/* 折り返しさせずに横幅固定 */
+            width: 140px;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+            text-decoration: none;
+        }
+        .category-item img {
+            display: block;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 4px;
+        }
+        .category-item span {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* カテゴリ検索ここまで */
+
+        /* 詳細検索 ここから */
+        .detailed-search-section {
+            margin-top: 60px;
+        }
         .search-panel {
             background: #e5e7eb;
             border-radius: 12px;
@@ -264,11 +312,11 @@
                 width: auto;
             }
         }
-        /* 検索スペース ここまで */
+        /* 詳細検索 ここまで */
 
         /* 特集 ここから */
         .feature-section {
-            margin-top: 60px;
+            margin-top: 50px;
         }
         .feature-header {
             display: flex;
@@ -479,27 +527,65 @@
         </div>
     </div>
 
-    <div class="search-panel">
-        <div class="search-tags">
-            <div class="search-tag-box">📦 ジャンル ×</div>
-            <div class="search-tag-box">📍 場所 ×</div>
-            <div class="search-tag-box">➕ こだわり条件</div>
-            <div class="search-icon-box">検索</div>
+    @php
+        // 表示したいカテゴリ名を配列で用意
+        $categoryNames = [
+            'リラク',
+            '飲食店',
+            '歯医者',
+            '薬局',
+            '接骨・鍼灸',
+            'おでかけスポット',
+            'ヘアサロン',
+            '動物病院・トリミング',
+            'クリニック・病院',
+            'テイクアウト',
+        ];
+    @endphp
+    <div class="category-search-section">
+        <h2 style="display: flex; align-items: center; font-size: 20px;">
+            <span style="font-size: 20px; margin-right: 8px;">🔖</span>
+            カテゴリ検索
+        </h2>
+        <div class="category-list">
+            @foreach ($categoryNames as $index => $name)
+                <a href="#" class="category-item">
+                    <img src="https://picsum.photos/seed/{{ rawurlencode($name) }}/64/64" alt="{{ $name }}">
+                    <span>{{ $name }}</span>
+                </a>
+            @endforeach
         </div>
-        <div class="search-keyword-row">
-            <div style="flex: 2; display: flex; flex-direction: column; gap: 12px;">
-                <div class="search-keyword-box">
-                    <input type="text" placeholder="キーワードから探す" />
-                    <span class="search-icon">🔍</span>
-                </div>
-                <div class="recent-search-box">
-                    <span>🕵 最近検索した条件</span>
-                    <span>なし</span>
-                </div>
+    </div>
+
+    <div class="detailed-search-section">
+        <div>
+            <h2 style="display: flex; align-items: center; font-size: 20px;">
+                <span style="font-size: 20px; margin-right: 8px;">🔍</span>
+                詳細検索
+            </h2>
+        </div>
+        <div class="search-panel">
+            <div class="search-tags">
+                <div class="search-tag-box">📦 ジャンル ×</div>
+                <div class="search-tag-box">📍 場所 ×</div>
+                <div class="search-tag-box">➕ こだわり条件</div>
+                <div class="search-icon-box">検索</div>
             </div>
-            <div class="keyword-tags-box">
-                <button># 人気条件</button>
-                <button># 残り時間</button>
+            <div class="search-keyword-row">
+                <div style="flex: 2; display: flex; flex-direction: column; gap: 12px;">
+                    <div class="search-keyword-box">
+                        <input type="text" placeholder="キーワードから探す" />
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="recent-search-box">
+                        <span>🕵 最近検索した条件</span>
+                        <span>なし</span>
+                    </div>
+                </div>
+                <div class="keyword-tags-box">
+                    <button># 人気条件</button>
+                    <button># 残り時間</button>
+                </div>
             </div>
         </div>
     </div>
