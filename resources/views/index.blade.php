@@ -10,7 +10,24 @@
             padding: 20px 0;
         }
         .swiper-container {
+            position: relative;
             overflow: hidden;
+        }
+        .swiper-button-next,
+        .swiper-button-prev {
+            position: absolute;    /* ここで絶対配置 */
+            top: 50%;              /* カルーセルの上下中央 */
+            transform: translateY(-50%);
+            z-index: 10;           /* 画像やスライドの前面に */
+        }
+
+        /* 3) 左右の位置を微調整 */
+        .swiper-button-prev {
+            left: 10px;            /* 左端からの距離 */
+        }
+
+        .swiper-button-next {
+            right: 10px;           /* 右端からの距離 */
         }
         .swiper-wrapper {
             padding: 0; /* padding削除 */
@@ -657,7 +674,9 @@
                 0: { slidesPerView: 2, spaceBetween: 40},
                 480: {slidesPerView: 2, spaceBetween: 40},
                 768: { slidesPerView: 2.5 },
-                1024: { slidesPerView: 3 }
+                1024: { slidesPerView: 3.5 },
+                1280: { slidesPerView: 4 },
+                1440: { slidesPerView: 5 },
             }
         });
     });
