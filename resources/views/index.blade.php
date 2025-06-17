@@ -41,6 +41,19 @@
             right: 0;
             text-align: center;
         }
+        .pr-badge {
+            position: absolute;    /* .card を基準に配置 */
+            top: 12px;             /* お好みで微調整 */
+            right: 12px;           /* 右上に寄せる */
+            background-color: rgba(255, 0, 0, 0.9); /* 半透明の赤背景 */
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 6px;
+            border-radius: 4px;
+            z-index: 10;           /* 画像や他の要素より前面に */
+            pointer-events: none;  /* クリックを透過させたい場合 */
+        }
         /* カルーセル ここまで */
 
         /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここから */
@@ -464,6 +477,7 @@
                     <div class="swiper-slide">
                         <div class="card">
                             <img src="https://picsum.photos/320/200?random={{ $i }}" alt="店舗画像" />
+                            <div class="pr-badge">PR</div>
                             <div class="discount-image">
                                 <img src="/images/40off.png" alt="40% OFF" style="width: 100px" />
                             </div>
