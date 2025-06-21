@@ -100,6 +100,11 @@ Route::group(['prefix' => 'admin'], function () {
 
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Admin\AdminCouponController@index')->name('admin.coupon');
+        // 特集
+        Route::get('/special_future', 'App\Http\Controllers\Admin\AdminSpecialFutureController@index')->name('admin.special_future');
+        Route::match(['get', 'post'], '/special_future/create', 'App\Http\Controllers\Admin\AdminSpecialFutureController@create')->name('admin.special_future.create');
+        Route::match(['get', 'post'], '/special_future/edit', 'App\Http\Controllers\Admin\AdminSpecialFutureController@edit')->name('admin.special_future.edit');
+        Route::post('/special_future/delete', 'App\Http\Controllers\Admin\AdminSpecialFutureController@delete')->name('admin.special_future.delete');
         // マスタ
         Route::match(['get', 'post'], '/images', 'App\Http\Controllers\Admin\AdminMasterController@images')->name('admin.master.images');
         Route::post('/images_delete', 'App\Http\Controllers\Admin\AdminMasterController@images_delete')->name('admin.master.images_delete');

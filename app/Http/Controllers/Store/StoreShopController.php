@@ -154,6 +154,10 @@ class StoreShopController extends Controller
                 'address3' => 'required',
                 'phone_number' => 'required|max:11',
                 'genre' => 'required',
+                'station_line' => 'required',
+                'station' => 'required',
+                'transportation' => 'required',
+                'time' => 'required',
             ]);
 
             if ($validated_data->fails()) {
@@ -181,6 +185,14 @@ class StoreShopController extends Controller
                 $img_path = '';
             }
 
+            if (isset($request['station_line_2']) && $request['station_line_2']) {
+                if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
+                    return redirect()->route('store.shop.create')
+                    ->withErrors(['station_error' => 1])
+                    ->withInput();
+                }
+            }
+
             //店舗編集
             $create_shop_array = array();
             $create_shop_array['company_id'] = $user->company_id;
@@ -192,6 +204,16 @@ class StoreShopController extends Controller
             $create_shop_array['address3'] = $request['address3'];
             $create_shop_array['url'] = $request['url'];
             $create_shop_array['genre'] = $request['genre'];
+            $create_shop_array['line'] = $request['station_line'];
+            $create_shop_array['station'] = $request['station'];
+            $create_shop_array['transportation'] = $request['transportation'];
+            $create_shop_array['time'] = $request['time'];
+            if (isset($request['station_line_2']) && $request['station_line_2']) {
+                $create_shop_array['line_2'] = $request['station_line_2'];
+                $create_shop_array['station_2'] = $request['station_2'];
+                $create_shop_array['transportation_2'] = $request['transportation_2'];
+                $create_shop_array['time_2'] = $request['time_2'];
+            }
             $create_shop_array['image'] = $img_path;
             $create_shop_array['phone_number'] = $request['phone_number'];
             $create_shop_array['created_by'] = $user->id;
