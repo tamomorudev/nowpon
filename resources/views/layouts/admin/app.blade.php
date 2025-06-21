@@ -85,6 +85,21 @@
                     <span>クーポン一覧</span></a>
             </li>
 
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                特集管理
+            </div>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/special_future">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>特集一覧</span></a>
+                <a class="nav-link" href="/admin/special_future/create">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>特集作成</span></a>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
