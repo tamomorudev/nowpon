@@ -14,6 +14,10 @@
             background: #fff8f0;
         }
         .coupon-item {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+
             padding: 12px 0;
             border-bottom: 1px solid #666666;
         }
@@ -93,7 +97,7 @@
 
     <!-- クーポンリスト -->
     <div class="coupon-list">
-        <div class="coupon-item">
+        <a href="/site/coupondetail" class="coupon-item">
             <div class="coupon-content">
                 <img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />
                 <div class="coupon-text">
@@ -108,8 +112,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="coupon-item">
+        </a>
+        <a href="/site/coupondetail" class="coupon-item">
             <div class="coupon-content">
                 <img src="https://picsum.photos/80/80?random=2" alt="店舗画像" class="coupon-thumb" />
                 <div class="coupon-text">
@@ -124,8 +128,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="coupon-item">
+        </a>
+        <a href="/site/coupondetail" class="coupon-item">
             <div class="coupon-content">
                 <img src="https://picsum.photos/80/80?random=3" alt="店舗画像" class="coupon-thumb" />
                 <div class="coupon-text">
@@ -139,7 +143,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
 </div>

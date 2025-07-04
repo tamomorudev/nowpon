@@ -29,6 +29,7 @@ Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->n
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
 Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
 Route::get('site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
+Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
 
 Auth::routes();
 

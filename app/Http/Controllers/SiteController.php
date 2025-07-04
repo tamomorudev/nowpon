@@ -45,4 +45,10 @@ class SiteController extends Controller
         $category = 'hair';
         return view('site.couponlist', compact('category'));
     }
+
+    public function coupondetail(Request $request)
+    {
+        $category = 'hair';
+        return view('site.coupondetail', compact('category'));
+    }
 }

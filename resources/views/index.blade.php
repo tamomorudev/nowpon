@@ -25,7 +25,6 @@
         .swiper-button-prev {
             left: 10px;            /* 左端からの距離 */
         }
-
         .swiper-button-next {
             right: 10px;           /* 右端からの距離 */
         }
@@ -35,15 +34,23 @@
         .swiper-slide {
             display: flex;
             justify-content: center;
+            padding-left: 5px;
+            padding-right: 5px;
         }
         .card {
             width: 100%;
             max-width: 320px;
             background: #fff;
             border-radius: 8px;
+            border: 1px solid #ddd;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 12px;
             position: relative;
+        }
+        .card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
         }
         .card img {
             width: 100%;
@@ -370,12 +377,13 @@
             padding: 16px;
             display: flex;
             gap: 16px;
+            border: 1px solid #ddd;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             align-items: center;
         }
         .feature-card img {
-            width: 100px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
             border-radius: 8px;
         }
@@ -427,6 +435,13 @@
             border-radius: 12px;
             margin: 30px 0;
             background: #fff8f0;
+        }
+        .coupon-link {
+            display: block;               /* ブロック化して子要素を包む */
+            text-decoration: none;        /* 青文字＋下線（text‐decoration）は消す */
+            color: inherit;
+            border-bottom: 1px solid #000;/* ここで下線を再定義 */
+            padding-bottom: 8px;
         }
         .coupon-item {
             padding: 12px 0;
@@ -492,21 +507,23 @@
             <div class="swiper-wrapper">
                 @foreach (range(1, 6) as $i)
                     <div class="swiper-slide">
-                        <div class="card">
-                            <img src="https://picsum.photos/320/200?random={{ $i }}" alt="店舗画像" />
-                            <div class="pr-badge">PR</div>
-                            <div class="discount-image">
-                                <img src="/images/40off.png" alt="40% OFF" style="width: 100px" />
+                        <a href="/site/coupondetail" class="card-link">
+                            <div class="card">
+                                <img src="https://picsum.photos/320/200?random={{ $i }}" alt="店舗画像" />
+                                <div class="pr-badge">PR</div>
+                                <div class="discount-image">
+                                    <img src="/images/40off.png" alt="40% OFF" style="width: 100px" />
+                                </div>
+                                <div style="text-align: center; margin-top: 10px">
+                                    <p>
+                                        <span style="text-decoration: line-through; color: gray">$68.56</span>
+                                        <span style="color: #ef4444; font-weight: bold">⇒ $40.56</span>
+                                    </p>
+                                    <p>ジャンルー店舗名</p>
+                                    <p style="font-size: 12px; color: #6b7280">〇〇駅 北口徒歩何分</p>
+                                </div>
                             </div>
-                            <div style="text-align: center; margin-top: 10px">
-                                <p>
-                                    <span style="text-decoration: line-through; color: gray">$68.56</span>
-                                    <span style="color: #ef4444; font-weight: bold">⇒ $40.56</span>
-                                </p>
-                                <p>ジャンルー店舗名</p>
-                                <p style="font-size: 12px; color: #6b7280">〇〇駅 北口徒歩何分</p>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
@@ -524,7 +541,7 @@
 
     <!-- クーポンリスト -->
     <div class="coupon-list">
-        <div class="coupon-item">
+        <a href="/site/coupondetail" class="coupon-link coupon-item">
             <div class="coupon-title">
                 <span class="new-badge">NEW!</span>
                 <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
@@ -534,8 +551,8 @@
                 <span class="price-before">通常6,000円</span>
                 <span class="price-after">→ 3,000円</span>
             </div>
-        </div>
-        <div class="coupon-item">
+        </a>
+        <a href="/site/coupondetail" class="coupon-link coupon-item">
             <div class="coupon-title">
                 <span class="new-badge">NEW!</span>
                 <span class="fading-text">残り110分</span>｜ジェルネイル（ワンカラー）｜表参道ネイルルーム｜表参道駅 徒歩2分
@@ -545,8 +562,8 @@
                 <span class="price-before">通常5,000円</span>
                 <span class="price-after">→ 3,000円</span>
             </div>
-        </div>
-        <div class="coupon-item">
+        </a>
+        <a href="/site/coupondetail" class="coupon-link coupon-item">
             <div class="coupon-title">
                 <span class="fading-text">あと30分</span>｜カット＋パーマ（男性歓迎）｜池袋ヘアサロンM｜池袋駅 徒歩5分
             </div>
@@ -555,7 +572,7 @@
                 <span class="price-before">通常7,800円</span>
                 <span class="price-after">→ 5,460円</span>
             </div>
-        </div>
+        </a>
     </div>
 
     @php
@@ -580,7 +597,7 @@
         </h2>
         <div class="category-list">
             @foreach ($categoryNames as $index => $name)
-                <a href="#" class="category-item">
+                <a href="/site/couponlist" class="category-item">
                     <img src="https://picsum.photos/seed/{{ rawurlencode($name) }}/64/64" alt="{{ $name }}">
                     <span>{{ $name }}</span>
                 </a>
@@ -631,19 +648,19 @@
         </div>
         <div class="feature-grid">
             <div class="feature-card">
-                <img src="https://picsum.photos/seed/winter/100/100" alt="Feature 1">
+                <img src="https://picsum.photos/seed/winter/200/200" alt="Feature 1">
                 <p>冬の特別キャンペーン！<br>掲載中の美容室全メニュー 30% OFF！<br>この冬、特別な自分に変身しませんか？<br>期間限定：〜12月31日まで ご予約はお早めに！</p>
             </div>
             <div class="feature-card">
-                <img src="https://picsum.photos/seed/discount/100/100" alt="Feature 2">
+                <img src="https://picsum.photos/seed/discount/200/200" alt="Feature 2">
                 <p>スーパーゲリラクーポン配布中！<br>残り数分のラストチャンス 超超お得な割引チャンス！<br>急いでゲットしよう！今すぐチェック！</p>
             </div>
             <div class="feature-card">
-                <img src="https://picsum.photos/seed/vip/100/100" alt="Feature 3">
+                <img src="https://picsum.photos/seed/vip/200/200" alt="Feature 3">
                 <p>会員限定特典<br>会員向けに特別な割引をいち早くサービスを提供。</p>
             </div>
             <div class="feature-card">
-                <img src="https://picsum.photos/seed/coupon/100/100" alt="Feature 4">
+                <img src="https://picsum.photos/seed/coupon/200/200" alt="Feature 4">
                 <p>連続来店割引付きクーポン<br>初回50%OFFクーポン＋<br>次回使える30%OFFクーポン</p>
             </div>
         </div>
