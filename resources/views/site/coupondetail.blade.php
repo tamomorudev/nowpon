@@ -6,7 +6,8 @@
     <title>ナウポンTOP</title>
     <style>
         .coupon-detail {
-            margin: 40px 0 40px 24px;
+            /* 上下 40px、左右 16px に */
+            margin: 40px 16px;
             font-family: sans-serif;
         }
         .coupon-detail h2 {
@@ -151,13 +152,29 @@
         }
 
         /* 各アイテム */
-        .recommend-item {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
+        /* a.recommend-item に元のカードスタイルを適用 */
+        a.recommend-item {
             display: flex;
             flex-direction: column;
+            background: #fff;           /* 背景色 */
+            border: 1px solid #ddd;     /* 枠線 */
+            border-radius: 8px;         /* 角丸 */
+            overflow: hidden;           /* はみ出し画像を丸に沿わせる */
+            text-decoration: none;      /* 下線を消す */
+            color: inherit;             /* 文字色を継承 */
+            transition: box-shadow .2s, transform .2s; /* ホバーアニメ */
+        }
+
+        /* ホバー時のほんのり浮かせエフェクト */
+        a.recommend-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* .recommend-grid のままだと a として扱われない場合は以下を追加 */
+        .recommend-grid a.recommend-item {
+            /* グリッド内のアイテムとして扱う */
+            width: 100%;
         }
         .card-wrapper {
             position: relative;
@@ -213,8 +230,8 @@
 
         <!-- 上部ボタン -->
         <div class="btn-group">
-            <button type="button">カートに入れる</button>
-            <button type="button">今すぐ購入する</button>
+            <button type="button" onclick="location.href='/site/cart';">カートに入れる</button>
+            <button type="button" onclick="location.href='/site/checkout';">今すぐ購入する</button>
         </div>
 
         <div class="detail-body">
@@ -265,7 +282,7 @@
             <h3 class="recommend-title">こちらもおすすめ</h3>
             <div class="recommend-grid">
                 @foreach (range(1,4) as $i)
-                    <div class="recommend-item">
+                    <a href="/site/coupondetail" class="recommend-item">
                         <div class="card-wrapper">
                             <img src="https://picsum.photos/320/200?random={{ $i }}" alt="おすすめ{{ $i }}">
                         </div>
@@ -279,10 +296,14 @@
                         <div class="recommend-footer">
                             <div class="icons">
                                 <button class="icon-btn heart">♡</button>
-                                <button class="icon-btn share">⤴︎</button>
+                                <button aria-label="共有" class="icon-btn share">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" fill="currentColor" style="display:block">
+                                        <path d="M18 16.08c-.76 0-1.44.3-1.97.8l-7.12-4.18c.05-.23.09-.47.09-.7s-.04-.47-.09-.7l7.12-4.18c.53.5 1.21.8 1.97.8 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7l-7.12 4.18c-.5-.5-1.18-.8-1.91-.8C5.33 9.08 4 10.42 4 12s1.33 2.92 2.99 2.92c.74 0 1.42-.3 1.91-.8l7.12 4.18c-.05.23-.09.47-.09.7 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -293,7 +314,7 @@
             <h3 class="recommend-title">同じエリアでのクーポン </h3>
             <div class="recommend-grid">
                 @foreach (range(5,8) as $i)
-                    <div class="recommend-item">
+                    <a href="/site/coupondetail" class="recommend-item">
                         <div class="card-wrapper">
                             <img src="https://picsum.photos/320/200?random={{ $i }}" alt="おすすめ{{ $i }}">
                         </div>
@@ -307,10 +328,14 @@
                         <div class="recommend-footer">
                             <div class="icons">
                                 <button class="icon-btn heart">♡</button>
-                                <button class="icon-btn share">⤴︎</button>
+                                <button aria-label="共有" class="icon-btn share">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" fill="currentColor" style="display:block">
+                                        <path d="M18 16.08c-.76 0-1.44.3-1.97.8l-7.12-4.18c.05-.23.09-.47.09-.7s-.04-.47-.09-.7l7.12-4.18c.53.5 1.21.8 1.97.8 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7l-7.12 4.18c-.5-.5-1.18-.8-1.91-.8C5.33 9.08 4 10.42 4 12s1.33 2.92 2.99 2.92c.74 0 1.42-.3 1.91-.8l7.12 4.18c-.05.23-.09.47-.09.7 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>

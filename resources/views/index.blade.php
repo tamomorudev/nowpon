@@ -675,9 +675,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const swiper = new Swiper('.swiper-container', {
-            slidesPerView: 3,
+            slidesPerView: 8,
             spaceBetween: 20,
-            centeredSlides: true, // ← 中央寄せ
+            centeredSlides: false, // ← 中央寄せ
             loop: true,
             autoplay: {
                 delay: 2500, // 2.5秒ごとに自動スライド（ミリ秒単位）
@@ -688,8 +688,17 @@
                 prevEl: '.swiper-button-prev'
             },
             breakpoints: {
-                0: { slidesPerView: 2, spaceBetween: 40},
-                480: {slidesPerView: 2, spaceBetween: 40},
+                // モバイル（0 ～ 479px）
+                0: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                // スマホ小（480 ～ 767px）
+                480: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                // タブレット以上
                 768: { slidesPerView: 2.5 },
                 1024: { slidesPerView: 3.5 },
                 1280: { slidesPerView: 4 },
