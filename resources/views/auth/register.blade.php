@@ -28,7 +28,7 @@
                             <label for="nickname" class="col-md-4 col-form-label text-md-end">ニックネーム</label>
 
                             <div class="col-md-6">
-                                <input id="nickname" type="text" class="form-control @error('nickname') is-invalid @enderror" name="nickname" required>
+                                <input id="nickname" type="text" class="form-control @error('nickname') is-invalid @enderror" name="nickname" value="{{ old('nickname') }}" required>
 
                                 @error('nickname')
                                     <span class="invalid-feedback" role="alert">
@@ -76,7 +76,7 @@
                             <label for="postal_code" class="col-md-4 col-form-label text-md-end">郵便番号(ハイフンなしで入力してください)</label>
 
                             <div class="col-md-6">
-                                <input id="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code" required>
+                                <input id="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code" value="{{ old('postal_code') }}" required>
                             </div>
                         </div>
 
@@ -86,7 +86,7 @@
                             <div class="col-md-6">
                                 <select name="prefecture" id="prefecture" class="form-control">
                                     @foreach(config('commons.prefectures') as $key => $prefecture)
-                                        <option value="{{$key}}">{{$prefecture}}</option>
+                                        <option value="{{$key}}" {{ old('prefecture') == $key ? 'selected' : '' }}>{{$prefecture}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -96,7 +96,7 @@
                             <label for="city" class="col-md-4 col-form-label text-md-end">市区町村</label>
 
                             <div class="col-md-6">
-                                <input id="city" type="text" class="form-control @error('city') is-invalid @enderror" name="city" required>
+                                <input id="city" type="text" class="form-control @error('city') is-invalid @enderror" name="city" value="{{ old('postal_code') }}" required>
                             </div>
                         </div>
 
@@ -104,7 +104,7 @@
                             <label for="phone_number" class="col-md-4 col-form-label text-md-end">電話番号</label>
 
                             <div class="col-md-6">
-                                <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" required>
+                                <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" value="{{ old('phone_number') }}" required>
                             </div>
                         </div>
 
@@ -113,11 +113,11 @@
 
                             <div class="col-md-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="sex" value="1">
+                                    <input class="form-check-input" type="radio" name="sex" value="1" {{ old('sex') == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label">男性</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="sex" value="0">
+                                    <input class="form-check-input" type="radio" name="sex" value="0" {{ old('sex') == 0 ? 'checked' : '' }}>
                                     <label class="form-check-label">女性</label>
                                 </div>
                             </div>

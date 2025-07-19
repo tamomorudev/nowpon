@@ -58,6 +58,16 @@ class StoreCouponController extends Controller
                 'detail' => 'required',
                 'start_date' => 'required',
                 'end_date' => 'required'
+            ], [
+                'store_name.required' => '店舗を選択してください。',
+                'coupon_name.required' => 'クーポン名を入力してください。',
+                'price.required' => 'クーポン金額を入力してください。',
+                'discount_price.required' => 'クーポン割引額は0円以上にしてください。',
+                'cource_time.required' => 'コース時間を入力してください。',
+                'cource_start.required' => 'コース開始時間を入力してください。',
+                'detail.required' => '説明を入力してください。',
+                'start_date.required' => '有効期限を入力してください。',
+                'end_date.required' => '有効期限を入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -162,6 +172,16 @@ class StoreCouponController extends Controller
                 'detail' => 'required',
                 'start_date' => 'required',
                 'end_date' => 'required'
+            ], [
+                'store_name.required' => '店舗を選択してください。',
+                'coupon_name.required' => 'クーポン名を入力してください。',
+                'price.required' => 'クーポン金額を入力してください。',
+                'discount_price.required' => 'クーポン割引額は0円以上にしてください。',
+                'cource_time.required' => 'コース時間を入力してください。',
+                'cource_start.required' => 'コース開始時間を入力してください。',
+                'detail.required' => '説明を入力してください。',
+                'start_date.required' => '有効期限を入力してください。',
+                'end_date.required' => '有効期限を入力してください。',
             ]);
 
             if ($validated_data->fails()) {

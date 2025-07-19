@@ -32,7 +32,7 @@
                     性別：{{ config('commons.sexs')[$user->sex] }}
                 </div>
                 <div class="card-body">
-                    年齢：{{ $user->age }}
+                    生年月日：{{ $user->birth_date }}
                 </div>
             </div>
         </div>

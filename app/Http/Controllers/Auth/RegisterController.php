@@ -53,8 +53,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             //'name' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:191', 'alpha_num'],
-            'nickname' => ['required', 'string', 'max:191', 'alpha_num'],
+            'name' => ['required', 'string', 'max:191'],
+            'nickname' => ['required', 'string', 'max:191'],
             //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -64,6 +64,21 @@ class RegisterController extends Controller
             'phone_number' => ['required', 'max:50'],
             'sex' => ['required'],
             'birth_date' => ['required'],
+        ], [
+            'name.required' => '氏名を入力してください。',
+            'nickname.required' => 'ニックネームを入力してください。',
+            'email.required' => 'メールアドレスを入力してください。',
+            'email.email' => '有効なメールアドレスを入力してください。',
+            'email.unique' => 'そのメールアドレスは既に使用されています。',
+            'password.required' => 'パスワードを入力してください。',
+            'password.min' => 'パスワードは8文字以上にしてください。',
+            'password.confirmed' => 'パスワードが一致しません。',
+            'postal_code.required' => '郵便番号を入力してください。',
+            'prefecture.required' => '都道府県を選択してください。',
+            'city.required' => '市区町村を入力してください。',
+            'phone_number.required' => '電話番号を入力してください。',
+            'sex.required' => '性別を選択してください。',
+            'birth_date.required' => '生年月日を入力してください。',
         ]);
     }
 
@@ -78,6 +93,7 @@ class RegisterController extends Controller
         if(!isset($data['email'])) {
             $data['email'] = null; //メールは一旦取得しない？
         }
+
         return User::create([
             'name' => $data['name'],
             'nickname' => $data['nickname'],
