@@ -48,10 +48,10 @@
                                 <td>{{$coupon->price}}円</td>
                                 @if ($coupon->discount_type == 1)
                                     <td>{{$coupon->discount_price}}%</td>
-                                    <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) }}円</td>
+                                    <td>{{ round( (round($coupon->price * (1 - ($coupon->discount_price / 100)))) / 0.75) }}円</td>
                                 @else
                                     <td>{{$coupon->discount_price}}円</td>
-                                    <td>{{ $coupon->price - $coupon->discount_price }}円</td>
+                                    <td>{{ round( ($coupon->price - $coupon->discount_price) / 0.75) }}円</td>
                                 @endif
                                 <td>{{$coupon->cource_time}}</td>
                                 <td>{{$coupon->cource_start}}</td>
@@ -62,7 +62,11 @@
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon->img_url) }}" >
                                     @endif
                                 </td>
-                                <td><a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a></td>
+                                <td>
+                                    @if ($coupon->expire_start_date >= date('Y-m-d H:i:s'))
+                                        <a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a>
+                                    @endif
+                                </td>
                                 <td>
                                     <form method="POST" action="{{ route('store.coupon.delete') }}">
                                         @csrf
