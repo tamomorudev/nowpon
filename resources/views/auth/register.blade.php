@@ -96,12 +96,14 @@
     }
 
     .form-actions {
-        margin-top: 8px;
+        margin-top: 40px;
+        text-align: center;    /* 中央揃え */
     }
     .btn-primary {
-        width: 100%;
-        height: 44px;
-        padding: 0 16px;
+        width: auto;                 /* ← 幅を自動調整（テキストサイズに合わせる） */
+        min-width: 180px;             /* ← 最低幅を設定（見た目安定） */
+        height: 40px;                 /* ← 高さを少し低めに */
+        padding: 0 20px;              /* ← 横の余白を少し少なめに */
         display: inline-flex;
         align-items: center;
         justify-content: center;
