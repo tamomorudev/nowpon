@@ -114,8 +114,10 @@
 
     <div class="header-nav">
         <a href="/" class="{{ isActive(['/']) }}">HOME</a>
+        @if (Auth::user())
         <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a>
         <a href="#">購入履歴</a>
+        @endif
         <a href="#">CONTACT</a>
     </div>
 </div>
