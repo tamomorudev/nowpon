@@ -15,7 +15,6 @@
         display: grid;
         place-items: center;
         padding: 48px 16px;
-        background: #f7f6f4;
     }
 
     /* ===== Card ===== */
