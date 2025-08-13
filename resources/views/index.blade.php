@@ -665,10 +665,13 @@
             </div>
         </div>
 
-        <div class="bottom-buttons">
-            <a href="/register" class="btn-register">まずは会員登録</a>
-            <a href="/login" class="btn-login">ログイン</a>
-        </div>
+        @if (!Auth::user())
+            <div class="bottom-buttons">
+                <a href="/register" class="btn-register">まずは会員登録</a>
+                <a href="/login" class="btn-login">ログイン</a>
+            </div>
+        @endif
+
     </div>
 </div>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

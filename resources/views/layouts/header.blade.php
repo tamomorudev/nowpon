@@ -35,6 +35,16 @@
         font-size: 16px;
         color: #6b4e3d;
     }
+    .header-left a {
+        color: inherit;          /* 親(.header-left)の色を継承 → #6b4e3d */
+        text-decoration: none;   /* 下線を消す */
+        font-weight: normal;     /* 周囲と同じ太さに */
+    }
+    .header-left a:focus-visible {
+        outline: 2px solid #c29663; /* キーボード操作向けの可視フォーカス */
+        outline-offset: 2px;
+    }
+
     .user-icon {
         font-size: 20px;
         color: #b08968;
@@ -86,8 +96,13 @@
 
 <div class="header">
     <div class="header-left">
-        <span class="user-icon">👤</span>
-        <span class="username">guest</span>
+        @if (Auth::user())
+            {{-- ログイン中（セッションあり） --}}
+            <span class="user-icon">👤</span>
+            <a class="username" href="{{ url('/account') }}">
+                {{ Auth::user()->name }}
+            </a>
+        @endif
     </div>
 
     <div class="header-search">
