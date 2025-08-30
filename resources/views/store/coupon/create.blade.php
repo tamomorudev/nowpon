@@ -195,7 +195,8 @@
                         commit = Math.round(current_price - current_discount_price);
                     }
                 }
-                commit = Math.round(commit / 0.75);
+                services = Math.round(commit * 0.15);
+                commit = commit + services;
 
                 // 値のリセットと表示
                 $("#coupon_commit").text(commit > 0 ? commit : '0');

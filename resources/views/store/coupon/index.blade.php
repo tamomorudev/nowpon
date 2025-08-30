@@ -29,6 +29,7 @@
                                 <th>クーポンコード</th>
                                 <th>金額</th>
                                 <th>割引金額</th>
+                                <th>サービス料</th>
                                 <th>掲載金額</th>
                                 <th>コース時間(分)</th>
                                 <th>コース開始時間</th>
@@ -48,12 +49,14 @@
                                 <td>{{$coupon->price}}円</td>
                                 @if ($coupon->discount_type == 1)
                                     <td>{{$coupon->discount_price}}%</td>
-                                    <td>{{ round( (round($coupon->price * (1 - ($coupon->discount_price / 100)))) / 0.75) }}円</td>
+                                    <td>{{$coupon->service_price}}円</td>
+                                    <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price}}円</td>
                                 @else
                                     <td>{{$coupon->discount_price}}円</td>
-                                    <td>{{ round( ($coupon->price - $coupon->discount_price) / 0.75) }}円</td>
+                                    <td>{{$coupon->service_price}}円</td>
+                                    <td>{{ round($coupon->price - $coupon->discount_price) + $coupon->service_price}}円</td>
                                 @endif
-                                <td>{{$coupon->cource_time}}</td>
+                                <td>{{$coupon->cource_time}}分</td>
                                 <td>{{$coupon->cource_start}}</td>
                                 <td>{{$coupon->expire_start_date}}</td>
                                 <td>{{$coupon->expire_end_date}}</td>
