@@ -150,19 +150,21 @@
             @csrf
 
             <div class="login-field">
-                <label for="name" class="login-label">ユーザーID</label>
+                <label for="email" class="login-label">メールアドレス</label>
                 <input
-                    id="name"
+                    id="email"
                     type="text"
-                    class="login-input @error('name') is-invalid @enderror"
-                    name="name"
-                    value="{{ old('name') }}"
+                    class="login-input @error('email') is-invalid @enderror"
+                    name="email"
+                    value="{{ old('email') }}"
                     required
                     autofocus
-                    autocomplete="username"
                 >
-                @error('name')
-                <div class="login-error">{{ $message }}</div>
+                @error('email')
+                    <div class="login-error">{{ $message }}</div>
+                @enderror
+                @error('login_error')
+                    <div class="login-error">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -177,7 +179,7 @@
                     autocomplete="current-password"
                 >
                 @error('password')
-                <div class="login-error">{{ $message }}</div>
+                    <div class="login-error">{{ $message }}</div>
                 @enderror
             </div>
 
