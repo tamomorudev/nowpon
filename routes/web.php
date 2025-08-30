@@ -48,6 +48,7 @@ Route::group(['prefix' => 'store'], function () {
         ->name('store.login');
 
     Route::post('login', [StoreLoginController::class, 'login']);
+    Route::post('logout', [StoreLoginController::class, 'logout'])->name('store.logout');
 
     // 以下ストアユーザー認証必須のルーティング
     Route::middleware(['auth:store_user'])->group(function () {
@@ -87,6 +88,7 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('admin.login');
 
     Route::post('login', [AdminLoginController::class, 'login']);
+    Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     // 以下adminユーザー認証必須のルーティング
     Route::middleware(['auth:admin_user'])->group(function () {

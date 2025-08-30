@@ -34,7 +34,7 @@ class StoreShopController extends Controller
      */
     public function index()
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
 
         return view('store.shop.index', compact('user', 'stores'));
@@ -42,7 +42,7 @@ class StoreShopController extends Controller
 
     public function create(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
         $request = $request->all();
 
         if (isset($request['address1'])) {
@@ -130,7 +130,7 @@ class StoreShopController extends Controller
 
     public function edit(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
         $request = $request->all();
 
         if(!isset($request['si'])) {
@@ -229,14 +229,14 @@ class StoreShopController extends Controller
 
     public function account()
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
         $store_users = StoreUser::select()->where('company_id', $user->company_id)->get(); //storeuser
         return view('store.shop.account', compact('user', 'store_users'));
     }
 
     public function accountCreate(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user();  //ユーザー情報
         $request = $request->all();
 
         if ($_POST) {
@@ -279,7 +279,7 @@ class StoreShopController extends Controller
 
     public function courceCreate(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
 
         $request = $request->all();
@@ -317,7 +317,7 @@ class StoreShopController extends Controller
 
     public function checkStation(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
 
         $request = $request->all();
 

@@ -36,7 +36,7 @@ class AdminSpecialFutureController extends Controller
      */
     public function index()
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $special_futures = SpecialFutures::select()->where('delete_flg', 0)->orderBy('created_at', 'DESC')->get(); //特集情報
         $stores = Stores::select()->get(); //stores情報
         return view('admin.special_future.index', compact('user', 'stores', 'special_futures'));
@@ -44,7 +44,7 @@ class AdminSpecialFutureController extends Controller
 
     public function create(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::select()->get(); //stores情報
         $request = $request->all();
 
@@ -114,7 +114,7 @@ class AdminSpecialFutureController extends Controller
 
     public function edit(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         $request = $request->all();
 
@@ -197,7 +197,7 @@ class AdminSpecialFutureController extends Controller
 
     public function delete(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $request = $request->all();
 
         $special_future_id = $request['id'];
