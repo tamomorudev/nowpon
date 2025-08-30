@@ -41,13 +41,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                <?php $lines = strpos($special_future->detail, "\n");
-                                if ($lines !== false) {
-                                    echo substr($special_future->detail, 0, $lines);
-                                } else {
-                                    echo $special_future->detail;
-                                }
-                                ?>
+                                {!! nl2br(e(Str::limit($special_future->detail, 50))) !!}
                                 </td>
                                 <td>{{$special_future->start_date}}</td>
                                 <td>{{$special_future->end_date}}</td>

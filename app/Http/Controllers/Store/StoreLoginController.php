@@ -63,4 +63,12 @@ class StoreLoginController extends Controller
             'login' => ['ログインに失敗しました'],
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('store_user')->logout(); //ストア側のguardのみ
+        $request->session()->regenerateToken();
+
+        return redirect('/store');
+    }
 }

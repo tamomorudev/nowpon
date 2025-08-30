@@ -21,6 +21,9 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
+        // 渡ってきたguardを使用
+        Auth::shouldUse($guards[0]);
+
         //管理ユーザー、店舗ユーザー、一般ユーザーで同時ログイン不可
         /*
         foreach ($guards as $guard) {

@@ -28,11 +28,13 @@
                                 <th>クーポンコード</th>
                                 <th>金額</th>
                                 <th>割引金額</th>
+                                <th>サービス料</th>
                                 <th>掲載金額</th>
                                 <th>コース時間</th>
                                 <th>コース開始時間</th>
                                 <th>発行開始時間</th>
                                 <th>発行終了時間</th>
+                                <th>画像</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,15 +47,27 @@
                                 <td>{{$coupon->price}}円</td>
                                 @if ($coupon->discount_type == 1)
                                     <td>{{$coupon->discount_price}}%</td>
-                                    <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) }}円</td>
+                                    <td>{{$coupon->service_price}}円</td>
+                                    <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price}}円</td>
                                 @else
                                     <td>{{$coupon->discount_price}}円</td>
-                                    <td>{{ $coupon->price - $coupon->discount_price }}円</td>
+                                    <td>{{$coupon->service_price}}円</td>
+                                    <td>{{ round($coupon->price - $coupon->discount_price) + $coupon->service_price}}円</td>
                                 @endif
-                                <td>{{$coupon->cource_time}}</td>
+                                <td>{{$coupon->cource_time}}分</td>
                                 <td>{{$coupon->cource_start}}</td>
                                 <td>{{$coupon->expire_start_date}}</td>
                                 <td>{{$coupon->expire_end_date}}</td>
+                                <td>
+                                    @if($coupon->img_url)
+                                        <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon->img_url) }}" >
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($coupon->expire_start_date >= date('Y-m-d H:i:s'))
+                                        <a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -647,22 +647,20 @@
             <a href="#" style="color: #3b82f6; font-size: 14px;">もっと見る ＞</a>
         </div>
         <div class="feature-grid">
-            <div class="feature-card">
-                <img src="https://picsum.photos/seed/winter/200/200" alt="Feature 1">
-                <p>冬の特別キャンペーン！<br>掲載中の美容室全メニュー 30% OFF！<br>この冬、特別な自分に変身しませんか？<br>期間限定：〜12月31日まで ご予約はお早めに！</p>
-            </div>
-            <div class="feature-card">
-                <img src="https://picsum.photos/seed/discount/200/200" alt="Feature 2">
-                <p>スーパーゲリラクーポン配布中！<br>残り数分のラストチャンス 超超お得な割引チャンス！<br>急いでゲットしよう！今すぐチェック！</p>
-            </div>
-            <div class="feature-card">
-                <img src="https://picsum.photos/seed/vip/200/200" alt="Feature 3">
-                <p>会員限定特典<br>会員向けに特別な割引をいち早くサービスを提供。</p>
-            </div>
-            <div class="feature-card">
-                <img src="https://picsum.photos/seed/coupon/200/200" alt="Feature 4">
-                <p>連続来店割引付きクーポン<br>初回50%OFFクーポン＋<br>次回使える30%OFFクーポン</p>
-            </div>
+            @if($special_futures)
+                @foreach($special_futures as $special_future)
+                    <div class="feature-card">
+                        @if($special_future->image)
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $special_future->image) }}" >
+                        @else
+                            <img src="https://picsum.photos/seed/winter/200/200" alt="Feature 1"> {{--未設定用画像--}}
+                        @endif
+                        <p>{{$special_future->name}}<br>{!! nl2br(e(Str::limit($special_future->detail, 50))) !!}</p>
+                    </div>
+                @endforeach
+            @else
+                現在開催されている特集はありません。
+            @endif
         </div>
 
         @if (!Auth::user())

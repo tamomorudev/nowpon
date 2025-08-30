@@ -96,11 +96,11 @@
 
 <div class="header">
     <div class="header-left">
-        @if (Auth::user())
+        @if(Auth::guard('web')->check())
             {{-- ログイン中（セッションあり） --}}
             <span class="user-icon">👤</span>
             <a class="username" href="{{ url('/account') }}">
-                {{ Auth::user()->name }}
+                {{ Auth::guard('web')->user()->name }}
             </a>
         @endif
     </div>
@@ -114,7 +114,7 @@
 
     <div class="header-nav">
         <a href="/" class="{{ isActive(['/']) }}">HOME</a>
-        @if (Auth::user())
+        @if(Auth::guard('web')->check())
         <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a>
         <a href="#">購入履歴</a>
         @endif

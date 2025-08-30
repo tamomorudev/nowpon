@@ -36,7 +36,7 @@ class AdminMasterController extends Controller
      */
     public function images()
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::where('image', '!=', '')->where('image', '!=', null)->select()->get(); //stores情報
         $coupons = Coupons::where('img_url', '!=', '')->where('img_url', '!=', null)->select()->get();
 
@@ -45,7 +45,7 @@ class AdminMasterController extends Controller
 
     public function images_delete(Request $request)
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::select()->get(); //stores情報
         $coupons = Coupons::select()->get();
         $request = $request->all();

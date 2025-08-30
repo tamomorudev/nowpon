@@ -33,7 +33,7 @@ class AdminCouponController extends Controller
      */
     public function index()
     {
-        $user = Auth::user(); //ユーザー情報
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->orderBy('created_at', 'DESC')->get(); //クーポン情報
         $stores = Stores::select()->get(); //stores情報
         return view('admin.coupon.index', compact('user', 'stores', 'coupons'));

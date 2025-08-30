@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -51,7 +52,20 @@ class LoginController extends Controller
     public function username()
     {
         // もし、DBに別の名前でユーザー名のカラムを作っていたらここを変える。
-        return 'name';
+        return 'email';
+    }
+
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+        ], [
+            'email.required' => 'メールアドレスを入力してください。',
+            'email.email' => 'メールアドレス形式ではありません。',
+            'password.required' => 'パスワードは8文字以上で入力してください。',
+            'password.min' => 'パスワードは8文字以上で入力してください。',
+        ]);
     }
 
     /**
@@ -64,15 +78,32 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         // フォームからの値を取得
-        $username = $request->input($this->username());
+        $email = $request->input($this->username());
         $password = $request->input('password');
-        // usernameがemail形式かを判定
-        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            // email形式の場合は連想配列のkey=emailに値を渡す
-            return  ['email' => $username, 'password' => $password];
-        } else {
-            // email形式でない場合は連想配列のkey=nameに値を渡す
-            return [$this->username() => $username, 'password' => $password];
+        // email認証
+        return  ['email' => $email, 'password' => $password];
+    }
+
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        $credentials = $this->credentials($request);
+
+        if (Auth::guard('web')->attempt($credentials, $request->filled('remember'))) {
+            return redirect('/');
         }
+
+        return back()->withErrors([
+            'login_error' => 'ログイン情報に誤りがあります。',
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout(); //ユーザー側のguardのみ
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

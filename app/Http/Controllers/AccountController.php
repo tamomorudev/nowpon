@@ -24,7 +24,7 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
         return view('account.index', compact('user'));
     }
 }
