@@ -7,6 +7,7 @@ use App\Http\Controllers\Store\StoreHomeController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,10 @@ Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'co
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/account', [App\Http\Controllers\AccountController::class, 'index'])->name('account');
+Route::middleware('auth')->group(function () {
+    Route::get('/account', [AccountController::class, 'index'])->name('account.index');   // 画面表示
+    Route::put('/account', [AccountController::class, 'update'])->name('account.update'); // 更新
+});
 
 Route::group(['prefix' => 'store'], function () {
     // 登録
