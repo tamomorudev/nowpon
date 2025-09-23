@@ -1,5 +1,13 @@
 @extends('layouts.admin.app', ['authgroup'=>'admin_user'])
 
+@section('add_head')
+    <link href="{{ asset('summernote/summernote.min.css') }}" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+@endsection
+
 @section('title')
 特集作成
 @endsection
@@ -30,7 +38,7 @@
             <div class="form-group">
                 <label for="name" class="col-md-4 col-form-label text-md-end">内容<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <textarea class="form-control" rows="10" cols="60" name="detail">{{ old('detail') }}</textarea>
+                    <textarea id="summernote" class="form-control" rows="10" cols="60" name="detail">{{ old('detail') }}</textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -59,4 +67,24 @@
         </form>
     </div>
 
+@endsection
+
+@section('add_script')
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Summernote JS -->
+    <script src="{{ asset('summernote/summernote.min.js') }}"></script>
+    <script src="{{ asset('summernote/lang/summernote-ja-JP.min.js') }}"></script>
+
+    <!-- 初期化 -->
+    <script>
+        $(function() {
+            $('#summernote').summernote({
+                height: 300,
+                lang: 'ja-JP'
+            });
+        });
+    </script>
 @endsection
