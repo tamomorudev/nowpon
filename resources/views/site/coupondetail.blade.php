@@ -242,7 +242,11 @@
                     <div class="swiper-wrapper">
                         @foreach (range(1,5) as $i)
                             <div class="swiper-slide">
-                                <img src="https://picsum.photos/600/320?random={{ $i }}" alt="商品画像{{ $i }}">
+                                @if($coupon->img_url && $i == 1)
+                                    <img src="{{ asset('/assets/images/'. $coupon->img_url) }}" alt="クーポン画像">
+                                @else
+                                    <img src="https://picsum.photos/320/200?random={{ $i }}" alt="クーポン画像" />
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -255,7 +259,11 @@
                     <div class="swiper-wrapper">
                         @foreach (range(1,6) as $i)
                             <div class="swiper-slide">
-                                <img src="https://picsum.photos/100/80?random={{ $i }}" alt="サムネ{{ $i }}">
+                                @if($coupon->img_url && $i == 1)
+                                    <img src="{{ asset('/assets/images/'. $coupon->img_url) }}" alt="クーポン画像">
+                                @else
+                                    <img src="https://picsum.photos/100/80?random={{ $i }}" alt="サムネ{{ $i }}">
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -266,6 +274,33 @@
             <div class="info-panel">
                 <div class="tab">商品内容</div>
                 <div class="info">
+                    <p><strong>{{ config('commons.genre')[$coupon->genre] }}ー{{ $coupon->store_name }}</strong></p>
+                    <p>最寄り駅：{{ $coupon->station }}駅 {{ config('commons.transportation')[$coupon->transportation] }}{{ $coupon->time }}分
+                    @if ($coupon->station_2)
+                        <br>最寄り駅：{{ $coupon->station_2 }}駅 {{ config('commons.transportation')[$coupon->transportation_2] }}{{ $coupon->time_2 }}分
+                    @endif
+                    </p>
+                    <p>
+                        @if ($coupon->discount_rate > 0)
+                            <span class="price-before">通常{{ number_format($coupon->price + $coupon->original_service_price) }}円</span>
+                            @if ($coupon->discount_type == 1)
+                                <span class="price-after">→ {{ number_format(round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price) }}円</span>
+                            @else
+                                <span class="price-after">→ {{ number_format(round($coupon->price - $coupon->discount_price) + $coupon->service_price) }}円</span>
+                            @endif
+                            ({{ $coupon->discount_rate }}%OFF)
+                        @else
+                            ¥{{ number_format($coupon->price + $coupon->original_service_price) }}
+                        @endif
+                    </p>
+                    <p>予約日時：{{ $coupon->format_cource_start }}</p>
+                    <p>{{ $coupon->coupon_name }}</p>
+                </div>
+            </div>
+            <?php /*元ソース
+            <div class="info-panel">
+                <div class="tab">商品内容</div>
+                <div class="info">
                     <p><strong>ジャンルー店舗名</strong></p>
                     <p>〇〇駅 北口徒歩何分</p>
                     <p>¥3,000（40%off）</p>
@@ -273,6 +308,7 @@
                     <p>コース名</p>
                 </div>
             </div>
+            */ ?>
         </div>
 
 

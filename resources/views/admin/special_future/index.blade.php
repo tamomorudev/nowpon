@@ -41,18 +41,18 @@
                                     @endif
                                 </td>
                                 <td>
-                                {!! nl2br(e(Str::limit($special_future->detail, 50))) !!}
+                                {!! Str::limit($special_future->detail, 50) !!}
                                 </td>
                                 <td>{{$special_future->start_date}}</td>
                                 <td>{{$special_future->end_date}}</td>
-                                <td><a class="form-control btn btn-success btn-block" href="special_future/edit?id={{$special_future->id}}">編集</a></td>
+                                <td><a class="btn btn-success btn-sm w-100 text-nowrap" href="special_future/edit?id={{$special_future->id}}">編集</a></td>
                                 <td>
                                     <form method="POST" action="{{ route('admin.special_future.delete') }}">
                                         @csrf
                                         <div>
                                             <input type="hidden" id="p_type" name="p_type" value="edit">
                                             <input type="hidden" id="id" name="id" value="{{$special_future->id}}">
-                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
+                                            <input type="submit" class="btn btn-danger btn-sm w-100 text-nowrap" id="" value='削除'>
                                         </div>
                                     </form>
                                 </td>

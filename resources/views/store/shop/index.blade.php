@@ -47,7 +47,7 @@
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
                                     @endif
                                 </td>
-                                <td><a class="form-control btn btn-success btn-block" href="shop/edit?si={{$store->id}}">編集</a></td>
+                                <td><a class="btn btn-success btn-sm w-100 text-nowrap" href="shop/edit?si={{$store->id}}">編集</a></td>
                             </tr>
                             @endforeach
                         </tbody>
