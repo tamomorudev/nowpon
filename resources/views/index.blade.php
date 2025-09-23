@@ -505,6 +505,44 @@
     <div class="carousel-wrapper">
         <div class="swiper-container">
             <div class="swiper-wrapper">
+                @if (count($new_coupons))
+                    @foreach ($new_coupons as $i => $new_coupon)
+                        <div class="swiper-slide">
+                            <a href="/site/coupondetail?cid={{ urlencode($new_coupon->coupon_code) }}" class="card-link">
+                                <div class="card">
+                                    @if($new_coupon->img_url)
+                                        <img src="{{ asset('/assets/images/'. $new_coupon->img_url) }}" alt="クーポン画像">
+                                    @else
+                                        <img src="https://picsum.photos/320/200?random={{ $i }}" alt="クーポン画像" />
+                                    @endif
+                                    <div class="pr-badge">PR</div>
+                                    <div class="discount-image">
+                                        <img src="/images/40off.png" alt="40% OFF" style="width: 100px" />
+                                    </div>
+                                    <div style="text-align: center; margin-top: 10px">
+                                        <p>
+                                            @if ($new_coupon->discount_rate > 0)
+                                                <span class="price-before">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                                                @if ($new_coupon->discount_type == 1)
+                                                    <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->price * (1 - ($new_coupon->discount_price / 100))) + $new_coupon->service_price) }}円</span>
+                                                @else
+                                                    <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->price - $new_coupon->discount_price) + $new_coupon->service_price) }}円</span>
+                                                @endif
+                                            @else
+                                                <span style="color: #ef4444; font-weight: bold">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                                            @endif
+                                        </p>
+                                        <p>{{ config('commons.genre')[$new_coupon->genre] }}ー{{ $new_coupon->store_name }}</p>
+                                        <p style="font-size: 12px; color: #6b7280">{{ $new_coupon->station }}駅 {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    <p>現在、クーポンはありません</p>
+                @endif
+                <?php /*元ソース
                 @foreach (range(1, 6) as $i)
                     <div class="swiper-slide">
                         <a href="/site/coupondetail" class="card-link">
@@ -526,6 +564,7 @@
                         </a>
                     </div>
                 @endforeach
+                */ ?>
             </div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
@@ -541,6 +580,32 @@
 
     <!-- クーポンリスト -->
     <div class="coupon-list">
+        @if (count($new_coupons))
+            @foreach ($new_coupons as $new_coupon)
+                <a href="/site/coupondetail?cid={{ urlencode($new_coupon->coupon_code) }}" class="coupon-link coupon-item">
+                    <div class="coupon-title">
+                        <span class="new-badge">NEW!</span>
+                        <span class="fading-text">{{ $new_coupon->remaining_minute }}</span>｜{{ $new_coupon->coupon_name }}｜{{ $new_coupon->store_name }}｜{{ $new_coupon->station }} {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分
+                    </div>
+                    <div class="coupon-price">
+                        @if ($new_coupon->discount_rate > 0)
+                            <span class="discount-rate">{{ $new_coupon->discount_rate }}%OFF</span>
+                            <span class="price-before">通常{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                            @if ($new_coupon->discount_type == 1)
+                                <span class="price-after">→ {{ number_format(round($new_coupon->price * (1 - ($new_coupon->discount_price / 100))) + $new_coupon->service_price) }}円</span>
+                            @else
+                                <span class="price-after">→ {{ number_format(round($new_coupon->price - $new_coupon->discount_price) + $new_coupon->service_price) }}円</span>
+                            @endif
+                        @else
+                            <span class="price-after">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                        @endif
+                    </div>
+                </a>
+            @endforeach
+        @else
+            <p>現在、新着クーポンはありません</p>
+        @endif
+        <?php /* 元ソース
         <a href="/site/coupondetail" class="coupon-link coupon-item">
             <div class="coupon-title">
                 <span class="new-badge">NEW!</span>
@@ -573,6 +638,7 @@
                 <span class="price-after">→ 5,460円</span>
             </div>
         </a>
+        */ ?>
     </div>
 
     @php
@@ -649,13 +715,28 @@
         <div class="feature-grid">
             @if($special_futures)
                 @foreach($special_futures as $special_future)
+                    <?php /*
                     <div class="feature-card">
                         @if($special_future->image)
                             <img width="50" height="50" src="{{ asset('/assets/images/'. $special_future->image) }}" >
                         @else
                             <img src="https://picsum.photos/seed/winter/200/200" alt="Feature 1"> {{--未設定用画像--}}
                         @endif
-                        <p>{{$special_future->name}}<br>{!! nl2br(e(Str::limit($special_future->detail, 50))) !!}</p>
+                        <p>{{$special_future->name}}<br>{!! Str::limit($special_future->detail, 50) !!}</p>
+                        {{--{!! nl2br(e(Str::limit(strip_tags($special_future->detail, 50)))) !!}--}}
+                    </div>
+                    */ ?>
+                    <div class="feature-card">
+                        @if($special_future->image)
+                            <img src="{{ asset('/assets/images/' . $special_future->image) }}" alt="画像" class="feature-image">
+                        @else
+                            <img src="https://picsum.photos/seed/winter/200/200" alt="未設定画像" class="feature-image">
+                        @endif
+
+                        <div class="feature-text ms-3">
+                            <p class="mb-1">{{ $special_future->name }}</p>
+                            <p class="mb-0">{!! Str::limit($special_future->detail, 50) !!}</p>
+                        </div>
                     </div>
                 @endforeach
             @else
