@@ -26,15 +26,18 @@
                                 <th>企業ID</th>
                                 <th>クーポン名</th>
                                 <th>クーポンコード</th>
-                                <th>金額</th>
+                                <th>定価</th>
                                 <th>割引金額</th>
-                                <th>サービス料</th>
-                                <th>掲載金額</th>
+                                <th>サービス料(手数料)</th>
+                                <th>割引後の掲載金額</th>
+                                <th><b>店舗支払金額</b></th>
                                 <th>コース時間</th>
                                 <th>コース開始時間</th>
                                 <th>発行開始時間</th>
                                 <th>発行終了時間</th>
                                 <th>画像</th>
+                                <th>ステータス</th>
+                                <th>編集</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,10 +52,12 @@
                                     <td>{{$coupon->discount_price}}%</td>
                                     <td>{{$coupon->service_price}}円</td>
                                     <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price}}円</td>
+                                    <td style="color: red; font-weight: bold;">{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) }}円</td>
                                 @else
                                     <td>{{$coupon->discount_price}}円</td>
                                     <td>{{$coupon->service_price}}円</td>
                                     <td>{{ round($coupon->price - $coupon->discount_price) + $coupon->service_price}}円</td>
+                                    <td style="color: red; font-weight: bold;">{{ round($coupon->price - $coupon->discount_price) }}円</td>
                                 @endif
                                 <td>{{$coupon->cource_time}}分</td>
                                 <td>{{$coupon->cource_start}}</td>
@@ -64,8 +69,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($coupon->expire_start_date >= date('Y-m-d H:i:s'))
-                                        <a class="form-control btn btn-success btn-block" href="coupon/edit?ci={{$coupon->id}}">編集</a>
+                                    {{ couponStatus($coupon) }}
+                                </td>
+                                <td>
+                                    @if ($coupon->expire_start_date > date('Y-m-d H:i:s'))
+                                        <a class="btn btn-success btn-sm w-100 text-nowrap" href="coupon/edit?ci={{$coupon->id}}">編集</a>
                                     @endif
                                 </td>
                             </tr>

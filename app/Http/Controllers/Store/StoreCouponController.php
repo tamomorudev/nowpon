@@ -36,7 +36,7 @@ class StoreCouponController extends Controller
     public function index()
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->get(); //クーポン情報
+        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->get(); //クーポン情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         return view('store.coupon.index', compact('user', 'stores', 'coupons'));
     }
@@ -108,8 +108,10 @@ class StoreCouponController extends Controller
                     $totals = round($request['price'] - $request['discount_price']);
                 }
                 $service_price = round($totals * 0.15);
+                $original_service_price = round($request['price'] * 0.15);
             } else {
-                $service_price = 0;
+                $service_price = round($request['price'] * 0.15);
+                $original_service_price = round($request['price'] * 0.15);
             }
 
             //クーポン登録
@@ -123,6 +125,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['discount_price'] = $request['discount_price'];
                 $create_coupon_array['discount_type'] = $request['discount_type'];
                 $create_coupon_array['service_price'] = $service_price;
+                $create_coupon_array['original_service_price'] = $original_service_price;
                 $create_coupon_array['cource_time'] = $request['cource_time'];
                 $create_coupon_array['cource_start'] = $cource_start;
                 $create_coupon_array['detail'] = $request['detail'];
@@ -235,8 +238,10 @@ class StoreCouponController extends Controller
                     $totals = round($request['price'] - $request['discount_price']);
                 }
                 $service_price = round($totals * 0.15);
+                $original_service_price = round($request['price'] * 0.15);
             } else {
-                $service_price = 0;
+                $service_price = round($request['price'] * 0.15);
+                $original_service_price = round($request['price'] * 0.15);
             }
 
             //クーポン編集
@@ -250,6 +255,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['discount_price'] = $request['discount_price'];
                 $create_coupon_array['discount_type'] = $request['discount_type'];
                 $create_coupon_array['service_price'] = $service_price;
+                $create_coupon_array['original_service_price'] = $original_service_price;
                 $create_coupon_array['cource_time'] = $request['cource_time'];
                 $create_coupon_array['cource_start'] = $cource_start;
                 $create_coupon_array['detail'] = $request['detail'];

@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン金額<span class="text-danger">*</span></label>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">定価<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
                                value="{{ old('price', 0) }}" min="0" step="1" placeholder="価格を入力してください">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン割引額<span class="text-danger">*</span></label>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">割引額<span class="text-danger">*</span></label>
                     <div class="row"style="margin-left:0px">
                         <div class="col-sm-3 mb-3 mb-sm-0">
                             <input type="number" class="form-control @error('discount_price') is-invalid @enderror" name="discount_price" id="discount_price"
@@ -77,7 +77,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">割引後のクーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label><br>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">店舗支払金額：<span style="color:red"><span id='coupon_store'></span>円</span></label>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース時間(分)<span class="text-danger">*</span></label>
@@ -186,13 +187,16 @@
                 let current_discount_price = parseFloat($("#discount_price").val()) || 0;
                 let current_discount_type = $("#discount_type").val();
                 let commit = current_price; // 初期値
+                let commit_store = current_price; // 初期値(店舗支払)
 
                 // 割引額の計算
                 if (current_discount_price && current_discount_type) {
                     if (current_discount_type == '1') {  // %割引
                         commit = Math.round(current_price * (1 - (current_discount_price / 100)));
+                        commit_store = Math.round(current_price * (1 - (current_discount_price / 100)));
                     } else {  // 円引き
                         commit = Math.round(current_price - current_discount_price);
+                        commit_store = Math.round(current_price - current_discount_price);
                     }
                 }
                 services = Math.round(commit * 0.15);
@@ -200,6 +204,7 @@
 
                 // 値のリセットと表示
                 $("#coupon_commit").text(commit > 0 ? commit : '0');
+                $("#coupon_store").text(commit_store > 0 ? commit_store : '0');
             }
 
             // ページ読み込み時の初期計算
