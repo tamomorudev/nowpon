@@ -17,6 +17,7 @@ use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\SpecialFutures;
+use App\Models\Information;
 use Carbon\Carbon;
 
 class TopController extends Controller
@@ -64,6 +65,7 @@ class TopController extends Controller
             ->orderBy('created_at', 'DESC')
             ->limit(6)
             ->get();
+
         foreach ($new_coupons as $coupons) {
             //残り分数
             $end_date = Carbon::parse($coupons->expire_end_date, 'Asia/Tokyo');
@@ -99,7 +101,16 @@ class TopController extends Controller
 
         //特集
         $special_futures = SpecialFutures::select()->where('start_date', '<=', $date)->where('end_date', '>=', $date)->get();
-        
-        return view('index', compact('user', 'new_coupons', 'special_futures'));
+
+        // お知らせ…最新3件
+        $inforamtion = Information::query()
+            ->where('delete_flg', 0)            // 削除されていない
+            ->where('start_date', '<=', $date)  // 公開開始日時が過去
+            ->where('end_date', '>=', $date)    // 公開終了日時が未来
+            ->orderBy('start_date', 'DESC')     // 新しい順
+            ->limit(3)
+            ->get();
+
+        return view('index', compact('user', 'new_coupons', 'special_futures', 'inforamtion'));
     }
 }

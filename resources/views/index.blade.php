@@ -5,6 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
      <style>
+
+         /* ── お知らせバー ───────────────────────── */
+         .information-bar{
+             width:100%;
+             max-width:100%;
+             min-width:0;                 /* Flex 子要素の伸縮で必須になることあり */
+             background:#fff8f0;
+             border-radius:8px;
+             padding-block:16px;
+             /* 画面幅に応じて左右パディングを自動調整（12px〜24px） */
+             padding-inline:clamp(12px, 4vw, 24px);
+             box-sizing:border-box;
+             margin:8px 0 16px;           /* ← 左右の margin を撤廃（詰まりの原因） */
+             color:#6b4e3d;
+         }
+
+         /* ヘッダー行 */
+         .information-bar__head{
+             display:flex;
+             align-items:center;
+             justify-content:space-between;
+             margin-bottom:12px;
+         }
+
+         /* タイトル（カテゴリ検索と同サイズ） */
+         /* タイトル（カテゴリ検索と同じ色・サイズにする、確実に適用） */
+         .information-bar .information-bar__head h2 {
+             display: flex;
+             align-items: center;
+             font-size: 20px;
+             margin: 0;
+             font-weight: 700;
+             color: #6b4e3d !important; /* ← 念のため確実に適用 */
+         }
+         .information-bar .information-bar__head h2 span {
+             color: inherit;
+             margin-right: 8px;
+         }
+
+         /* リスト（●とテキストを中央揃えに） */
+         .information-list{
+             margin:0;
+             padding:0;
+             list-style:none;
+             display:flex;
+             flex-direction:column;
+             gap:8px;
+         }
+         .information-item{
+             display:flex;
+             align-items:center;
+             gap:8px;
+         }
+         .information-item::before{
+             content:'';
+             width:6px; height:6px;
+             background:#b08968;
+             border-radius:50%;
+             flex-shrink:0;
+         }
+         .information-item a{
+             color:#6b4e3d;
+             text-decoration:none;
+             font-size:14px;
+             max-width:100%;
+             overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+         }
+         .information-item a:hover{ text-decoration:underline; }
+
+         /* information 内のリンク色を統一（青くしない） */
+         .information-bar a,
+         .information-bar a:link,
+         .information-bar a:visited {
+             color: #6b4e3d;           /* サイトの本文色に合わせる */
+             text-decoration: none;
+         }
+
+         .information-bar a:hover {
+             color: #6b4e3d;           /* ここで色を変えない */
+             text-decoration: underline; /* hover 時は下線だけでリンク感を出す */
+         }
+
+         .information-bar a:active,
+         .information-bar a:focus {
+             color: #6b4e3d;
+             outline: 2px solid #c29663;  /* アクセシビリティ用フォーカス */
+             outline-offset: 2px;
+         }
+
+         /* SP時も左右 margin は 0 のまま。padding だけ少しだけ小さく */
+         @media (max-width:767px){
+             .information-bar{
+                 padding-block:12px;
+                 padding-inline:16px;   /* ← 左右は margin ではなく padding で調整 */
+                 margin:8px 0 12px;     /* ← 左右に余白を作らない */
+             }
+         }
+
+         /* ── お知らせバー ここまで───────────────────────── */
+
         /* カルーセル ここから */
         .carousel-wrapper {
             padding: 20px 0;
@@ -502,6 +602,31 @@
 <body>
 <div class="container">
     @include('layouts.header')
+
+    {{-- ▼ inforamtion（おしらせ）バー：最大3件 ▼ --}}
+    @if(isset($inforamtion) && $inforamtion->count())
+        <nav class="information-bar" aria-label="inforamtion">
+            <div class="information-bar__head">
+                <h2>
+                    <span>📢</span>
+                    お知らせ
+                </h2>
+            </div>
+
+            <ul class="information-list" role="list">
+                @foreach($inforamtion as $info)
+                    <li class="information-item">
+                        {{-- タイトルのみのシンプル表示。必要なら日付を先頭に足せます --}}
+                        <a href="{{ url('/inforamtion/'.$info->id) }}" title="{{ $info->name }}">
+                            {{ $info->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </nav>
+    @endif
+    {{-- ▲ inforamtion バー ▲ --}}
+
     <div class="carousel-wrapper">
         <div class="swiper-container">
             <div class="swiper-wrapper">
