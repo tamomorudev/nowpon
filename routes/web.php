@@ -105,6 +105,12 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/shop', 'App\Http\Controllers\Admin\AdminShopController@index')->name('admin.shop.index');
         Route::get('/account', 'App\Http\Controllers\Admin\AdminShopController@account')->name('admin.account.index');
 
+        // お知らせ
+        Route::get('/information', 'App\Http\Controllers\Admin\AdminInformationController@index')->name('admin.information.index');
+        Route::match(['get', 'post'], '/information/create', 'App\Http\Controllers\Admin\AdminInformationController@create')->name('admin.information.create');
+        Route::match(['get', 'post'], '/information/edit', 'App\Http\Controllers\Admin\AdminInformationController@edit')->name('admin.information.edit');
+        Route::post('/information/delete', 'App\Http\Controllers\Admin\AdminInformationController@delete')->name('admin.information.delete');
+
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Admin\AdminCouponController@index')->name('admin.coupon');
         // 特集

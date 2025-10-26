@@ -73,6 +73,24 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                お知らせ管理
+            </div>
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/information">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>お知らせ一覧</span></a>
+                <a class="nav-link" href="/admin/information/create">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>お知らせ作成</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
             <!-- Heading -->
             <div class="sidebar-heading">
                 クーポン管理
@@ -484,7 +502,7 @@
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->
-    <?php /*<script src="vendor/chart.js/Chart.min.js"></script> 
+    <?php /*<script src="vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
     <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
