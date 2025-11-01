@@ -57,28 +57,20 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">割引額<span class="text-danger">*</span></label>
-                    <div class="row"style="margin-left:0px">
-                        <div class="col-sm-3 mb-3 mb-sm-0">
-                            <input type="number" class="form-control @error('discount_price') is-invalid @enderror" name="discount_price" id="discount_price"
-                                   value="{{ old('discount_price', $coupon_data->discount_price) }}" min="0" step="1" placeholder="割引額を入力してください">
-                            @error('discount_price')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="col-sm-1 mb-3 mb-sm-0">
-                            <select name="discount_type" id="discount_type" class="form-control">
-                                <option value="0" {{ old('discount_type', $coupon_data->discount_type) == '0' ? 'selected' : '' }}>円</option>
-                                <option value="1" {{ old('discount_type', $coupon_data->discount_type) == '1' ? 'selected' : '' }}>％</option>
-                            </select>
-                        </div>
+                    <label for="name" class="col-md-4 col-form-label text-md-end">店舗支払金額<span class="text-danger">*</span></label>
+                    <div class="col-sm-3 mb-3 mb-sm-0">
+                        <input type="number" class="form-control @error('store_pay_price') is-invalid @enderror" name="store_pay_price" id="store_pay_price"
+                               value="{{ old('store_pay_price', (int)$coupon_data->store_pay_price) }}" min="0" step="1" placeholder="店舗支払金額を入力してください">
+                        @error('store_pay_price')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">割引後のクーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label><br>
-                    <label for="name" class="col-md-4 col-form-label text-md-end">店舗支払金額：<span style="color:red"><span id='coupon_store'></span>円</span></label>
+                    <label for="name" class="col-form-label text-md-end" style="padding-left: .75rem;">クーポン掲載額：<span style="color:red"><span id='coupon_commit'></span>円</span></label><br>
+                    <label for="name" class="col-form-label text-md-end" style="padding-left: .75rem;"><span id='coupon_breakdown'></span></label>
                 </div>
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース時間(分)<span class="text-danger">*</span></label>
@@ -141,10 +133,36 @@
                     @if($coupon_data->img_url)
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url) }}" >
+                        @if($coupon_data->img_url_2)
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url_2) }}" >
+                        @endif
+                        @if($coupon_data->img_url_3)
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url_3) }}" >
+                        @endif
+                        @if($coupon_data->img_url_4)
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url_4) }}" >
+                        @endif
+                        @if($coupon_data->img_url_5)
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon_data->img_url_5) }}" >
+                        @endif
                     </div>
                     @endif
-                    <div class="col-sm-10 mb-3 mb-sm-0">
+                    <br>
+                    <div class="col-sm-10 mb-3 mb-sm-3">画像を更新する際は、すべての画像を再度アップロードしてください。</div>
+                    <div class="col-sm-10 mb-3 mb-sm-3">
                         <input type="file" class="form-control" name="images">
+                    </div>
+                    <div class="col-sm-10 mb-3 mb-sm-3">
+                        <input type="file" class="form-control" name="images_2">
+                    </div>
+                    <div class="col-sm-10 mb-3 mb-sm-3">
+                        <input type="file" class="form-control" name="images_3">
+                    </div>
+                    <div class="col-sm-10 mb-3 mb-sm-3">
+                        <input type="file" class="form-control" name="images_4">
+                    </div>
+                    <div class="col-sm-10 mb-3 mb-sm-0">
+                        <input type="file" class="form-control" name="images_5">
                     </div>
                 </div>
                 <div class="form-group row" style="margin-left:10px">
@@ -164,16 +182,14 @@
         $(function() {
             // old() の値を保持し、存在しない場合のみ初期化
             let priceInitial = "{{ old('price', $coupon_data->price) }}";
-            let discountPriceInitial = "{{ old('discount_price', $coupon_data->discount_price) }}";
-            let discountTypeInitial = "{{ old('discount_type', $coupon_data->discount_type) }}";
+            let StorePayPriceInitial = "{{ old('store_pay_price', $coupon_data->store_pay_price) }}";
 
             $("#price").val(priceInitial);
-            $("#discount_price").val(discountPriceInitial);
-            $("#discount_type").val(discountTypeInitial);
+            $("#store_pay_price").val(StorePayPriceInitial);
             $("#coupon_commit").text('0');  // クーポン掲載額は計算結果で初期化
 
             // 価格、割引額、割引タイプの変更時に同じ処理を適用
-            $('#price, #discount_price, #discount_type').on('change keyup', updateCouponCommit);
+            $('#price, #discount_price, #discount_type, #store_pay_price').on('change keyup', updateCouponCommit);
 
             // クーポン金額と割引額の入力制限（リアルタイムで制限）
             $("#price, #discount_price").on('input', function() {
@@ -191,27 +207,22 @@
             // クーポン掲載額の計算関数を定義
             function updateCouponCommit() {
                 let current_price = parseFloat($("#price").val()) || 0;
-                let current_discount_price = parseFloat($("#discount_price").val()) || 0;
-                let current_discount_type = $("#discount_type").val();
+                let current_store_pay_price = parseFloat($("#store_pay_price").val()) || 0;
                 let commit = current_price; // 初期値
-                let commit_store = current_price; // 初期値(店舗支払)
+                let commit_store_pay_price = current_store_pay_price; // 初期値(店舗支払)
+                let breakdown = '';
 
-                // 割引額の計算
-                if (current_discount_price && current_discount_type) {
-                    if (current_discount_type == '1') {  // %割引
-                        commit = Math.round(current_price * (1 - (current_discount_price / 100)));
-                        commit_store = Math.round(current_price * (1 - (current_discount_price / 100)));
-                    } else {  // 円引き
-                        commit = Math.round(current_price - current_discount_price);
-                        commit_store = Math.round(current_price - current_discount_price);
-                    }
+                services = Math.round(commit_store_pay_price * 0.15);
+                breakdown = '(店舗支払金額:'+commit_store_pay_price+'円 + サービス手数料(15%):'+services+')円';
+                commit = parseInt(commit_store_pay_price) + parseInt(services);
+
+                if (current_price <= 0 || commit_store_pay_price <= 0 || commit <= 0) {
+                    breakdown = '';
                 }
-                services = Math.round(commit * 0.15);
-                commit = commit + services;
 
                 // 値のリセットと表示
                 $("#coupon_commit").text(commit > 0 ? commit : '0');
-                $("#coupon_store").text(commit_store > 0 ? commit_store : '0');
+                $("#coupon_breakdown").text(breakdown);
             }
 
             // ページ読み込み時の初期計算
