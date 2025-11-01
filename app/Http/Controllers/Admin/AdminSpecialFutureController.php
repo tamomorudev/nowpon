@@ -51,6 +51,7 @@ class AdminSpecialFutureController extends Controller
         if (isset($request['name'])) {
             $validated_data = Validator::make($request, [
                 'name' => 'required|max:190',
+                'outline' => 'required|max:190',
                 'detail' => 'required',
                 'start_date' => 'required',
                 'end_date' => 'required'
@@ -65,6 +66,13 @@ class AdminSpecialFutureController extends Controller
             //date covert
             $start_date = str_replace('T', ' ', $request['start_date']).':00';
             $end_date = str_replace('T', ' ', $request['end_date']).':59';
+            if (isset($request['coupon_date_start']) && isset($request['coupon_date_end'])) {
+                $coupon_date_start = str_replace('T', ' ', $request['coupon_date_start']).':00';
+                $coupon_date_end = str_replace('T', ' ', $request['coupon_date_end']).':59';
+            } else {
+                $coupon_date_start = null;
+                $coupon_date_end = null;
+            }
 
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
@@ -90,10 +98,29 @@ class AdminSpecialFutureController extends Controller
             try {
                 $create_special_future_array = array();
                 $create_special_future_array['name'] = $request['name'];
+                $create_special_future_array['outline'] = $request['outline'];
                 $create_special_future_array['detail'] = $request['detail'];
                 $create_special_future_array['start_date'] = $start_date;
                 $create_special_future_array['end_date'] = $end_date;
                 $create_special_future_array['image'] = $img_path;
+                $create_special_future_array['coupon_date_start'] = $coupon_date_start;
+                $create_special_future_array['coupon_date_end'] = $coupon_date_end;
+                if ($request['sex'] != null) {
+                    $create_special_future_array['sex'] = $request['sex'];
+                } else {
+                    $create_special_future_array['sex'] = 99; //all
+                }
+                if (isset($request['discount_rate']) && $request['discount_rate'] > 0) {
+                    $create_special_future_array['discount_rate'] = $request['discount_rate'];
+                }
+                if ($request['genre'] != null) {
+                    $create_special_future_array['genre'] = json_encode([$request['genre']]);
+                } else {
+                    $create_special_future_array['genre'] = json_encode([99]); //all
+                }
+                if (isset($request['day_of_week']) && $request['day_of_week']) {
+                    $create_special_future_array['coupon_date_end'] = json_encode($request['day_of_week']);
+                }
                 $create_special_future_array['created_by'] = $user->id;
                 $create_special_future_array['updated_by'] = $user->id;
 
@@ -149,6 +176,13 @@ class AdminSpecialFutureController extends Controller
             //date covert
             $start_date = str_replace('T', ' ', $request['start_date']).':00';
             $end_date = str_replace('T', ' ', $request['end_date']).':59';
+            if (isset($request['coupon_date_start']) && isset($request['coupon_date_end'])) {
+                $coupon_date_start = str_replace('T', ' ', $request['coupon_date_start']).':00';
+                $coupon_date_end = str_replace('T', ' ', $request['coupon_date_end']).':59';
+            } else {
+                $coupon_date_start = null;
+                $coupon_date_end = null;
+            }
 
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
@@ -174,10 +208,29 @@ class AdminSpecialFutureController extends Controller
             try {
                 $create_special_future_array = array();
                 $create_special_future_array['name'] = $request['name'];
+                $create_special_future_array['outline'] = $request['outline'];
                 $create_special_future_array['detail'] = $request['detail'];
                 $create_special_future_array['start_date'] = $start_date;
                 $create_special_future_array['end_date'] = $end_date;
+                $create_special_future_array['coupon_date_start'] = $coupon_date_start;
+                $create_special_future_array['coupon_date_end'] = $coupon_date_end;
                 $create_special_future_array['image'] = $img_path;
+                if ($request['sex'] != null) {
+                    $create_special_future_array['sex'] = $request['sex'];
+                } else {
+                    $create_special_future_array['sex'] = 99; //all
+                }
+                if (isset($request['discount_rate']) && $request['discount_rate'] > 0) {
+                    $create_special_future_array['discount_rate'] = $request['discount_rate'];
+                }
+                if ($request['genre'] != null) {
+                    $create_special_future_array['genre'] = json_encode([$request['genre']]);
+                } else {
+                    $create_special_future_array['genre'] = json_encode([99]); //all
+                }
+                if (isset($request['day_of_week']) && $request['day_of_week']) {
+                    $create_special_future_array['coupon_date_end'] = json_encode($request['day_of_week']);
+                }
                 $create_special_future_array['updated_by'] = $user->id;
 
                 SpecialFutures::where('id', $special_future_data->id)->update($create_special_future_array);

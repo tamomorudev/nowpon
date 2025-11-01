@@ -648,11 +648,7 @@
                                         <p>
                                             @if ($new_coupon->discount_rate > 0)
                                                 <span class="price-before">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
-                                                @if ($new_coupon->discount_type == 1)
-                                                    <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->price * (1 - ($new_coupon->discount_price / 100))) + $new_coupon->service_price) }}円</span>
-                                                @else
-                                                    <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->price - $new_coupon->discount_price) + $new_coupon->service_price) }}円</span>
-                                                @endif
+                                                <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
                                             @else
                                                 <span style="color: #ef4444; font-weight: bold">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
                                             @endif
@@ -716,11 +712,7 @@
                         @if ($new_coupon->discount_rate > 0)
                             <span class="discount-rate">{{ $new_coupon->discount_rate }}%OFF</span>
                             <span class="price-before">通常{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
-                            @if ($new_coupon->discount_type == 1)
-                                <span class="price-after">→ {{ number_format(round($new_coupon->price * (1 - ($new_coupon->discount_price / 100))) + $new_coupon->service_price) }}円</span>
-                            @else
-                                <span class="price-after">→ {{ number_format(round($new_coupon->price - $new_coupon->discount_price) + $new_coupon->service_price) }}円</span>
-                            @endif
+                            <span class="price-after">→ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
                         @else
                             <span class="price-after">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
                         @endif
@@ -860,7 +852,7 @@
 
                         <div class="feature-text ms-3">
                             <p class="mb-1">{{ $special_future->name }}</p>
-                            <p class="mb-0">{!! Str::limit($special_future->detail, 50) !!}</p>
+                            <p class="mb-0">{{ $special_future->outline }}</p>
                         </div>
                     </div>
                 @endforeach

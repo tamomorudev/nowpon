@@ -6,6 +6,11 @@
 
 
 @section('content')
+<style>
+.highlight-payment {
+    background-color: #ffe4e1;
+}
+</style>
 
     <!-- Begin Page Content -->
     <div class="container-fluid">
@@ -28,10 +33,9 @@
                                 <th>クーポン名</th>
                                 <th>クーポンコード</th>
                                 <th>定価</th>
-                                <th>割引金額</th>
-                                <th>サービス料(手数料)</th>
-                                <th>割引後の掲載金額</th>
-                                <th><b>店舗支払金額</b></th>
+                                <th class="highlight-payment"><b>店舗支払金額</b></th>
+                                <th class="highlight-payment">サービス料(手数料)</th>
+                                <th>掲載金額</th>
                                 <th>コース時間(分)</th>
                                 <th>コース開始時間</th>
                                 <th>発行開始時間</th>
@@ -49,17 +53,9 @@
                                 <td>{{$coupon->coupon_name}}</td>
                                 <td>{{$coupon->coupon_code}}</td>
                                 <td>{{$coupon->price}}円</td>
-                                @if ($coupon->discount_type == 1)
-                                    <td>{{$coupon->discount_price}}%</td>
-                                    <td>{{$coupon->service_price}}円</td>
-                                    <td>{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price}}円</td>
-                                    <td style="color: red; font-weight: bold;">{{ round($coupon->price * (1 - ($coupon->discount_price / 100))) }}円</td>
-                                @else
-                                    <td>{{$coupon->discount_price}}円</td>
-                                    <td>{{$coupon->service_price}}円</td>
-                                    <td>{{ round($coupon->price - $coupon->discount_price) + $coupon->service_price}}円</td>
-                                    <td style="color: red; font-weight: bold;">{{ round($coupon->price - $coupon->discount_price) }}円</td>
-                                @endif
+                                <td class="highlight-payment">{{ round($coupon->store_pay_price) }}円</td>
+                                <td class="highlight-payment">{{$coupon->service_price}}円</td>
+                                <td>{{ round($coupon->store_pay_price) + $coupon->service_price}}円</td>
                                 <td>{{$coupon->cource_time}}分</td>
                                 <td>{{$coupon->cource_start}}</td>
                                 <td>{{$coupon->expire_start_date}}</td>

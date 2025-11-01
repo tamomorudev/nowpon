@@ -240,6 +240,14 @@
                 <!-- メインスライダー -->
                 <div class="swiper swiper-main">
                     <div class="swiper-wrapper">
+                        @foreach ($coupon->coupon_images as $image_key => $coupon_image)
+                            @if ($coupon_image)
+                            <div class="swiper-slide">
+                                <img src="{{ asset('/assets/images/'. $coupon_image) }}" alt="クーポン画像{{$image_key}}">
+                            </div>
+                            @endif
+                        @endforeach
+                        <?php /*
                         @foreach (range(1,5) as $i)
                             <div class="swiper-slide">
                                 @if($coupon->img_url && $i == 1)
@@ -249,6 +257,7 @@
                                 @endif
                             </div>
                         @endforeach
+                        */ ?>
                     </div>
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-button-next"></div>
@@ -257,6 +266,14 @@
                 <!-- サムネイルスライダー -->
                 <div class="swiper swiper-thumbs">
                     <div class="swiper-wrapper">
+                        @foreach ($coupon->coupon_images as $image_key => $coupon_image)
+                            @if ($coupon_image)
+                            <div class="swiper-slide">
+                                <img src="{{ asset('/assets/images/'. $coupon_image) }}" alt="クーポン画像{{$image_key}}">
+                            </div>
+                            @endif
+                        @endforeach
+                        <?php /*
                         @foreach (range(1,6) as $i)
                             <div class="swiper-slide">
                                 @if($coupon->img_url && $i == 1)
@@ -266,6 +283,7 @@
                                 @endif
                             </div>
                         @endforeach
+                        */ ?>
                     </div>
                 </div>
             </div>

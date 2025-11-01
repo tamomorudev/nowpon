@@ -87,16 +87,6 @@ class TopController extends Controller
                 $coupons->remaining_minute = '終了しました';
             }
 
-            //割引率
-            $discount_rate = 0;
-            if ($coupons->discount_price) {
-                if ($coupons->discount_type == 1) {
-                    $coupons->discount_rate = $coupons->discount_price;
-                } else {
-                    $discount_rate = ($coupons->discount_price / $coupons->price) * 100;
-                    $coupons->discount_rate = round($discount_rate); // 四捨五入
-                }
-            }
         }
 
         //特集

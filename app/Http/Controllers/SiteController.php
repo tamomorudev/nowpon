@@ -117,6 +117,15 @@ class SiteController extends Controller
         $cource_start_time = $coupon->cource_start;
         $coupon->format_cource_start = Carbon::parse($cource_start_time)->format('Y年n月j日 G時i分～');
 
+        //画像
+        $coupon_images[] = $coupon->img_url;
+        $coupon_images[] = $coupon->img_url_2;
+        $coupon_images[] = $coupon->img_url_3;
+        $coupon_images[] = $coupon->img_url_4;
+        $coupon_images[] = $coupon->img_url_5;
+
+        $coupon->coupon_images = $coupon_images;
+
         return view('site.coupondetail', compact('user', 'coupon'));
     }
 }
