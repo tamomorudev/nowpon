@@ -36,6 +36,83 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="outline" class="col-md-4 col-form-label text-md-end">概要(100文字以内)<span class="text-danger">*</span></label>
+                <div class="col-sm-10 mb-3 mb-sm-0">
+                    <input type="text" class="form-control @error('outline') is-invalid @enderror" name="outline" value="{{ old('outline', $special_future_data->outline) }}" placeholder="">
+                    @error('outline')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="outline" class="col-md-4 mb-sm-3 col-form-label text-md-end">[条件]</label>
+
+                <div class="col-sm-10 mb-3 form-radio-group">
+                    <label class="form-label d-block">性別</label>
+                    <label><input type="radio" name="sex" value="99" {{ old('sex', $special_future_data->sex) == 99 ? 'checked' : '' }}> なし</label>
+                    <label><input type="radio" name="sex" value="1" {{ old('sex', $special_future_data->sex) === 1 ? 'checked' : '' }}> 男性</label>
+                    <label><input type="radio" name="sex" value="0" {{ old('sex', $special_future_data->sex) === 0 ? 'checked' : '' }}> 女性</label>
+                    @error('sex') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="col-sm-10 mb-3">
+                    <label class="form-label d-block">期間</label>
+                    <div class="row">
+                        <div class="col-sm-3 mb-3">
+                            <input type="datetime-local" class="form-control @error('coupon_date_start') is-invalid @enderror"
+                                id="coupon_date_start" name="coupon_date_start" value="{{ old('coupon_date_start', $special_future_data->coupon_date_start) }}">
+                            @error('coupon_date_start')
+                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                            @enderror
+                        </div>
+                        <div class="col-sm-1 text-center">～</div>
+                        <div class="col-sm-3">
+                            <input type="datetime-local" class="form-control @error('coupon_date_end') is-invalid @enderror"
+                                id="coupon_date_end" name="coupon_date_end" value="{{ old('coupon_date_end', $special_future_data->coupon_date_end) }}">
+                            @error('coupon_date_end')
+                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 mb-3">
+                    <label class="form-label d-block">曜日</label>
+                    @foreach(config('commons.day_of_the_weeks') as $dkey => $day_of_the_week)
+                        <div class="form-check">
+                            <input type="checkbox" name="day_of_week[]" id="day_of_week_{{ $dkey }}" value="{{ $dkey }}" class="form-check-input"
+                                {{ is_array(old('day_of_week', $defaultweeks ?? [])) && in_array($dkey, old('day_of_week', $defaultweeks ?? [])) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="day_of_week_{{ $dkey }}">{{ $day_of_the_week }}</label>
+                        </div>
+                    @endforeach
+                    @error('day_of_week') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="col-sm-3 mb-3">
+                    <label for="discount_rate" class="form-label">割引率</label>
+                    <input type="text" class="form-control @error('discount_rate') is-invalid @enderror"
+                        name="discount_rate" id="discount_rate" value="{{ old('discount_rate', $special_future_data->discount_rate) }}" min="0" step="1">
+                    @error('discount_rate')
+                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+
+                <div class="col-sm-3 mb-3">
+                    <label for="genre" class="form-label">カテゴリ（ジャンル）</label>
+                    <select name="genre" id="genre" class="form-control">
+                        <option value="99" {{ old('genre', $special_future_data->genre ?? '') == "99" ? 'selected' : '' }}>すべて</option>
+                        @foreach(config('commons.genre') as $gkey => $genre)
+                            <option value="{{ $gkey }}"
+                                {{ old('genre', $special_future_data->genre ?? '') == $gkey ? 'selected' : '' }}>
+                                {{ $genre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="name" class="col-md-4 col-form-label text-md-end">内容<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
                     <textarea id="summernote" class="form-control" rows="10" cols="60" name="detail">{{ old('detail', $special_future_data->detail) }}</textarea>

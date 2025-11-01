@@ -41,7 +41,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                {!! Str::limit($special_future->detail, 50) !!}
+                                <?php /*{!! Str::limit($special_future->detail, 50) !!} {!! $special_future->detail !!}*/ ?>
+                                {{ Str::limit(strip_tags($special_future->detail), 50) }}
                                 </td>
                                 <td>{{$special_future->start_date}}</td>
                                 <td>{{$special_future->end_date}}</td>
