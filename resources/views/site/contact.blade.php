@@ -116,7 +116,6 @@
     <main class="contact-page">
 
         <div class="contact-page__title">
-            <span class="contact-page__title-icon">✉️</span>
             <h1 class="contact-page__title-text">お問い合わせ</h1>
         </div>
 
