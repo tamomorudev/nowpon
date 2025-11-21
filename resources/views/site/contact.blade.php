@@ -143,7 +143,7 @@
         </section>
 
         <div class="contact-page__back">
-            <a href="/site/top" class="contact-page__back-link">TOPページへ戻る</a>
+            <a href="/" class="contact-page__back-link">TOPページへ戻る</a>
         </div>
 
     </main>
