@@ -82,7 +82,7 @@ class SiteController extends Controller
                 abort(404);
             }
         }
-        
+
         //残り分数
         $end_date = Carbon::parse($coupon->expire_end_date, 'Asia/Tokyo');
         $now = Carbon::now('Asia/Tokyo');
@@ -127,5 +127,23 @@ class SiteController extends Controller
         $coupon->coupon_images = $coupon_images;
 
         return view('site.coupondetail', compact('user', 'coupon'));
+    }
+
+    public function terms(Request $request)
+    {
+        $category = 'hair';
+        return view('site.terms', compact('category'));
+    }
+
+    public function privacypolicy(Request $request)
+    {
+        $category = 'hair';
+        return view('site.privacypolicy', compact('category'));
+    }
+
+    public function contact(Request $request)
+    {
+        $category = 'hair';
+        return view('site.contact', compact('category'));
     }
 }

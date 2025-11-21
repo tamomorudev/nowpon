@@ -43,9 +43,9 @@
 <footer class="site-footer">
     <div class="footer-container">
         <div class="footer-links">
-            <a href="#">利用規約</a>
-            <a href="#">プライバシーポリシー</a>
-            <a href="#">お問い合わせ</a>
+            <a href="/site/terms">利用規約</a>
+            <a href="/site/privacypolicy">プライバシーポリシー</a>
+            <a href="/site/contact">お問い合わせ</a>
         </div>
         <p class="copyright">© 2025 ナウポン</p>
     </div>

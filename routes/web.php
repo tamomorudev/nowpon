@@ -31,7 +31,12 @@ Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->n
 Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
 Route::get('site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
-
+// 利用規約
+Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])->name('terms');
+// プライバシーポリシー
+Route::get('site/privacypolicy', [App\Http\Controllers\SiteController::class, 'privacypolicy'])->name('privacypolicy');
+// お問い合わせ
+Route::get('site/contact', [App\Http\Controllers\SiteController::class, 'contact'])->name('contact');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

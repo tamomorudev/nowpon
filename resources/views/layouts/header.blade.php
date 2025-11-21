@@ -118,6 +118,6 @@
         <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a>
         <a href="#">購入履歴</a>
         @endif
-        <a href="#">CONTACT</a>
+        <a href="/site/contact">CONTACT</a>
     </div>
 </div>
