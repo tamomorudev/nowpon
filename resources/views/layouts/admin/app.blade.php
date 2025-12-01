@@ -23,6 +23,14 @@
 
 @yield('add_head')
 
+<style>
+.custom-logout-btn {
+    background-color: #000000;
+    color: #fff;
+    border: none;
+}
+</style>
+
 </head>
 <body>
     <!-- Page Wrapper -->
@@ -194,12 +202,14 @@
 
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
+                            <?php /*
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
                                 <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
+                            */ ?>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
@@ -245,12 +255,14 @@
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
+                            <?php /*
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
                                 <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">7</span>
                             </a>
+                            */ ?>
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
@@ -334,6 +346,24 @@
                                         src="img/undraw_profile.svg">
                                 </a>
                                 */ ?>
+                                <li class="nav-item d-flex align-items-center">
+                                    <span class="nav-link d-flex align-items-center">
+                                        <i class="fas fa-user-circle fa-lg mr-2 text-gray-600"></i>
+                                        <span class="font-weight-bold text-gray-800">
+                                            {{ Auth::guard('admin_user')->user()->name }}
+                                        </span>
+                                    </span>
+                                    <a class="btn btn-sm custom-logout-btn ml-2 d-flex align-items-center"
+                                    href="{{ route('admin.logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-1"></i>
+                                        ログアウト
+                                    </a>
+                                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </li>
+                                <?php /*
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::guard('admin_user')->user()->name }}
@@ -352,6 +382,7 @@
                                             @csrf
                                         </form>
                                     </div>
+                                    */ ?>
                             @endguest
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

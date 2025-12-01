@@ -36,7 +36,7 @@ class StoreCouponController extends Controller
     public function index()
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->get(); //クーポン情報
+        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(10); //クーポン情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         return view('store.coupon.index', compact('user', 'stores', 'coupons'));
     }
@@ -64,9 +64,9 @@ class StoreCouponController extends Controller
                 'price.required' => 'クーポン定価を入力してください。',
                 'price.numeric' => 'クーポン定価は数値で入力してください。',
                 'price.min' => 'クーポン定価は1円以上にしてください。',
-                'store_pay_price.required' => '店舗支払金額は0円以上にしてください。',
+                'store_pay_price.required' => '店舗支払金額は1円以上にしてください。',
                 'store_pay_price.numeric' => '店舗支払金額は数値で入力してください。',
-                'store_pay_price.min' => '店舗支払金額は0円以上にしてください。',
+                'store_pay_price.min' => '店舗支払金額は1円以上にしてください。',
                 'cource_time.required' => 'コース時間を入力してください。',
                 'cource_start.required' => 'コース開始時間を入力してください。',
                 'detail.required' => '説明を入力してください。',

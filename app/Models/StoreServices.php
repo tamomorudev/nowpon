@@ -11,8 +11,8 @@ class StoreServices extends Authenticatable
 
     protected $table = 'store_services';
 
-    protected $fillable = [
-       
+    protected $guarded = [
+        'id'
     ];
 
     protected $hidden = [

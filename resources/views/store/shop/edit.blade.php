@@ -15,7 +15,17 @@
         </div>
 
         @if($errors->any())
-            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">入力値に誤りがあります。</div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>入力値に誤りがあります。</strong>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         @endif
 
         <form class="user" method="POST" action="{{ route('store.shop.edit') }}" enctype="multipart/form-data">
@@ -25,6 +35,11 @@
                 <div class="col-sm-10 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="store_name"
                            value="{{ old('store_name', $store_data->store_name) }}" placeholder="">
+                    @error('store_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -32,13 +47,23 @@
                 <div class="col-sm-6 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="email"
                            value="{{ old('email', $store_data->email) }}" placeholder="">
+                    @error('store_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
-                <label for="postal_code" class="col-md-4 col-form-label text-md-end">郵便番号<span class="text-danger">*</span></label>
+                <label for="postal_code" class="col-md-4 col-form-label text-md-end">郵便番号(ハイフンなし)<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="postal_code"
                            value="{{ old('postal_code', $store_data->postal_code) }}" placeholder="">
+                    @error('postal_code')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -51,6 +76,11 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('address1')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -58,6 +88,11 @@
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="address2"
                            value="{{ old('address2', $store_data->address2) }}" placeholder="">
+                    @error('address2')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -65,6 +100,11 @@
                 <div class="col-sm-10 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="address3"
                            value="{{ old('address3', $store_data->address3) }}" placeholder="">
+                    @error('address3')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -72,6 +112,11 @@
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="text" class="form-control" name="phone_number"
                            value="{{ old('phone_number', $store_data->phone_number) }}" placeholder="">
+                    @error('phone_number')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -91,6 +136,11 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('genre')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -100,12 +150,22 @@
                         <select name="station_line" id="station_line" class="form-control">
                             <option selected disabled>都道府県を選択してください</option>
                         </select>
+                        @error('station_line')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
 
                     <div class="col-sm-3 mb-3 mb-sm-0">駅
                         <select name="station" id="station" class="form-control">
                             <option selected disabled>路線を選択してください</option>
                         </select>
+                        @error('station')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -120,12 +180,22 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('transportation')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="time" class="col-md-4 col-form-label text-md-end">時間(分)<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="number" class="form-control" name="time" id="time" min="1" value="{{ old('time', $store_data->time ?? '') }}" placeholder="">
+                    @error('time')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -160,7 +230,7 @@
             <div class="form-group">
                 <label for="time_2" class="col-md-4 col-form-label text-md-end">時間(分) 2</label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="number" class="form-control" name="time_2" id="time_2" min="1" value="{{ old('time_2', $store_data->time_2 ?? '') }}" placeholder="">
+                    <input type="number" class="form-control" name="time_2" id="time_2" min="1" value="{{ old('time_2', $store_data->time_2 ?: '') }}" placeholder="">
                 </div>
             </div>
             <div class="form-group">
