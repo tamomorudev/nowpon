@@ -97,55 +97,86 @@
 
     <!-- クーポンリスト -->
     <div class="coupon-list">
-        <a href="/site/coupondetail" class="coupon-item">
-            <div class="coupon-content">
-                <img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />
-                <div class="coupon-text">
-                    <div class="coupon-title">
-                        <span class="new-badge">NEW!</span>
-                        <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
+        @if (count($list_coupons))
+            @foreach ($list_coupons as $list_coupon)
+                <a href="/site/coupondetail?cid={{ urlencode($list_coupon->coupon_code) }}" class="coupon-item">
+                    <div class="coupon-content">
+                        @if($list_coupon->img_url)
+                            <img src="{{ asset('/assets/images/'. $list_coupon->img_url) }}" alt="クーポン画像" width="80" height="80">
+                        @else
+                            <!--<img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />-->
+                        @endif
+                        <div class="coupon-text">
+                            <div class="coupon-title">
+                                <span class="new-badge">NEW!</span>
+                                <span class="fading-text">{{ $list_coupon->remaining_minute }}</span>｜{{ $list_coupon->coupon_name }}｜{{ $list_coupon->store_name }}｜{{ $list_coupon->station }} {{ config('commons.transportation')[$list_coupon->transportation] }}{{ $list_coupon->time }}分
+                            </div>
+                            <div class="coupon-price">
+                                @if ($list_coupon->discount_rate > 0)
+                                    <span class="discount-rate">{{ $list_coupon->discount_rate }}%OFF</span>
+                                    <span class="price-before">通常{{ number_format($list_coupon->price + $list_coupon->original_service_price) }}円</span>
+                                    <span class="price-after">→ {{ number_format(round($list_coupon->store_pay_price) + $list_coupon->service_price) }}円</span>
+                                @else
+                                    <span class="price-after">{{ number_format($list_coupon->price + $list_coupon->original_service_price) }}円</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                    <div class="coupon-price">
-                        <span class="discount-rate">50%OFF</span>
-                        <span class="price-before">通常6,000円</span>
-                        <span class="price-after">→ 3,000円</span>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/site/coupondetail" class="coupon-item">
-            <div class="coupon-content">
-                <img src="https://picsum.photos/80/80?random=2" alt="店舗画像" class="coupon-thumb" />
-                <div class="coupon-text">
-                    <div class="coupon-title">
-                        <span class="new-badge">NEW!</span>
-                        <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
-                    </div>
-                    <div class="coupon-price">
-                        <span class="discount-rate">50%OFF</span>
-                        <span class="price-before">通常6,000円</span>
-                        <span class="price-after">→ 3,000円</span>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="/site/coupondetail" class="coupon-item">
-            <div class="coupon-content">
-                <img src="https://picsum.photos/80/80?random=3" alt="店舗画像" class="coupon-thumb" />
-                <div class="coupon-text">
-                    <div class="coupon-title">
-                        <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
-                    </div>
-                    <div class="coupon-price">
-                        <span class="discount-rate">50%OFF</span>
-                        <span class="price-before">通常6,000円</span>
-                        <span class="price-after">→ 3,000円</span>
+                </a>
+            @endforeach
+            <?php /*元ソース
+            <a href="/site/coupondetail" class="coupon-item">
+                <div class="coupon-content">
+                    <img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />
+                    <div class="coupon-text">
+                        <div class="coupon-title">
+                            <span class="new-badge">NEW!</span>
+                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
+                        </div>
+                        <div class="coupon-price">
+                            <span class="discount-rate">50%OFF</span>
+                            <span class="price-before">通常6,000円</span>
+                            <span class="price-after">→ 3,000円</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+            <a href="/site/coupondetail" class="coupon-item">
+                <div class="coupon-content">
+                    <img src="https://picsum.photos/80/80?random=2" alt="店舗画像" class="coupon-thumb" />
+                    <div class="coupon-text">
+                        <div class="coupon-title">
+                            <span class="new-badge">NEW!</span>
+                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
+                        </div>
+                        <div class="coupon-price">
+                            <span class="discount-rate">50%OFF</span>
+                            <span class="price-before">通常6,000円</span>
+                            <span class="price-after">→ 3,000円</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="/site/coupondetail" class="coupon-item">
+                <div class="coupon-content">
+                    <img src="https://picsum.photos/80/80?random=3" alt="店舗画像" class="coupon-thumb" />
+                    <div class="coupon-text">
+                        <div class="coupon-title">
+                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
+                        </div>
+                        <div class="coupon-price">
+                            <span class="discount-rate">50%OFF</span>
+                            <span class="price-before">通常6,000円</span>
+                            <span class="price-after">→ 3,000円</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            */ ?>
+        @else
+            <p>現在、発行中のクーポンはありません</p>
+        @endif
     </div>
-
 </div>
 
 </body>

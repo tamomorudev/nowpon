@@ -17,7 +17,17 @@
         @if (isset($stores) && count($stores) > 0)
 
             @if($errors->any())
-            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">入力値に誤りがあります。</div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>入力値に誤りがあります。</strong>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             @endif
 
             <form class="user" method="POST" action="{{ route('store.coupon.create') }}" enctype="multipart/form-data">

@@ -15,7 +15,17 @@
         </div>
 
         @if($errors->any())
-            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">入力値に誤りがあります。</div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>入力値に誤りがあります。</strong>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         @endif
 
         <form class="user" method="POST" action="{{ route('store.shop.create') }}" enctype="multipart/form-data">
@@ -23,28 +33,43 @@
             <div class="form-group">
                 <label for="store_name" class="col-md-4 col-form-label text-md-end">店舗名<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="store_name"
+                    <input type="text" class="form-control @error('store_name') is-invalid @enderror" name="store_name"
                            value="{{ old('store_name') }}" placeholder="">
+                    @error('store_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="email" class="col-md-4 col-form-label text-md-end">メールアドレス<span class="text-danger">*</span></label>
                 <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="email"
+                    <input type="text" class="form-control @error('email') is-invalid @enderror" name="email"
                            value="{{ old('email') }}" placeholder="">
+                    @error('store_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
-                <label for="postal_code" class="col-md-4 col-form-label text-md-end">郵便番号<span class="text-danger">*</span></label>
+                <label for="postal_code" class="col-md-4 col-form-label text-md-end">郵便番号(ハイフンなし)<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="postal_code"
+                    <input type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code"
                            value="{{ old('postal_code') }}" placeholder="">
+                    @error('postal_code')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="address1" class="col-md-4 col-form-label text-md-end">都道府県<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <select name="address1" id="address1" class="form-control">
+                    <select name="address1" id="address1 @error('address1') is-invalid @enderror" class="form-control">
                         <option value="">選択してください</option>
                         @foreach(config('commons.prefectures') as $key => $prefecture)
                             <option value="{{ $key }}"
@@ -53,27 +78,47 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('address1')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="address2" class="col-md-4 col-form-label text-md-end">市区町村<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="address2"
+                    <input type="text" class="form-control @error('address2') is-invalid @enderror" name="address2"
                            value="{{ old('address2') }}" placeholder="">
+                    @error('address2')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="address3" class="col-md-4 col-form-label text-md-end">住所<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="address3"
+                    <input type="text" class="form-control @error('address3') is-invalid @enderror" name="address3"
                            value="{{ old('address3') }}" placeholder="">
+                    @error('address3')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="phone_number" class="col-md-4 col-form-label text-md-end">電話番号<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="text" class="form-control" name="phone_number"
+                    <input type="text" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number"
                            value="{{ old('phone_number') }}" placeholder="">
+                    @error('phone_number')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
@@ -86,7 +131,7 @@
             <div class="form-group">
                 <label for="genre" class="col-md-4 col-form-label text-md-end">ジャンル<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <select name="genre" id="genre" class="form-control">
+                    <select name="genre" id="genre" class="form-control @error('genre') is-invalid @enderror">
                         @foreach(config('commons.genre') as $gkey => $genre)
                             <option value="{{ $gkey }}"
                                 {{ old('genre', $defaultGenre ?? '') == $gkey ? 'selected' : '' }}>
@@ -94,28 +139,43 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('genre')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="station_line" class="col-md-4 col-form-label text-md-end">最寄り駅<span class="text-danger">*</span></label>
                 <div class="row"style="margin-left:0px">
                     <div class="col-sm-3 mb-3 mb-sm-0">路線
-                        <select name="station_line" id="station_line" class="form-control">
+                        <select name="station_line" id="station_line" class="form-control @error('station_line') is-invalid @enderror">
                             <option selected disabled>都道府県を選択してください</option>
                         </select>
+                        @error('station_line')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
 
                     <div class="col-sm-3 mb-3 mb-sm-0">駅
-                        <select name="station" id="station" class="form-control">
+                        <select name="station" id="station" class="form-control @error('station') is-invalid @enderror">
                             <option selected disabled>路線を選択してください</option>
                         </select>
+                        @error('station')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="transportation" class="col-md-4 col-form-label text-md-end">交通手段<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <select name="transportation" id="transportation" class="form-control">
+                    <select name="transportation" id="transportation" class="form-control @error('transportation') is-invalid @enderror">
                         @foreach(config('commons.transportation') as $tkey => $transportation)
                             <option value="{{ $tkey }}"
                                 {{ old('transportation', $defaultTransportation ?? '') == $tkey ? 'selected' : '' }}>
@@ -123,12 +183,22 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('transportation')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">
                 <label for="time" class="col-md-4 col-form-label text-md-end">時間(分)<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <input type="number" class="form-control" name="time" id="time" min="1" value="{{ old('time') }}" placeholder="">
+                    <input type="number" class="form-control @error('time') is-invalid @enderror" name="time" id="time" min="1" value="{{ old('time') }}" placeholder="">
+                    @error('time')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group">

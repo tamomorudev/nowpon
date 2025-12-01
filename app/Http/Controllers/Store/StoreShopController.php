@@ -43,22 +43,39 @@ class StoreShopController extends Controller
     public function create(Request $request)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $request = $request->all();
 
-        if (isset($request['address1'])) {
-            $validated_data = Validator::make($request, [
-                'store_name' => 'required',
-                'email' => 'required|max:190',
-                'postal_code' => 'required',
-                'address1' => 'required',
-                'address2' => 'required',
-                'address3' => 'required',
-                'phone_number' => 'required|max:11',
-                'genre' => 'required',
-                'station_line' => 'required',
-                'station' => 'required',
+        if ($request->isMethod('post')) {
+            //$request = $request->all();
+            $validated_data = Validator::make($request->all(), [
+                'store_name'     => 'required',
+                'email'          => 'required|email|max:190',
+                'postal_code'    => 'required|digits:7',
+                'address1'       => 'required',
+                'address2'       => 'required',
+                'address3'       => 'required',
+                'phone_number'   => 'required|digits_between:10,11',
+                'genre'          => 'required',
+                'station_line'   => 'required',
+                'station'        => 'required',
                 'transportation' => 'required',
-                'time' => 'required',
+                'time'           => 'required',
+            ], [
+                'store_name.required'     => '店舗名を入力してください。',
+                'email.required'          => 'メールアドレスを入力してください。',
+                'email.email'             => '正しいメールアドレス形式で入力してください。',
+                'email.max'               => 'メールアドレスは190文字以内で入力してください。',
+                'postal_code.required'    => '郵便番号を入力してください。',
+                'postal_code.digits'      => '郵便番号は7桁で入力してください。',
+                'address1.required'       => '都道府県を入力してください。',
+                'address2.required'       => '市区町村を入力してください。',
+                'address3.required'       => '住所を入力してください。',
+                'phone_number.required'   => '電話番号を入力してください。',
+                'phone_number.digits_between' => '電話番号は10桁または11桁で入力してください。',
+                'genre.required'          => 'ジャンルを入力してください。',
+                'station_line.required'   => '路線を選択してください。',
+                'station.required'        => '駅を選択してください。',
+                'transportation.required' => '交通手段を選択してください。',
+                'time.required'           => '時間を入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -131,7 +148,6 @@ class StoreShopController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $request = $request->all();
 
         if(!isset($request['si'])) {
             abort(404);
@@ -144,20 +160,38 @@ class StoreShopController extends Controller
             abort(404);
         }
 
-        if (isset($request['address1']) && isset($request['p_type']) && $request['p_type'] == 'edit') {
-            $validated_data = Validator::make($request, [
-                'store_name' => 'required',
-                'email' => 'required|max:190',
-                'postal_code' => 'required',
-                'address1' => 'required',
-                'address2' => 'required',
-                'address3' => 'required',
-                'phone_number' => 'required|max:11',
-                'genre' => 'required',
-                'station_line' => 'required',
-                'station' => 'required',
+        if ($request->isMethod('post') && isset($request['p_type']) && $request['p_type'] == 'edit') {
+            //$request = $request->all();
+            $validated_data = Validator::make($request->all(), [
+                'store_name'     => 'required',
+                'email'          => 'required|email|max:190',
+                'postal_code'    => 'required|digits:7',
+                'address1'       => 'required',
+                'address2'       => 'required',
+                'address3'       => 'required',
+                'phone_number'   => 'required|digits_between:10,11',
+                'genre'          => 'required',
+                'station_line'   => 'required',
+                'station'        => 'required',
                 'transportation' => 'required',
-                'time' => 'required',
+                'time'           => 'required',
+            ], [
+                'store_name.required'     => '店舗名を入力してください。',
+                'email.required'          => 'メールアドレスを入力してください。',
+                'email.email'             => '正しいメールアドレス形式で入力してください。',
+                'email.max'               => 'メールアドレスは190文字以内で入力してください。',
+                'postal_code.required'    => '郵便番号を入力してください。',
+                'postal_code.digits'      => '郵便番号は7桁で入力してください。',
+                'address1.required'       => '都道府県を入力してください。',
+                'address2.required'       => '市区町村を入力してください。',
+                'address3.required'       => '住所を入力してください。',
+                'phone_number.required'   => '電話番号を入力してください。',
+                'phone_number.digits_between' => '電話番号は10桁または11桁で入力してください。',
+                'genre.required'          => 'ジャンルを入力してください。',
+                'station_line.required'   => '路線を選択してください。',
+                'station.required'        => '駅を選択してください。',
+                'transportation.required' => '交通手段を選択してください。',
+                'time.required'           => '時間を入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -237,18 +271,25 @@ class StoreShopController extends Controller
     public function accountCreate(Request $request)
     {
         $user = Auth::guard('store_user')->user();  //ユーザー情報
-        $request = $request->all();
 
         if ($_POST) {
-            if (isset($request['name']) || isset($request['password'])) {
-                $validated_data = Validator::make($request, [
-                    'name' => 'required|max:190:',
-                    'password' => 'required',
+            if ($request->isMethod('post')) {
+                $validated_data = Validator::make($request->all(), [
+                    'name' => 'required|min:10|max:100:',
+                    'password' => 'required|min:10|max:100',
+                ], [
+                    'name.required'     => 'ユーザー名を入力してください。',
+                    'name.min'          => 'ユーザー名は10文字以上で入力してください',
+                    'name.max'          => 'ユーザー名は100文字以内で入力してください',
+                    'password.required'             => 'パスワードを入力してください。',
+                    'password.min'               => 'パスワードは10文字以上で入力してください。',
+                    'password.max'               => 'パスワードは100文字以下で入力してください。',
                 ]);
 
                 if ($validated_data->fails()) {
-                    $error = true;
-                    return view('store.shop.account_create', compact('error', 'user'));
+                    return redirect()->route('store.account.create')
+                        ->withErrors($validated_data)
+                        ->withInput();
                 } else {
                     $store_user = StoreUser::create([
                         'name' => $request['name'],
@@ -282,27 +323,36 @@ class StoreShopController extends Controller
         $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
 
-        $request = $request->all();
-
         if ($_POST) {
-            if (isset($request['store_name'])) {
-                $validated_data = Validator::make($request, [
-                    'store_name' => 'required',
-                    'cource_name' => 'required|max:190:',
-                    'price' => 'required|regex:/^[1-9][0-9]*/|not_in:0',
-                    'detail' => 'required'
+            if ($request->isMethod('post')) {
+                $validated_data = Validator::make($request->all(), [
+                    'store_name'  => 'required',
+                    'cource_name' => 'required|min:10|max:190',
+                    'price'       => 'required|integer|min:1',
+                    'detail'      => 'required|min:10',
+                ], [
+                    'store_name.required'   => '店舗名を入力してください。',
+                    'cource_name.required'  => 'メニュー名を入力してください。',
+                    'cource_name.min'       => 'メニュー名は10文字以上で入力してください。',
+                    'cource_name.max'       => 'メニュー名は190文字以内で入力してください。',
+                    'price.required'        => '定価を入力してください。',
+                    'price.integer'         => '定価は整数で入力してください。',
+                    'price.min'             => '定価は1以上で入力してください。',
+                    'detail.required'       => '説明を入力してください。',
+                    'detail.min'            => '説明は10文字以上で入力してください。',
                 ]);
 
                 if ($validated_data->fails()) {
-                    $error = true;
-                    return view('store.shop.cource_create', compact('error', 'stores'));
+                    return redirect()->route('store.shop.cource')
+                        ->withErrors($validated_data)
+                        ->withInput();
                 } else {
-                    $store_user = StoreUser::create([
-                        'name' => $request['name'],
-                        'email' => '',
-                        'password' => Hash::make($request['password']),
+                    $store_user = StoreServices::create([
                         'company_id' => (int)$user->company_id,
-                        'parent_user_id' => $user->id,
+                        'store_id' => $request['store_name'],
+                        'service_name' => $request['cource_name'],
+                        'price' => $request['price'],
+                        'detail' => $request['detail'],
                     ]);
 
                     return redirect('/store/cource');
@@ -312,7 +362,7 @@ class StoreShopController extends Controller
             }
         }
 
-        return view('store.shop.cource_create', compact('stores'));
+        return view('store.shop.cource_create', compact('user','stores'));
     }
 
     public function checkStation(Request $request)

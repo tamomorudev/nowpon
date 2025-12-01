@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class StoreServices extends Authenticatable
+class Zipcodes extends Authenticatable
 {
 
-    protected $table = 'store_services';
+    protected $table = 'zipcodes';
 
     protected $guarded = [
-        'id'
+       'id'
     ];
+
 
     protected $hidden = [
         

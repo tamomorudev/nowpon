@@ -294,24 +294,20 @@
                 <div class="info">
                     <p><strong>{{ config('commons.genre')[$coupon->genre] }}ー{{ $coupon->store_name }}</strong></p>
                     <p>最寄り駅：{{ $coupon->station }}駅 {{ config('commons.transportation')[$coupon->transportation] }}{{ $coupon->time }}分
-                    @if ($coupon->station_2)
+                    @if ($coupon->station_2 && $coupon->time_2)
                         <br>最寄り駅：{{ $coupon->station_2 }}駅 {{ config('commons.transportation')[$coupon->transportation_2] }}{{ $coupon->time_2 }}分
                     @endif
                     </p>
                     <p>
                         @if ($coupon->discount_rate > 0)
                             <span class="price-before">通常{{ number_format($coupon->price + $coupon->original_service_price) }}円</span>
-                            @if ($coupon->discount_type == 1)
-                                <span class="price-after">→ {{ number_format(round($coupon->price * (1 - ($coupon->discount_price / 100))) + $coupon->service_price) }}円</span>
-                            @else
-                                <span class="price-after">→ {{ number_format(round($coupon->price - $coupon->discount_price) + $coupon->service_price) }}円</span>
-                            @endif
+                            <span class="price-after">→ {{ number_format(round($coupon->store_pay_price) + $coupon->service_price) }}円</span>
                             ({{ $coupon->discount_rate }}%OFF)
                         @else
-                            ¥{{ number_format($coupon->price + $coupon->original_service_price) }}
+                            {{ number_format($coupon->price + $coupon->original_service_price) }}円
                         @endif
                     </p>
-                    <p>予約日時：{{ $coupon->format_cource_start }}</p>
+                    <p>予約日時：{{ $coupon->format_cource_start }}<br>予定所要時間：{{ $coupon->cource_time }}分</p>
                     <p>{{ $coupon->coupon_name }}</p>
                 </div>
             </div>

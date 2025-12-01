@@ -90,5 +90,14 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                {{ $coupons->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="text-muted">
+                全 {{ $coupons->total() }} 件中 
+                {{ $coupons->firstItem() }} - {{ $coupons->lastItem() }} 件を表示
+            </div>
+        </div>
     </div>
 @endsection
