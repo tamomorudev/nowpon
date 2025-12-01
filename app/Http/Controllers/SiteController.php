@@ -17,6 +17,7 @@ use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\SpecialFutures;
+use App\Models\Zipcodes;
 use Carbon\Carbon;
 
 class SiteController extends Controller
@@ -58,7 +59,66 @@ class SiteController extends Controller
     public function couponlist(Request $request)
     {
         $category = 'hair';
-        return view('site.couponlist', compact('category'));
+        $user = Auth::guard('web')->user();
+
+        if ($user) {
+            $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        }
+        $request = $request->all();
+
+        $date = date('Y-m-d H:i:s');
+        $list_coupons = [];
+
+        //マイエリアクーポン
+        if (isset($request['search']) && $request['search'] == 'area') {
+            if(!isset($user)) {
+                return redirect('/login');
+            }
+            $user_zipcode = Zipcodes::select()->where('zipcode', $user->postal_code)->first(); //ユーザー市町村情報
+            $category = 'area';
+            //ユーザー市町村と一致するものだけ
+            $list_coupons = Coupons::select(
+                    'coupons.*',
+                    'stores.store_name',
+                    'stores.genre',
+                    'stores.station',
+                    'stores.transportation',
+                    'stores.time',
+                    'zipcodes.city'
+                )
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
+                ->where('expire_start_date', '<=', $date)
+                ->where('expire_end_date', '>=', $date)
+                ->where('zipcodes.city', '=', $user_zipcode->city)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+        }
+
+        foreach ($list_coupons as $coupons) {
+            //残り分数
+            $end_date = Carbon::parse($coupons->expire_end_date, 'Asia/Tokyo');
+            $now = Carbon::now('Asia/Tokyo');
+            $remaining_minutes = $now->diffInMinutes($end_date, false);
+
+            if ($remaining_minutes > 0) {
+                //〇時間 or 〇分の形
+                $remaining_hours = floor($remaining_minutes / 60);
+                $remaining_minutes = $remaining_minutes % 60;
+
+                if ($remaining_hours > 0) {
+                    $coupons->remaining_minute = '残り'.$remaining_hours.'時間';
+                } else {
+                    $coupons->remaining_minute = '残り'.$remaining_minutes.'分';
+                }
+                //$coupons->remaining_minute = $remaining_minutes;
+            } else {
+                $coupons->remaining_minute = '終了しました';
+            }
+
+        }
+
+        return view('site.couponlist', compact('category', 'list_coupons'));
     }
 
     public function coupondetail(Request $request)
