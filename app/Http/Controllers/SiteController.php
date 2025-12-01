@@ -76,23 +76,26 @@ class SiteController extends Controller
             }
             $user_zipcode = Zipcodes::select()->where('zipcode', $user->postal_code)->first(); //ユーザー市町村情報
             $category = 'area';
-            //ユーザー市町村と一致するものだけ
-            $list_coupons = Coupons::select(
-                    'coupons.*',
-                    'stores.store_name',
-                    'stores.genre',
-                    'stores.station',
-                    'stores.transportation',
-                    'stores.time',
-                    'zipcodes.city'
-                )
-                ->join('stores', 'coupons.store_id', '=', 'stores.id')
-                ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
-                ->where('expire_start_date', '<=', $date)
-                ->where('expire_end_date', '>=', $date)
-                ->where('zipcodes.city', '=', $user_zipcode->city)
-                ->orderBy('created_at', 'DESC')
-                ->get();
+
+            if ($user_zipcode) {
+                //ユーザー市町村と一致するものだけ
+                $list_coupons = Coupons::select(
+                        'coupons.*',
+                        'stores.store_name',
+                        'stores.genre',
+                        'stores.station',
+                        'stores.transportation',
+                        'stores.time',
+                        'zipcodes.city'
+                    )
+                    ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                    ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
+                    ->where('expire_start_date', '<=', $date)
+                    ->where('expire_end_date', '>=', $date)
+                    ->where('zipcodes.city', '=', $user_zipcode->city)
+                    ->orderBy('created_at', 'DESC')
+                    ->get();
+            }
         }
 
         foreach ($list_coupons as $coupons) {
