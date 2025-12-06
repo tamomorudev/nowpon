@@ -69,7 +69,7 @@
             <div class="form-group">
                 <label for="address1" class="col-md-4 col-form-label text-md-end">都道府県<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
-                    <select name="address1" id="address1 @error('address1') is-invalid @enderror" class="form-control">
+                    <select name="address1" id="address1" class="form-control @error('address1') is-invalid @enderror">
                         <option value="">選択してください</option>
                         @foreach(config('commons.prefectures') as $key => $prefecture)
                             <option value="{{ $key }}"
