@@ -58,13 +58,14 @@ class SiteController extends Controller
 
     public function couponlist(Request $request)
     {
-        $category = 'hair';
-        $user = Auth::guard('web')->user();
+        // 検索経由かどうか（prefecture or keyword）
+        $isSearch = $request->filled('prefecture') || $request->filled('keyword');
 
+        $user = Auth::guard('web')->user();
         if ($user) {
             $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         }
-        $request = $request->all();
+        //$inputs = $request->all();
 
         $date = date('Y-m-d H:i:s');
         $list_coupons = [];
@@ -75,19 +76,9 @@ class SiteController extends Controller
                 return redirect('/login');
             }
             $user_zipcode = Zipcodes::select()->where('zipcode', $user->postal_code)->first(); //ユーザー市町村情報
-            $category = 'area';
-
             if ($user_zipcode) {
                 //ユーザー市町村と一致するものだけ
-                $list_coupons = Coupons::select(
-                        'coupons.*',
-                        'stores.store_name',
-                        'stores.genre',
-                        'stores.station',
-                        'stores.transportation',
-                        'stores.time',
-                        'zipcodes.city'
-                    )
+                $list_coupons = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
                     ->join('stores', 'coupons.store_id', '=', 'stores.id')
                     ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
                     ->where('expire_start_date', '<=', $date)
@@ -96,6 +87,37 @@ class SiteController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->get();
             }
+        } elseif ($isSearch) {
+            // ▼ 詳細検索（都道府県・路線・駅・キーワード）
+            $query = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time')
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->join('stations', 'stores.postal_code', '=', 'postal')
+                ->where('expire_start_date', '<=', $date)
+                ->where('expire_end_date', '>=', $date);
+            // 都道府県
+            if ($request->filled('prefecture')) {
+                $prefecture = config('commons.prefectures')[$request->input('prefecture')];
+                $query->where('stations.prefecture', $prefecture);
+            }
+            // 路線
+            if ($request->filled('station_line')) {
+
+                $query->where('stations.line', $request->input('station_line'));
+            }
+            // 駅
+            if ($request->filled('station')) {
+                var_dump($request->input('station'));
+                $query->where('stations.name', $request->input('station'));
+            }
+            // キーワード（クーポン名 or 店舗名あたりを対象）
+            if ($request->filled('keyword')) {
+                $keyword = $request->input('keyword');
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('coupons.coupon_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('stores.store_name', 'LIKE', '%' . $keyword . '%');
+                });
+            }
+            $list_coupons = $query->distinct('coupons.id')->orderBy('coupons.created_at', 'DESC')->get();
         }
 
         foreach ($list_coupons as $coupons) {
@@ -118,10 +140,15 @@ class SiteController extends Controller
             } else {
                 $coupons->remaining_minute = '終了しました';
             }
-
         }
 
-        return view('site.couponlist', compact('category', 'list_coupons'));
+        return view('site.couponlist', [
+            'list_coupons'      => $list_coupons,
+            'searchPrefecture'  => $isSearch ? $request->input('prefecture')    : null,
+            'searchStationLine' => $isSearch ? $request->input('station_line')  : null,
+            'searchStation'     => $isSearch ? $request->input('station')       : null,
+            'searchKeyword'     => $isSearch ? $request->input('keyword')       : null,
+        ]);
     }
 
     public function coupondetail(Request $request)

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Store\StoreLoginController;
 use App\Http\Controllers\Store\StoreRegisterController;
 use App\Http\Controllers\Store\StoreHomeController;
+use App\Http\Controllers\Store\StoreShopController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\Admin\AdminHomeController;
@@ -29,7 +30,7 @@ Route::get('/', [App\Http\Controllers\TopController::class, 'index'])->name('top
 Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->name('site_list');
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
 Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
-Route::get('site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
+Route::match(['GET','POST'], 'site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
 // 利用規約
 Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])->name('terms');
@@ -37,6 +38,8 @@ Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])-
 Route::get('site/privacypolicy', [App\Http\Controllers\SiteController::class, 'privacypolicy'])->name('privacypolicy');
 // お問い合わせ
 Route::get('site/contact', [App\Http\Controllers\SiteController::class, 'contact'])->name('contact');
+//駅取得
+Route::post('/check_station', [StoreShopController::class, 'checkStation'])->name('check_station');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

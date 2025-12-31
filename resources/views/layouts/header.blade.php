@@ -1,7 +1,10 @@
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<!-- Swiper CSS -->
+<!-- Swiper -->
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 <!-- 共通のヘッダースタイル -->
 <style>
@@ -103,13 +106,6 @@
                 {{ Auth::guard('web')->user()->name }}
             </a>
         @endif
-    </div>
-
-    <div class="header-search">
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Search" />
-        </div>
     </div>
 
     <div class="header-nav">

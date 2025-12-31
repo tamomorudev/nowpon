@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- ▼ 詳細検索パーツ ▼ --}}
+    <link rel="stylesheet" href="{{ asset('css/nowpon-search.css') }}">
+    <script src="{{ asset('js/nowpon-search.js') }}" defer></script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
@@ -88,12 +93,75 @@
         .coupon-text {
             flex: 1;
         }
-
     </style>
 </head>
 <body>
 <div class="container">
     @include('layouts.header')
+
+        <!-- 検索 -->
+        <div class="detailed-search-section">
+            <div>
+                <h2 style="display: flex; align-items: center; font-size: 20px;">
+                    <span style="font-size: 20px; margin-right: 8px;">🔍</span>
+                    検索
+                </h2>
+            </div>
+
+            <form action="{{ route('couponlist') }}" method="POST">
+            @csrf   <!-- ★POSTなので必須 -->
+                <div class="search-panel">
+                    <!-- 上段：都道府県・路線・駅 -->
+                    <div class="search-tags">
+
+                        <div class="search-select-box">
+                            <label for="search_prefecture">都道府県</label>
+                            <select id="search_prefecture" name="prefecture">
+                                <option value="">選択してください</option>
+                                @foreach(config('commons.prefectures') as $key => $prefecture)
+                                    <option value="{{ $key }}"
+                                            @if(isset($searchPrefecture) && (string)$searchPrefecture === (string)$key) selected @endif>
+                                        {{ $prefecture }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="search-select-box">
+                            <label for="search_station_line">路線</label>
+                            <select id="search_station_line"
+                                    name="station_line"
+                                    data-initial-line="{{ $searchStationLine ?? '' }}">
+                                <option value="">都道府県を選択してください</option>
+                            </select>
+                        </div>
+
+                        <div class="search-select-box">
+                            <label for="search_station">駅</label>
+                            <select id="search_station"
+                                    name="station"
+                                    data-initial-station="{{ $searchStation ?? '' }}">
+                                <option value="">路線を選択してください</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- 下段：キーワード + 検索ボタン -->
+                    <div class="search-keyword-row">
+                        <div class="search-keyword-box">
+                            <input type="text"
+                                   name="keyword"
+                                   placeholder="キーワードを入力"
+                                   value="{{ $searchKeyword ?? '' }}" />
+                        </div>
+                        <button type="submit" class="search-icon-box keyword-search-button">
+                            検索
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
     <!-- クーポンリスト -->
     <div class="coupon-list">
@@ -124,55 +192,6 @@
                     </div>
                 </a>
             @endforeach
-            <?php /*元ソース
-            <a href="/site/coupondetail" class="coupon-item">
-                <div class="coupon-content">
-                    <img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />
-                    <div class="coupon-text">
-                        <div class="coupon-title">
-                            <span class="new-badge">NEW!</span>
-                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
-                        </div>
-                        <div class="coupon-price">
-                            <span class="discount-rate">50%OFF</span>
-                            <span class="price-before">通常6,000円</span>
-                            <span class="price-after">→ 3,000円</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a href="/site/coupondetail" class="coupon-item">
-                <div class="coupon-content">
-                    <img src="https://picsum.photos/80/80?random=2" alt="店舗画像" class="coupon-thumb" />
-                    <div class="coupon-text">
-                        <div class="coupon-title">
-                            <span class="new-badge">NEW!</span>
-                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
-                        </div>
-                        <div class="coupon-price">
-                            <span class="discount-rate">50%OFF</span>
-                            <span class="price-before">通常6,000円</span>
-                            <span class="price-after">→ 3,000円</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <a href="/site/coupondetail" class="coupon-item">
-                <div class="coupon-content">
-                    <img src="https://picsum.photos/80/80?random=3" alt="店舗画像" class="coupon-thumb" />
-                    <div class="coupon-text">
-                        <div class="coupon-title">
-                            <span class="fading-text">残り120分</span>｜骨盤矯正（初回限定）｜渋谷整体サロン｜渋谷駅 徒歩3分
-                        </div>
-                        <div class="coupon-price">
-                            <span class="discount-rate">50%OFF</span>
-                            <span class="price-before">通常6,000円</span>
-                            <span class="price-after">→ 3,000円</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            */ ?>
         @else
             <p>現在、発行中のクーポンはありません</p>
         @endif
