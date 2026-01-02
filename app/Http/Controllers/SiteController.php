@@ -58,20 +58,15 @@ class SiteController extends Controller
 
     public function couponlist(Request $request)
     {
+        $date = date('Y-m-d H:i:s');
+        $list_coupons = array();
+
         // 検索経由かどうか（prefecture or keyword）
         $isSearch = $request->filled('prefecture') || $request->filled('keyword');
 
-        $user = Auth::guard('web')->user();
-        if ($user) {
-            $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
-        }
-        //$inputs = $request->all();
-
-        $date = date('Y-m-d H:i:s');
-        $list_coupons = [];
-
         //マイエリアクーポン
         if (isset($request['search']) && $request['search'] == 'area') {
+            $user = Auth::guard('web')->user();
             if(!isset($user)) {
                 return redirect('/login');
             }
@@ -96,49 +91,48 @@ class SiteController extends Controller
                 ->where('expire_end_date', '>=', $date);
             // 都道府県
             if ($request->filled('prefecture')) {
-                $prefecture = config('commons.prefectures')[$request->input('prefecture')];
-                $query->where('stations.prefecture', $prefecture);
+                $query->where('stations.prefecture', config('commons.prefectures')[$request->input('prefecture')]);
             }
             // 路線
             if ($request->filled('station_line')) {
-
                 $query->where('stations.line', $request->input('station_line'));
             }
             // 駅
             if ($request->filled('station')) {
-                var_dump($request->input('station'));
                 $query->where('stations.name', $request->input('station'));
             }
             // キーワード（クーポン名 or 店舗名あたりを対象）
             if ($request->filled('keyword')) {
                 $keyword = $request->input('keyword');
                 $query->where(function ($q) use ($keyword) {
-                    $q->where('coupons.coupon_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('stores.store_name', 'LIKE', '%' . $keyword . '%');
+                    $q->where('coupons.coupon_name', 'LIKE', '%' . $keyword . '%')->orWhere('stores.store_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
             $list_coupons = $query->distinct('coupons.id')->orderBy('coupons.created_at', 'DESC')->get();
         }
 
-        foreach ($list_coupons as $coupons) {
-            //残り分数
-            $end_date = Carbon::parse($coupons->expire_end_date, 'Asia/Tokyo');
-            $now = Carbon::now('Asia/Tokyo');
-            $remaining_minutes = $now->diffInMinutes($end_date, false);
+        // 検索結果格納
+        if (!empty($list_coupons)) {
+            foreach ($list_coupons as $coupons) {
+                //残り分数
+                $end_date = Carbon::parse($coupons->expire_end_date, 'Asia/Tokyo');
+                $now = Carbon::now('Asia/Tokyo');
+                $remaining_minutes = $now->diffInMinutes($end_date, false);
 
-            if ($remaining_minutes > 0) {
-                //〇時間 or 〇分の形
-                $remaining_hours = floor($remaining_minutes / 60);
-                $remaining_minutes = $remaining_minutes % 60;
+                if ($remaining_minutes > 0) {
+                    //〇時間 or 〇分の形
+                    $remaining_hours = floor($remaining_minutes / 60);
+                    $remaining_minutes = $remaining_minutes % 60;
 
-                if ($remaining_hours > 0) {
-                    $coupons->remaining_minute = '残り'.$remaining_hours.'時間';
+                    if ($remaining_hours > 0) {
+                        $coupons->remaining_minute = '残り'.$remaining_hours.'時間';
+                    } else {
+                        $coupons->remaining_minute = '残り'.$remaining_minutes.'分';
+                    }
+                    //$coupons->remaining_minute = $remaining_minutes;
                 } else {
-                    $coupons->remaining_minute = '残り'.$remaining_minutes.'分';
+                    $coupons->remaining_minute = '終了しました';
                 }
-                //$coupons->remaining_minute = $remaining_minutes;
-            } else {
-                $coupons->remaining_minute = '終了しました';
             }
         }
 
