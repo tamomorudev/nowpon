@@ -81,18 +81,25 @@
         }
 
         /* メインスライダー */
-        .swiper-main {
+        .swiper-main{
             width: 100%;
-            height: 320px;
+            height: auto;          /* ★固定をやめる */
             margin-bottom: 12px;
         }
-        .swiper-main .swiper-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
+
+        .swiper-main .swiper-slide{
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
+        .swiper-main .swiper-slide img{
+            width: 100%;
+            height: auto;          /* ★画像本来の比率 */
+            object-fit: contain;   /* ★見切れゼロ */
+            border-radius: 8px;
+            display: block;
+        }
         /* サムネイル */
         .swiper-thumbs {
             width: 100%;
@@ -409,6 +416,7 @@
                 spaceBetween: 12,
                 loop: true,
                 centeredSlides: true,
+                autoHeight: true,
                 pagination: { el: '.swiper-pagination', clickable: true },
                 navigation: {
                     nextEl: '.swiper-button-next',
