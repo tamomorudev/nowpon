@@ -514,34 +514,22 @@
         @endif
     </div>
 
-    @php
-        $categoryNames = [
-            'リラク',
-            '飲食店',
-            '歯医者',
-            '薬局',
-            '接骨・鍼灸',
-            'おでかけスポット',
-            'ヘアサロン',
-            '動物病院・トリミング',
-            'クリニック・病院',
-            'テイクアウト',
-        ];
-    @endphp
     <div class="category-search-section">
         <h2 style="display: flex; align-items: center; font-size: 20px;">
             <span style="font-size: 20px; margin-right: 8px;">🔖</span>
             カテゴリ検索
         </h2>
         <div class="category-list">
-            @foreach ($categoryNames as $index => $name)
-                <a href="/site/couponlist" class="category-item">
-                    <img src="https://picsum.photos/seed/{{ rawurlencode($name) }}/64/64" alt="{{ $name }}">
-                    <span>{{ $name }}</span>
+            @foreach(config('commons.genre') as $gkey => $genre)
+                <a href="/site/couponlist?search=category&gid={{$gkey}}" class="category-item">
+                    <img src="{{ asset('assets/images/material/category' . $gkey . '.png') }}" alt="{{ $genre }}">
+                    <!--<img src="https://picsum.photos/seed/{{ rawurlencode($genre) }}/64/64" alt="{{ $genre }}">-->
+                    <span>{{ $genre }}</span>
                 </a>
             @endforeach
         </div>
     </div>
+
 
     <!-- 検索 -->
     <div class="detailed-search-section">

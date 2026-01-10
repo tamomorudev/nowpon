@@ -109,6 +109,23 @@ class SiteController extends Controller
                 });
             }
             $list_coupons = $query->distinct('coupons.id')->orderBy('coupons.created_at', 'DESC')->get();
+        } else if (isset($request['search']) && $request['search'] == 'category') {
+            if (isset($request['gid'])) {
+                $list_coupons = Coupons::select(
+                        'coupons.*',
+                        'stores.store_name',
+                        'stores.genre',
+                        'stores.station',
+                        'stores.transportation',
+                        'stores.time',
+                    )
+                    ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                    ->where('expire_start_date', '<=', $date)
+                    ->where('expire_end_date', '>=', $date)
+                    ->where('stores.genre', '=', $request['gid'])
+                    ->orderBy('created_at', 'DESC')
+                    ->get();
+            }
         }
 
         // 検索結果格納
