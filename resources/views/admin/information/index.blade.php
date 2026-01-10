@@ -57,5 +57,14 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                {{ $information_array->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="text-muted">
+                全 {{ $information_array->total() }} 件中 
+                {{ $information_array->firstItem() }} - {{ $information_array->lastItem() }} 件を表示
+            </div>
+        </div>
     </div>
 @endsection

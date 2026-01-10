@@ -64,5 +64,14 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                {{ $special_futures->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="text-muted">
+                全 {{ $special_futures->total() }} 件中 
+                {{ $special_futures->firstItem() }} - {{ $special_futures->lastItem() }} 件を表示
+            </div>
+        </div>
     </div>
 @endsection

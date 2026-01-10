@@ -127,20 +127,22 @@ class CheckStation extends Command
 
                     $stations = json_decode($response);
 
-                    //駅マスター更新
-                    $insert_key = 0;
-                    foreach ($stations->response->station as $station_obj) {
-                        foreach ($station_obj as $obj_key => $data) {
-                            $insert_stations[$insert_key][$obj_key] = $data;
+                    if (isset($stations->response->station)) {
+                        //駅マスター更新
+                        $insert_key = 0;
+                        foreach ($stations->response->station as $station_obj) {
+                            foreach ($station_obj as $obj_key => $data) {
+                                $insert_stations[$insert_key][$obj_key] = $data;
+                            }
+                            $insert_stations[$insert_key]['created_at'] = date('Y-m-d H:i:s');
+                            $insert_stations[$insert_key]['updated_at'] = date('Y-m-d H:i:s');
+
+                            $insert_key++;
                         }
-                        $insert_stations[$insert_key]['created_at'] = date('Y-m-d H:i:s');
-                        $insert_stations[$insert_key]['updated_at'] = date('Y-m-d H:i:s');
 
-                        $insert_key++;
+                        //insert
+                        DB::table('stations')->insert($insert_stations);
                     }
-
-                    //insert
-                    DB::table('stations')->insert($insert_stations);
                 }
             }
 

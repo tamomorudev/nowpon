@@ -13,8 +13,9 @@ use Illuminate\View\View;
 use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\StoreUser;
+use App\Models\User;
 
-class AdminShopController extends Controller
+class AdminUserController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -34,24 +35,28 @@ class AdminShopController extends Controller
     public function index()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $stores = Stores::select()->paginate(50); //stores情報
+        $users = User::select()->paginate(50);
 
-        return view('admin.shop.index', compact('user', 'stores'));
+        return view('admin.user.index', compact('user', 'users'));
     }
 
-    public function account()
+    public function detail(Request $request)
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $store_users = StoreUser::select()->paginate(50); //storeuser
-        return view('admin.shop.account', compact('user', 'store_users'));
-    }
+        $users = User::select()->paginate(50);
 
-    public function cource()
-    {
-        $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $stores = Stores::select()->paginate(50); //stores情報
-        
-        return view('admin.shop.cource', compact('user'));
+        if(!isset($request['id'])) {
+            abort(404);
+        }
+
+        $user_id = $request['id'];
+        $user_data = User::where('id', $user_id)->first();
+
+        if(!$user_data) {
+            abort(404);
+        }
+
+        return view('admin.user.detail', compact('user', 'users', 'user_data'));
     }
 
 }

@@ -36,7 +36,7 @@ class StoreCouponController extends Controller
     public function index()
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(10); //クーポン情報
+        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         return view('store.coupon.index', compact('user', 'stores', 'coupons'));
     }

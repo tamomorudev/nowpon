@@ -37,7 +37,7 @@ class AdminSpecialFutureController extends Controller
     public function index()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $special_futures = SpecialFutures::select()->where('delete_flg', 0)->orderBy('created_at', 'DESC')->get(); //特集情報
+        $special_futures = SpecialFutures::select()->where('delete_flg', 0)->orderBy('created_at', 'DESC')->paginate(50); //特集情報
         $stores = Stores::select()->get(); //stores情報
         return view('admin.special_future.index', compact('user', 'stores', 'special_futures'));
     }

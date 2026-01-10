@@ -62,6 +62,21 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
+                ユーザー管理
+            </div>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/user">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>ユーザー一覧</span></a>
+            </li>
+
+             <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
                 店舗管理
             </div>
 
