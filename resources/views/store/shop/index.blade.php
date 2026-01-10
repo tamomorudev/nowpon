@@ -55,5 +55,14 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                {{ $stores->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="text-muted">
+                全 {{ $stores->total() }} 件中 
+                {{ $stores->firstItem() }} - {{ $stores->lastItem() }} 件を表示
+            </div>
+        </div>
     </div>
 @endsection

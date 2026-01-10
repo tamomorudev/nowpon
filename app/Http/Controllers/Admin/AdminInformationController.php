@@ -30,7 +30,7 @@ class AdminInformationController extends Controller
     public function index()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $information_array = Information::select()->where('delete_flg', 0)->orderBy('created_at', 'DESC')->get(); //特集情報
+        $information_array = Information::select()->where('delete_flg', 0)->orderBy('created_at', 'DESC')->paginate(50); //特集情報
         $stores = Stores::select()->get(); //stores情報
         return view('admin.information.index', compact('user', 'stores', 'information_array'));
     }

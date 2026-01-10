@@ -34,7 +34,7 @@ class AdminShopController extends Controller
     public function index()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $stores = Stores::select()->get(); //stores情報
+        $stores = Stores::select()->paginate(50); //stores情報
 
         return view('admin.shop.index', compact('user', 'stores'));
     }
@@ -42,14 +42,14 @@ class AdminShopController extends Controller
     public function account()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $store_users = StoreUser::select()->get(); //storeuser
+        $store_users = StoreUser::select()->paginate(50); //storeuser
         return view('admin.shop.account', compact('user', 'store_users'));
     }
 
     public function cource()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $stores = Stores::select()->get(); //stores情報
+        $stores = Stores::select()->paginate(50); //stores情報
         
         return view('admin.shop.cource', compact('user'));
     }
