@@ -14,6 +14,7 @@ use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\StoreUser;
 use App\Models\Stations;
+use App\Services\ImageService;
 
 class StoreShopController extends Controller
 {
@@ -22,9 +23,8 @@ class StoreShopController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-
+    public function __construct(ImageService $imageService) { 
+        $this->imageService = $imageService;
     }
 
     /**
@@ -35,12 +35,12 @@ class StoreShopController extends Controller
     public function index()
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $stores = Stores::select()->where('company_id', $user->company_id)->paginate(50); //stores情報
 
         return view('store.shop.index', compact('user', 'stores'));
     }
 
-    public function create(Request $request)
+    public function create(Request $request, ImageService $imageService)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
 
@@ -84,6 +84,13 @@ class StoreShopController extends Controller
                     ->withInput();
             }
 
+            //画像登録
+            $result = $this->imageService->upload($request, 'store_image', 'images');
+            if ($result['error']) { 
+                return redirect()->route('store.shop.create')->withErrors($result['error'])->withInput(); 
+            }
+            $img_path = $result['path'];
+            /*
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
@@ -102,6 +109,8 @@ class StoreShopController extends Controller
             } else {
                 $img_path = '';
             }
+            */
+            
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
@@ -264,7 +273,7 @@ class StoreShopController extends Controller
     public function account()
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $store_users = StoreUser::select()->where('company_id', $user->company_id)->get(); //storeuser
+        $store_users = StoreUser::select()->where('company_id', $user->company_id)->paginate(50); //storeuser
         return view('store.shop.account', compact('user', 'store_users'));
     }
 
