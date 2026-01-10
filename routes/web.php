@@ -113,6 +113,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/shop', 'App\Http\Controllers\Admin\AdminShopController@index')->name('admin.shop.index');
         Route::get('/account', 'App\Http\Controllers\Admin\AdminShopController@account')->name('admin.account.index');
 
+        // ユーザー
+        Route::get('/user', 'App\Http\Controllers\Admin\AdminUserController@index')->name('admin.user.index');
+        Route::get('/user/detail', 'App\Http\Controllers\Admin\AdminUserController@detail')->name('admin.user.detail');
+
         // お知らせ
         Route::get('/information', 'App\Http\Controllers\Admin\AdminInformationController@index')->name('admin.information.index');
         Route::match(['get', 'post'], '/information/create', 'App\Http\Controllers\Admin\AdminInformationController@create')->name('admin.information.create');
