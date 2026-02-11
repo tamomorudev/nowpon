@@ -93,13 +93,99 @@
         .coupon-text {
             flex: 1;
         }
+
+        /* ===== 特集表示 ===== */
+        .special-future-detail {
+            margin: 20px 0;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .special-future-header {
+            margin-bottom: 12px;
+        }
+
+        .special-future-title {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            margin: 0 0 6px;
+        }
+
+        .special-future-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .special-future-outline {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .special-future-image {
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .special-future-image {
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .special-future-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     @include('layouts.header')
 
-        <!-- 検索 -->
+    @if (!empty($special_futures))
+        <!-- 特集検索 -->
+        <div class="special-future-detail">
+
+            <div class="special-future-header">
+                <h2 class="special-future-title">
+                    <span class="special-future-icon">✨</span>
+                    {{ $special_futures->name }}
+                </h2>
+
+                <p class="special-future-outline">
+                    {{ $special_futures->outline }}
+                </p>
+            </div>
+
+            @if ($special_futures->image)
+                <div class="special-future-image-wrap">
+                    <img
+                        src="{{ asset('/assets/images/' . $special_futures->image) }}"
+                        alt="特集画像"
+                        class="special-future-image"
+                    >
+                </div>
+            @endif
+
+            <div class="special-future-body">
+                {!! $special_futures->detail !!}
+            </div>
+
+        </div>
+    @else
+        <!-- 通常検索 -->
         <div class="detailed-search-section">
             <div>
                 <h2 style="display: flex; align-items: center; font-size: 20px;">
@@ -162,6 +248,10 @@
                 </div>
             </form>
         </div>
+
+
+    @endif
+
 
     <!-- クーポンリスト -->
     <div class="coupon-list">

@@ -60,6 +60,7 @@ class SiteController extends Controller
     {
         $date = date('Y-m-d H:i:s');
         $list_coupons = array();
+        $special_futures = array();
 
         // 検索経由かどうか（prefecture or keyword）
         $isSearch = $request->filled('prefecture') || $request->filled('keyword');
@@ -126,6 +127,54 @@ class SiteController extends Controller
                     ->orderBy('created_at', 'DESC')
                     ->get();
             }
+        } else if (isset($request['search']) && $request['search'] == 'special_futures') {
+            // 特集検索の場合
+            if (isset($request['id'])) {
+                // まず、特集の情報を取得
+                $special_futures = SpecialFutures::select()->where('id', '=', $request['id'])->first();
+                // その後、クーポンとユーザ情報に合致する条件で検索
+                $q = Coupons::select(
+                    'coupons.*',
+                    'stores.store_name',
+                    'stores.genre',
+                    'stores.station',
+                    'stores.transportation',
+                    'stores.time',
+                )
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->where('coupons.expire_start_date', '<=', $date)
+                ->where('coupons.expire_end_date', '>=', $date);
+
+                // 特集に曜日の指定がある場合
+                $weekdays = json_decode($special_futures->day_of_the_weeks, true);
+                if (!empty($weekdays)) {
+                    $q->whereIn('coupons.day_of_the_week', $weekdays);
+                }
+                // 特集にカテゴリ（ジャンル）の指定がある場合
+                $genres = json_decode($special_futures->genre, true);
+                if (!empty($genres)) {
+                    $q->whereIn('stores.genre', $genres);
+                }
+                // 特集に割引率の指定がある場合
+                if ($special_futures->discount_rate > 0) {
+                    $q->where('coupons.discount_rate', '>=', $special_futures->discount_rate);
+                }
+                // 特集に開始日時の指定がある場合
+                if ($special_futures->coupon_date_start > 0) {
+                    $q->where('coupons.cource_time', '<=', $date);
+                }
+                // 特集に終了日付の指定がある場合
+                if ($special_futures->coupon_date_start > 0) {
+                    $q->where('coupons.cource_time', '>=', $date);
+                }
+                // 特集に性別の指定がある場合
+                if (!empty($special_futures->sex)) {
+                    // ユーザー情報をみる（仕様が決定してから）▼
+                    //特集側で性別が指定されいた場合、未ログイン時に取得する特集の条件は性別がすべてのもののみ？？
+                    //トップページでそもそもフィルタしているのであれば、検索側で性別を見る必要なくない？？
+                }
+                $list_coupons = $q->orderBy('coupons.created_at', 'DESC')->get();
+            }
         }
 
         // 検索結果格納
@@ -155,6 +204,7 @@ class SiteController extends Controller
 
         return view('site.couponlist', [
             'list_coupons'      => $list_coupons,
+            'special_futures'   => $special_futures,
             'searchPrefecture'  => $isSearch ? $request->input('prefecture')    : null,
             'searchStationLine' => $isSearch ? $request->input('station_line')  : null,
             'searchStation'     => $isSearch ? $request->input('station')       : null,

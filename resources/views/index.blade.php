@@ -596,6 +596,7 @@
         <div class="feature-grid">
             @if($special_futures)
                 @foreach($special_futures as $special_future)
+                    <a href="{{ url('/site/couponlist?search=special_futures&id=' . $special_future->id) }}" class="card-link">
                     <div class="feature-card">
                         @if($special_future->image)
                             <img src="{{ asset('/assets/images/' . $special_future->image) }}" alt="画像" class="feature-image">
@@ -608,6 +609,7 @@
                             <p class="mb-0">{{ $special_future->outline }}</p>
                         </div>
                     </div>
+                    </a>
                 @endforeach
             @else
                 現在開催されている特集はありません。
