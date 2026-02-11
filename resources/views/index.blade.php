@@ -484,9 +484,9 @@
 
     <div class="filter-buttons">
         <button class="active" onclick="location.href='/site/couponlist'">新着</button>
-        <button onclick="location.href='/site/couponlist'">お気に入り</button>
+        <!-- <button onclick="location.href='/site/couponlist'">お気に入り</button> -->
         <button onclick="location.href='/site/couponlist?search=area'">マイエリア</button>
-        <button onclick="location.href='/site/couponlist'">お得なクーポン</button>
+        <!-- <button onclick="location.href='/site/couponlist'">お得なクーポン</button> -->
     </div>
 
     <!-- クーポンリスト -->
