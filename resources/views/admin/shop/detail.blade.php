@@ -71,15 +71,13 @@
                                 </tr>
                                 <tr>
                                     <th>最寄り駅1</th>
-                                    <td>{{$store_data->station_line}} {{$store_data->station}}<br>
-                                        {{config('commons.transportation')[$store_data->transportation]}} {{$store_data->time}}分</td>
+                                    <td>{{$store_data->line}} {{$store_data->station}} {{config('commons.transportation')[$store_data->transportation]}} {{$store_data->time}}分</td>
                                 </tr>
                                 <tr>
                                     <th>最寄り駅2</th>
                                     <td>
                                         @if($store_data->station_2)
-                                            {{$store_data->station_line_2}} {{$store_data->station_2}}<br>
-                                            {{config('commons.transportation')[$store_data->transportation_2]}} {{$store_data->time_2}}分
+                                            {{$store_data->line_2}} {{$store_data->station_2}} {{config('commons.transportation')[$store_data->transportation_2]}} {{$store_data->time_2}}分
                                         @endif
                                     </td>
                                 </tr>
