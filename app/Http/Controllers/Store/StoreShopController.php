@@ -86,7 +86,7 @@ class StoreShopController extends Controller
 
             //画像登録
             $result = $this->imageService->upload($request, 'store_image', 'images');
-            if ($result['error']) { 
+            if (isset($result['error']) && $result['error']) { 
                 return redirect()->route('store.shop.create')->withErrors($result['error'])->withInput(); 
             }
             $img_path = $result['path'];
@@ -209,6 +209,12 @@ class StoreShopController extends Controller
                     ->withInput();
             }
 
+            $result = $this->imageService->upload($request, 'store_image', 'images');
+            if ($result['error']) { 
+                return redirect()->route('store.shop.edit')->withErrors($result['error'])->withInput(); 
+            }
+            $img_path = $result['path'];
+            /*
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
@@ -227,10 +233,11 @@ class StoreShopController extends Controller
             } else {
                 $img_path = '';
             }
+            */
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
-                    return redirect()->route('store.shop.create')
+                    return redirect()->route('store.shop.edit')
                     ->withErrors(['station_error' => 1])
                     ->withInput();
                 }
@@ -268,6 +275,24 @@ class StoreShopController extends Controller
         }
 
         return view('store.shop.edit', compact('user', 'store_data'));
+    }
+
+    public function detail(Request $request)
+    {
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
+
+        if(!isset($request['si'])) {
+            abort(404);
+        }
+
+        $store_id = $request['si'];
+        $store_data = Stores::select()->where('id', $store_id)->where('company_id', $user->company_id)->first(); //stores情報
+
+        if(!$store_data) {
+            abort(404);
+        }
+
+        return view('store.shop.detail', compact('user', 'store_data'));
     }
 
     public function account()

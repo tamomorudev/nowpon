@@ -1,7 +1,7 @@
 @extends('layouts.admin.app', ['authgroup'=>'admin_user'])
 
 @section('title')
-店舗情報
+店舗画像一覧
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">店舗一覧</h1>
+            <h1 class="h3 mb-0 text-gray-800">店舗画像一覧</h1>
         </div>
 
         <div class="card shadow mb-4">
@@ -22,11 +22,9 @@
                             <tr>
                                 <th>店舗名</th>
                                 <th>企業ID</th>
-                                <th>メールアドレス</th>
-                                <th>電話番号</th>
-                                <th>ジャンル</th>
-                                <th>最寄り駅</th>
-                                <th>詳細</th>
+                                <th>画像タイプ</th>
+                                <th>画像</th>
+                                <th>削除</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,16 +32,22 @@
                             <tr>
                                 <td>{{$store->store_name}}</td>
                                 <td>{{$store->company_id}}</td>
-                                <td>{{$store->email}}</td>
-                                <td>{{$store->phone_number}}</td>
-                                <td>{{ config('commons.genre')[$store->genre] }}</td>
+                                <td>店舗</td>
                                 <td>
-                                    {{ $store->line }} {{ $store->station }}
-                                    @if($store->station_2)
-                                        <br>{{ $store->line_2 }} {{ $store->station_2 }}
+                                    @if($store->image)
+                                        <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
                                     @endif
                                 </td>
-                                <td><a class="btn btn-success btn-sm w-100 text-nowrap" href="shop/detail?si={{$store->id}}">詳細</a></td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.master.store_images_delete') }}">
+                                        @csrf
+                                        <div>
+                                            <input type="hidden" id="d_type" name="d_type" value="store">
+                                            <input type="hidden" id="id" name="id" value="{{$store->id}}">
+                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

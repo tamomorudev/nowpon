@@ -34,16 +34,16 @@ class AdminMasterController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function images()
+    public function store_images()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $stores = Stores::where('image', '!=', '')->where('image', '!=', null)->select()->get(); //stores情報
+        $stores = Stores::where('image', '!=', '')->where('image', '!=', null)->select()->paginate(50); //stores情報
         $coupons = Coupons::where('img_url', '!=', '')->where('img_url', '!=', null)->select()->get();
 
-        return view('admin.master.images', compact('user', 'stores', 'coupons'));
+        return view('admin.master.store_images', compact('user', 'stores', 'coupons'));
     }
 
-    public function images_delete(Request $request)
+    public function store_images_delete(Request $request)
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::select()->get(); //stores情報
@@ -77,7 +77,54 @@ class AdminMasterController extends Controller
             }
         }
 
-        return redirect('/admin/images');
+        return redirect('/admin/store_images');
+
+    }
+
+    public function coupon_images()
+    {
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
+        $stores = Stores::where('image', '!=', '')->where('image', '!=', null)->select()->get(); //stores情報
+        $coupons = Coupons::where('img_url', '!=', '')->where('img_url', '!=', null)->select()->paginate(50);
+
+        return view('admin.master.coupon_images', compact('user', 'stores', 'coupons'));
+    }
+
+    public function coupon_images_delete(Request $request)
+    {
+        $user = Auth::guard('admin_user')->user(); //ユーザー情報
+        $stores = Stores::select()->get(); //stores情報
+        $coupons = Coupons::select()->get();
+        $request = $request->all();
+
+        if (isset($request['d_type']) && $request['d_type'] == 'store') {
+            $store_data = Stores::where('id', $request['id'])->first();
+
+            if ($store_data) {
+                $update['image'] = '';
+                $update['updated_by'] = $user->id;
+                Stores::where('id', $store_data->id)->update($update);
+    
+                if ($store_data->image && File::exists('assets/images/'. $store_data->image)) {
+                    File::delete('assets/images/'. $store_data->image);
+                }
+            }
+        }
+        if (isset($request['d_type']) && $request['d_type'] == 'coupon') {
+            $coupon_data = Coupons::where('id', $request['id'])->first();
+
+            if ($coupon_data) {
+                $update['img_url'] = '';
+                $update['updated_by'] = $user->id;
+                Coupons::where('id', $coupon_data->id)->update($update);
+    
+                if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url)) {
+                    File::delete('assets/images/'. $coupon_data->img_url);
+                }
+            }
+        }
+
+        return redirect('/admin/coupon_images');
 
     }
 

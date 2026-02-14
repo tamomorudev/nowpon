@@ -1,7 +1,7 @@
 @extends('layouts.admin.app', ['authgroup'=>'admin_user'])
 
 @section('title')
-画像マスタ
+クーポン画像一覧
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">画像マスタ</h1>
+            <h1 class="h3 mb-0 text-gray-800">クーポン画像一覧</h1>
         </div>
 
         <div class="card shadow mb-4">
@@ -28,32 +28,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($stores as $store)
-                            <tr>
-                                <td>{{$store->store_name}}</td>
-                                <td>{{$store->company_id}}</td>
-                                <td>店舗</td>
-                                <td>
-                                    @if($store->image)
-                                        <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
-                                    @endif
-                                </td>
-                                <td>
-                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
-                                        @csrf
-                                        <div>
-                                            <input type="hidden" id="d_type" name="d_type" value="store">
-                                            <input type="hidden" id="id" name="id" value="{{$store->id}}">
-                                            <input type="submit" class="form-control btn btn-danger btn-block" id="" value='削除'>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
                             @foreach($coupons as $coupon)
                             <tr>
                                 <td>{{$coupon->coupon_name}}</td>
-                                <td>{{$store->company_id}}</td>
+                                <td>{{$coupon->company_id}}</td>
                                 <td>クーポン</td>
                                 <td>
                                     @if($coupon->img_url)
@@ -61,7 +39,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
+                                    <form method="POST" action="{{ route('admin.master.coupon_images_delete') }}">
                                         @csrf
                                         <div>
                                             <input type="hidden" id="d_type" name="d_type" value="coupon">
@@ -75,6 +53,15 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                {{ $coupons->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="text-muted">
+                全 {{ $coupons->total() }} 件中 
+                {{ $coupons->firstItem() }} - {{ $coupons->lastItem() }} 件を表示
             </div>
         </div>
     </div>

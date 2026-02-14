@@ -39,6 +39,24 @@ class AdminShopController extends Controller
         return view('admin.shop.index', compact('user', 'stores'));
     }
 
+    public function detail(Request $request)
+    {
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
+
+        if(!isset($request['si'])) {
+            abort(404);
+        }
+
+        $store_id = $request['si'];
+        $store_data = Stores::select()->where('id', $store_id)->first(); //stores情報
+
+        if(!$store_data) {
+            abort(404);
+        }
+
+        return view('admin.shop.detail', compact('user', 'store_data'));
+    }
+
     public function account()
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報

@@ -37,7 +37,10 @@
                     <div class="col-sm-6 mb-3 mb-sm-0">
                         <select name="store_name" id="name" class="form-control">
                             @foreach($stores as $store)
-                                <option value="{{$store->id}}">{{$store->store_name}}</option>
+                                <option value="{{ $store->id }}"
+                                    {{ old('store_id', $re_coupon->store_id ?? '') == $store->id ? 'selected' : '' }}>
+                                    {{ $store->store_name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -46,7 +49,7 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">クーポン名<span class="text-danger">*</span></label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <input type="text" class="form-control @error('coupon_name') is-invalid @enderror" name="coupon_name"
-                               value="{{ old('coupon_name') }}" placeholder="">
+                               value="{{ old('coupon_name', $re_coupon->coupon_name ?? '') }}" placeholder="">
                         @error('coupon_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -58,7 +61,7 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">定価<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
-                               value="{{ old('price', 0) }}" min="0" step="1" placeholder="価格を入力してください">
+                               value="{{ old('price', (int)$re_coupon->price ?? 0) }}" min="0" step="1" placeholder="価格を入力してください">
                         @error('price')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -70,7 +73,7 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">店舗支払金額<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control @error('store_pay_price') is-invalid @enderror" name="store_pay_price" id="store_pay_price"
-                               value="{{ old('store_pay_price', 0) }}" min="0" step="1" placeholder="店舗支払金額を入力してください">
+                               value="{{ old('store_pay_price', (int)$re_coupon->store_pay_price, 0) }}" min="0" step="1" placeholder="店舗支払金額を入力してください">
                         @error('store_pay_price')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -78,28 +81,6 @@
                         @enderror
                     </div>
                 </div>
-                <?php /*
-                <div class="form-group">
-                    <label for="name" class="col-md-4 col-form-label text-md-end">割引額<span class="text-danger">*</span></label>
-                    <div class="row"style="margin-left:0px">
-                        <div class="col-sm-3 mb-3 mb-sm-0">
-                            <input type="number" class="form-control @error('discount_price') is-invalid @enderror" name="discount_price" id="discount_price"
-                                   value="{{ old('discount_price', 0) }}" min="0" step="1" placeholder="割引額を入力してください">
-                            @error('discount_price')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="col-sm-1 mb-3 mb-sm-0">
-                            <select name="discount_type" id="discount_type" class="form-control">
-                                <option value="0" {{ old('discount_type') == '0' ? 'selected' : '' }}>円</option>
-                                <option value="1" {{ old('discount_type') == '1' ? 'selected' : '' }}>％</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                */ ?>
                 <div class="form-group">
                     <?php /*
                     <label for="name" class="col-form-label text-md-end" style="padding-left: .75rem;">店舗支払金額：<span style="color:red"><span id='coupon_store'></span>円</span></label><br>
@@ -111,7 +92,7 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース時間(分)<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control @error('cource_time') is-invalid @enderror" name="cource_time" id="cource_time"
-                            min="30" value="{{ old('cource_time') }}" placeholder="">
+                            min="30" value="{{ old('cource_time', $re_coupon->cource_time) }}" placeholder="">
                         @error('cource_time')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -122,7 +103,7 @@
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">コース開始時間<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
-                        <input type="datetime-local" class="form-control @error('cource_start') is-invalid @enderror" id="cource_start" name="cource_start" value="{{ old('cource_start') }}">
+                        <input type="datetime-local" class="form-control @error('cource_start') is-invalid @enderror" id="cource_start" name="cource_start" value="{{ old('cource_start', $re_coupon->cource_start) }}">
                         @error('cource_start')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -133,7 +114,7 @@
                 <div class="form-group">
                     <label for="name" class="col-md-4 col-form-label text-md-end">説明<span class="text-danger">*</span></label>
                     <div class="col-sm-10 mb-3 mb-sm-0">
-                        <textarea class="form-control @error('detail') is-invalid @enderror" rows="10" cols="60" name="detail">{{ old('detail') }}</textarea>
+                        <textarea class="form-control @error('detail') is-invalid @enderror" rows="10" cols="60" name="detail">{{ old('detail', $re_coupon->detail) }}</textarea>
                         @error('detail')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -145,7 +126,7 @@
                 <label for="name" class="col-md-4 col-form-label text-md-end">有効期限<span class="text-danger">*</span></label>
                     <div class="row"style="margin-left:0px">
                         <div class="col-sm-3 mb-3 mb-sm-0">
-                            <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date') }}">
+                            <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $re_coupon->expire_start_date) }}">
                             @error('start_date')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -154,7 +135,7 @@
                         </div>
                         ～
                         <div class="col-sm-3">
-                            <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date') }}">
+                            <input type="datetime-local" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $re_coupon->expire_end_date) }}">
                             @error('end_date')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -165,6 +146,28 @@
                 </div>
                 <div class="form-group">
                     <label for="images" class="col-md-4 col-form-label text-md-end">画像</label>
+                    @if (isset($re_coupon) && $re_coupon)
+                        <input type="hidden" name="image_re" value="{{ $re_coupon->id }}">
+                        @if($re_coupon->img_url)
+                        <div class="col-sm-10 mb-3 mb-sm-0">
+                            <img width="50" height="50" src="{{ asset('/assets/images/'. $re_coupon->img_url) }}" >
+                            @if($re_coupon->img_url_2)
+                                <img width="50" height="50" src="{{ asset('/assets/images/'. $re_coupon->img_url_2) }}" >
+                            @endif
+                            @if($re_coupon->img_url_3)
+                                <img width="50" height="50" src="{{ asset('/assets/images/'. $re_coupon->img_url_3) }}" >
+                            @endif
+                            @if($re_coupon->img_url_4)
+                                <img width="50" height="50" src="{{ asset('/assets/images/'. $re_coupon->img_url_4) }}" >
+                            @endif
+                            @if($re_coupon->img_url_5)
+                                <img width="50" height="50" src="{{ asset('/assets/images/'. $re_coupon->img_url_5) }}" >
+                            @endif
+                        </div>
+                        <br>
+                        @endif
+                    <div class="col-sm-10 mb-3 mb-sm-3">画像を更新する際は、すべての画像を再度アップロードしてください。</div>
+                    @endif
                     <div class="col-sm-10 mb-3 mb-sm-3">
                         <input type="file" class="form-control" name="images">
                     </div>
@@ -196,8 +199,8 @@
     <script>
         $(function() {
             // old() の値を保持し、存在しない場合のみ初期化
-            let priceInitial = "{{ old('price', 0) }}";
-            let StorePayPriceInitial = "{{ old('store_pay_price', 0) }}";
+            let priceInitial = "{{ old('price', (int)$re_coupon->price ?? 0) }}";
+            let StorePayPriceInitial = "{{ old('store_pay_price', (int)$re_coupon->store_pay_price, 0) }}";
 
             $("#price").val(priceInitial);
             $("#store_pay_price").val(StorePayPriceInitial);

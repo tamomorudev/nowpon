@@ -70,12 +70,14 @@ Route::group(['prefix' => 'store'], function () {
         Route::get('/home', 'App\Http\Controllers\Store\StoreHomeController@index')->name('store.home2');
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Store\StoreShopController@index')->name('store.shop.index');
+        Route::get('/shop/detail', 'App\Http\Controllers\Store\StoreShopController@detail')->name('store.shop.detail');
         Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
         Route::match(['get', 'post'], '/shop/edit', 'App\Http\Controllers\Store\StoreShopController@edit')->name('store.shop.edit');
         Route::get('/account', 'App\Http\Controllers\Store\StoreShopController@account')->name('store.account.index');
         Route::match(['get', 'post'], '/account/create', 'App\Http\Controllers\Store\StoreShopController@accountCreate')->name('store.account.create');
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Store\StoreCouponController@index')->name('store.coupon');
+        Route::get('/coupon/detail', 'App\Http\Controllers\Store\StoreCouponController@detail')->name('store.coupon.detail');
         Route::match(['get', 'post'], '/coupon/create', 'App\Http\Controllers\Store\StoreCouponController@create')->name('store.coupon.create');
         Route::match(['get', 'post'], '/coupon/edit', 'App\Http\Controllers\Store\StoreCouponController@edit')->name('store.coupon.edit');
         Route::post('/coupon/delete', 'App\Http\Controllers\Store\StoreCouponController@delete')->name('store.coupon.delete');
@@ -111,6 +113,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Admin\AdminShopController@index')->name('admin.shop.index');
+        Route::get('/shop/detail', 'App\Http\Controllers\Admin\AdminShopController@detail')->name('admin.shop.detail');
         Route::get('/account', 'App\Http\Controllers\Admin\AdminShopController@account')->name('admin.account.index');
 
         // ユーザー
@@ -125,14 +128,18 @@ Route::group(['prefix' => 'admin'], function () {
 
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Admin\AdminCouponController@index')->name('admin.coupon');
+        Route::get('/coupon/detail', 'App\Http\Controllers\Admin\AdminCouponController@detail')->name('admin.coupon.detail');
+        Route::post('/coupon/delete', 'App\Http\Controllers\Admin\AdminCouponController@delete')->name('admin.coupon.delete');
         // 特集
         Route::get('/special_future', 'App\Http\Controllers\Admin\AdminSpecialFutureController@index')->name('admin.special_future');
         Route::match(['get', 'post'], '/special_future/create', 'App\Http\Controllers\Admin\AdminSpecialFutureController@create')->name('admin.special_future.create');
         Route::match(['get', 'post'], '/special_future/edit', 'App\Http\Controllers\Admin\AdminSpecialFutureController@edit')->name('admin.special_future.edit');
         Route::post('/special_future/delete', 'App\Http\Controllers\Admin\AdminSpecialFutureController@delete')->name('admin.special_future.delete');
         // マスタ
-        Route::match(['get', 'post'], '/images', 'App\Http\Controllers\Admin\AdminMasterController@images')->name('admin.master.images');
-        Route::post('/images_delete', 'App\Http\Controllers\Admin\AdminMasterController@images_delete')->name('admin.master.images_delete');
+        Route::match(['get', 'post'], '/store_images', 'App\Http\Controllers\Admin\AdminMasterController@store_images')->name('admin.master.store_images');
+        Route::post('/store_images_delete', 'App\Http\Controllers\Admin\AdminMasterController@store_images_delete')->name('admin.master.store_images_delete');
+        Route::match(['get', 'post'], '/coupon_images', 'App\Http\Controllers\Admin\AdminMasterController@coupon_images')->name('admin.master.coupon_images');
+        Route::post('/coupon_images_delete', 'App\Http\Controllers\Admin\AdminMasterController@coupon_images_delete')->name('admin.master.coupon_images_delete');
         //Route::get('/cource', 'App\Http\Controllers\Store\StoreShopController@courceCreate')->name('store.shop.cource');
     });
 });

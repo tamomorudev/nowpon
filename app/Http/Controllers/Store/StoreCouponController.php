@@ -15,6 +15,8 @@ use Illuminate\View\View;
 use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
+use App\Services\ImageService;
+use Carbon\Carbon;
 
 class StoreCouponController extends Controller
 {
@@ -23,9 +25,8 @@ class StoreCouponController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-
+    public function __construct(ImageService $imageService) {
+        $this->imageService = $imageService;
     }
 
     /**
@@ -33,11 +34,37 @@ class StoreCouponController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
-        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
+        //$coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+
+        $coupon_name = $request->coupon_name;
+        $coupon_code = $request->coupon_code;
+        $store_id = $request->store_name;
+        $status = $request->status;
+
+        $date = date('Y-m-d H:i:s');
+
+        $coupons = Coupons::select('coupons.*', 'stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id);
+
+        if ($coupon_name) { $coupons->where('coupon_name', 'like', "%{$coupon_name}%"); }
+        if ($coupon_code) { $coupons->where('coupon_code', 'like', "%{$coupon_code}%"); }
+        if ($store_id) { $coupons->where('store_id', $store_id); }
+        if ($status) {
+            if ($status === 'prepare') { 
+                $coupons->where('expire_start_date', '>', $date);
+            } else if ($status === 'active') {
+                $coupons->where('expire_start_date', '<=', $date)->where('expire_end_date', '>=', $date);
+            } else if ($status === 'expired') { 
+                $coupons->where('expire_end_date', '<', $date);
+            }
+        }
+
+        $coupons = $coupons->orderBy('coupons.created_at', 'DESC')->paginate(50);
+
+
         return view('store.coupon.index', compact('user', 'stores', 'coupons'));
     }
 
@@ -94,6 +121,17 @@ class StoreCouponController extends Controller
             $img_index = 0;
             $coupon_image_array = array();
 
+            $result = $this->imageService->uploadCouponImages($request);
+            
+            if ($result['error']) {
+                return redirect()->route('store.coupon.create')
+                    ->withErrors(['images' => $result['message']])
+                    ->withInput();
+            }
+            
+            $coupon_image_array = $result['data'];
+
+            /*
             foreach ($image_keys as $key) {
                 if (isset($request[$key]) && $request[$key]) {
                     $file = $request[$key];
@@ -120,6 +158,7 @@ class StoreCouponController extends Controller
                     }
                 }
             }
+            */
 
             /*
             if (isset($request['images']) && $request['images']) {
@@ -174,13 +213,24 @@ class StoreCouponController extends Controller
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;
                 //$create_coupon_array['img_url'] = $img_path;
-                foreach ($coupon_image_array as $field_name => $coupon_image_path) {
-                    $create_coupon_array[$field_name] = $coupon_image_path;
+                if ($coupon_image_array) {
+                    foreach ($coupon_image_array as $field_name => $coupon_image_path) {
+                        $create_coupon_array[$field_name] = $coupon_image_path;
+                    }
+                } else if (isset($request['image_re']) && $request['image_re']) {
+                    $re_image_coupon = Coupons::where('id', $request['image_re'])->where('company_id', $user->company_id)->first();
+                    if ($re_image_coupon) {  
+                        $create_coupon_array['img_url'] = $re_image_coupon->img_url;
+                        $create_coupon_array['img_url_2'] = $re_image_coupon->img_url_2;
+                        $create_coupon_array['img_url_3'] = $re_image_coupon->img_url_3;
+                        $create_coupon_array['img_url_4'] = $re_image_coupon->img_url_4;
+                        $create_coupon_array['img_url_5'] = $re_image_coupon->img_url_5;
+                    }
                 }
                 $create_coupon_array['created_by'] = $user->id;
                 $create_coupon_array['updated_by'] = $user->id;
 
-                $coupon_id = Coupons::firstOrCreate($create_coupon_array);
+                $coupon_id = Coupons::create($create_coupon_array);
 
                 //クーポンコード生成
                 $coupon_code = 'CP'.rand(100000, 999999);
@@ -199,7 +249,37 @@ class StoreCouponController extends Controller
             return redirect('/store/coupon');
         }
 
-        return view('store.coupon.create', compact('user', 'stores'));
+        //再利用からの繊維
+        if (isset($request['re_ci'])) {
+            $re_coupon = Coupons::where('id', $request['re_ci'])->where('company_id', $user->company_id)->first();
+
+            $re_coupon->expire_end_date = Carbon::parse($re_coupon->expire_end_date)->format('Y-m-d H:i');
+
+            if (!$re_coupon) {
+                return view('store.coupon.create', compact('user', 'stores', 're_coupon'));
+            }
+        } else {
+            $re_coupon = (object)[ 
+                'id' => null,
+                'price' => null,
+                'coupon_name' => null,
+                'store_id' => null,
+                'store_pay_price' => null,
+                'cource_time' => null,
+                'cource_start' => null,
+                'detail' => null,
+                'cource_time' => null,
+                'expire_start_date' => null,
+                'expire_end_date' => null,
+                'img_url' => null,
+                'img_url_2' => null,
+                'img_url_3' => null,
+                'img_url_4' => null,
+                'img_url_5' => null,
+            ];
+        }
+
+        return view('store.coupon.create', compact('user', 'stores', 're_coupon'));
     }
 
     public function edit(Request $request)
@@ -217,6 +297,11 @@ class StoreCouponController extends Controller
 
         if(!$coupon_data) {
             abort(404);
+        }
+
+        //掲載前でなければリダイレクト
+        if ($coupon_data->expire_start_date <= date('Y-m-d H:i:s')) {
+            return redirect('/store/coupon');
         }
 
         $coupon_data->expire_start_date = date('Y-m-d H:i', strtotime($coupon_data->expire_start_date));
@@ -401,7 +486,7 @@ class StoreCouponController extends Controller
         $request = $request->all();
 
         $coupon_id = $request['ci'];
-        $coupon_data = Coupons::where('id', $coupon_id)->first(); //クーポン情報
+        $coupon_data = Coupons::where('id', $coupon_id)->where('coupons.company_id', $user->company_id)->first(); //クーポン情報
 
         if ($coupon_data) {
             //一旦物理削除
@@ -410,8 +495,41 @@ class StoreCouponController extends Controller
             if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url)) {
                 File::delete('assets/images/'. $coupon_data->img_url);
             }
+            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_2)) {
+                File::delete('assets/images/'. $coupon_data->img_url_2);
+            }
+            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_3)) {
+                File::delete('assets/images/'. $coupon_data->img_url_3);
+            }
+            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_4)) {
+                File::delete('assets/images/'. $coupon_data->img_url_4);
+            }
+            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_5)) {
+                File::delete('assets/images/'. $coupon_data->img_url_5);
+            }
+        } else {
+            abort(404);
         }
 
         return redirect('/store/coupon');
+    }
+
+    public function detail(Request $request)
+    {
+        $user = Auth::guard('store_user')->user(); //ユーザー情報
+        $stores = Stores::select()->where('company_id', $user->company_id)->where('company_id', $user->company_id)->get(); //stores情報
+
+        if(!isset($request['ci'])) {
+            abort(404);
+        }
+
+        $coupon_id = $request['ci'];
+        $coupon_data = Coupons::select('coupons.*', 'stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.id', $coupon_id)->where('coupons.company_id', $user->company_id)->first(); //クーポン情報
+
+        if(!$coupon_data) {
+            abort(404);
+        }
+
+        return view('store.coupon.detail', compact('user', 'stores', 'coupon_data'));
     }
 }

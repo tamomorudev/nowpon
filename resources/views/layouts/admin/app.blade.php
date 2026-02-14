@@ -151,9 +151,16 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="/admin/images">
+                <a class="nav-link" href="/admin/store_images">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>画像管理</span></a>
+                    <span>画像 店舗</span></a>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/coupon_images">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>画像 クーポン</span></a>
             </li>
 
             <!-- Divider -->
