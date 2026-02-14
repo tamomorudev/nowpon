@@ -41,7 +41,7 @@
                                 <th>発行終了時間</th>
                                 <th>画像</th>
                                 <th>ステータス</th>
-                                <th>編集</th>
+                                <th>詳細</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,9 +68,7 @@
                                     {{ couponStatus($coupon) }}
                                 </td>
                                 <td>
-                                    @if ($coupon->expire_start_date > date('Y-m-d H:i:s'))
-                                        <a class="btn btn-success btn-sm w-100 text-nowrap" href="coupon/edit?ci={{$coupon->id}}">編集</a>
-                                    @endif
+                                    <a class="btn btn-success btn-sm w-100 text-nowrap" href="coupon/detail?ci={{$coupon->id}}">詳細</a>
                                 </td>
                             </tr>
                             @endforeach
