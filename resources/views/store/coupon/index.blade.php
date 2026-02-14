@@ -20,7 +20,67 @@
             <h1 class="h3 mb-0 text-gray-800">クーポン一覧</h1>
         </div>
 
-        {{$user->name}}のクーポン
+        <!-- Search Form -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('store.coupon') }}">
+
+                    <!-- 1行目：検索項目 -->
+                    <div class="form-row">
+
+                        <div class="col-md-3 mb-3">
+                            <label for="coupon_name">クーポン名</label>
+                            <input type="text" name="coupon_name" id="coupon_name"
+                                value="{{ request('coupon_name') }}"
+                                class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="coupon_code">クーポンコード</label>
+                            <input type="text" name="coupon_code" id="coupon_code"
+                                value="{{ request('coupon_code') }}"
+                                class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="store_name">店舗名</label>
+                            <select name="store_name" id="store_name" class="form-control">
+                                <option value="">すべて</option>
+                                @foreach($stores as $store)
+                                    <option value="{{ $store->id }}"
+                                        {{ request('store_name') == $store->id ? 'selected' : '' }}>
+                                        {{ $store->store_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="status">ステータス</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="">すべて</option>
+                                <option value="prepare" {{ request('status')=='prepare' ? 'selected' : '' }}>掲載予定</option>
+                                <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>掲載中</option>
+                                <option value="expired" {{ request('status')=='expired' ? 'selected' : '' }}>終了</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- 2行目：ボタン -->
+                    <div class="form-row mt-2">
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-block">検索</button>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{ route('store.coupon') }}" class="btn btn-secondary btn-block">クリア</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -42,7 +102,6 @@
                                 <th>発行終了時間</th>
                                 <th>画像</th>
                                 <th>ステータス</th>
-                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -69,19 +128,7 @@
                                     {{ couponStatus($coupon) }}
                                 </td>
                                 <td>
-                                    @if ($coupon->expire_start_date > date('Y-m-d H:i:s'))
-                                        <a class="btn btn-success btn-sm w-100 text-nowrap" href="coupon/edit?ci={{$coupon->id}}">編集</a>
-                                    @endif
-                                </td>
-                                <td>
-                                    <form method="POST" action="{{ route('store.coupon.delete') }}">
-                                        @csrf
-                                        <div>
-                                            <input type="hidden" id="p_type" name="p_type" value="edit">
-                                            <input type="hidden" id="ci" name="ci" value="{{$coupon->id}}">
-                                            <input type="submit" class="btn btn-danger btn-sm w-100 text-nowrap" id="" value='削除'>
-                                        </div>
-                                    </form>
+                                    <a class="btn btn-success btn-sm w-100 text-nowrap" href="coupon/detail?ci={{$coupon->id}}">詳細</a>
                                 </td>
                             </tr>
                             @endforeach

@@ -26,7 +26,7 @@
                                 <th>電話番号</th>
                                 <th>ジャンル</th>
                                 <th>最寄り駅</th>
-                                <th>画像</th>
+                                <th>詳細</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,11 +43,7 @@
                                         <br>{{ $store->line_2 }} {{ $store->station_2 }}
                                     @endif
                                 </td>
-                                <td>
-                                    @if($store->image)
-                                        <img width="50" height="50" src="{{ asset('/assets/images/'. $store->image) }}" >
-                                    @endif
-                                </td>
+                                <td><a class="btn btn-success btn-sm w-100 text-nowrap" href="shop/detail?si={{$store->id}}">詳細</a></td>
                             </tr>
                             @endforeach
                         </tbody>
