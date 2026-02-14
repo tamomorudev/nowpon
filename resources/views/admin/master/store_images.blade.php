@@ -39,7 +39,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
+                                    <form method="POST" action="{{ route('admin.master.store_images_delete') }}">
                                         @csrf
                                         <div>
                                             <input type="hidden" id="d_type" name="d_type" value="store">

@@ -31,7 +31,7 @@
                             @foreach($coupons as $coupon)
                             <tr>
                                 <td>{{$coupon->coupon_name}}</td>
-                                <td>{{$store->company_id}}</td>
+                                <td>{{$coupon->company_id}}</td>
                                 <td>クーポン</td>
                                 <td>
                                     @if($coupon->img_url)
@@ -39,7 +39,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <form method="POST" action="{{ route('admin.master.images_delete') }}">
+                                    <form method="POST" action="{{ route('admin.master.coupon_images_delete') }}">
                                         @csrf
                                         <div>
                                             <input type="hidden" id="d_type" name="d_type" value="coupon">
