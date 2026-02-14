@@ -333,6 +333,7 @@
         </div>
 
 
+        <?php /*
         <!-- こちらもおすすめ -->
         <div class="recommend-section">
             <hr class="recommend-separator">
@@ -364,36 +365,46 @@
                 @endforeach
             </div>
         </div>
-
+        */ ?>
         <!-- 同じエリアでのクーポン -->
         <div class="recommend-section">
             <hr class="recommend-separator">
             <h3 class="recommend-title">同じエリアでのクーポン </h3>
             <div class="recommend-grid">
-                @foreach (range(5,8) as $i)
-                    <a href="/site/coupondetail" class="recommend-item">
-                        <div class="card-wrapper">
-                            <img src="https://picsum.photos/320/200?random={{ $i }}" alt="おすすめ{{ $i }}">
-                        </div>
-                        <div class="recommend-info">
-                            <p class="shop-name">ジャンルー店舗名</p>
-                            <p class="shop-access">〇〇駅 北口徒歩何分</p>
-                            <p class="price">¥3,000（40%off）</p>
-                            <p class="date">予約日時：2025年3月1日 16時〜</p>
-                            <p class="course">コース名</p>
-                        </div>
-                        <div class="recommend-footer">
-                            <div class="icons">
-                                <button class="icon-btn heart">♡</button>
-                                <button aria-label="共有" class="icon-btn share">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" fill="currentColor" style="display:block">
-                                        <path d="M18 16.08c-.76 0-1.44.3-1.97.8l-7.12-4.18c.05-.23.09-.47.09-.7s-.04-.47-.09-.7l7.12-4.18c.53.5 1.21.8 1.97.8 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7l-7.12 4.18c-.5-.5-1.18-.8-1.91-.8C5.33 9.08 4 10.42 4 12s1.33 2.92 2.99 2.92c.74 0 1.42-.3 1.91-.8l7.12 4.18c-.05.23-.09.47-.09.7 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
-                                    </svg>
-                                </button>
+                @if (count($same_area_coupons) >= 1)
+                    @foreach ($same_area_coupons as $area_key => $same_area_coupon)
+                        <a href="/site/coupondetail?cid={{$same_area_coupon->coupon_code}}" class="recommend-item">
+                            <div class="card-wrapper">
+                                <img src="{{ asset('/assets/images/'. $same_area_coupon->img_url) }}" alt="area_{{$area_key}}">
                             </div>
-                        </div>
-                    </a>
-                @endforeach
+                            <div class="recommend-info">
+                                <p class="shop-name">{{ config('commons.genre')[$same_area_coupon->genre] }}ー{{ $same_area_coupon->store_name }}</p>
+                                <p class="shop-access">{{ $same_area_coupon->station }}駅 {{ config('commons.transportation')[$same_area_coupon->transportation] }}{{ $same_area_coupon->time }}分</p>
+                                @if ($same_area_coupon->discount_rate > 0)
+                                    <p class="price">¥{{ number_format(round($same_area_coupon->store_pay_price) + $same_area_coupon->service_price) }}（{{$same_area_coupon->discount_rate}}%off）</p>
+                                @else
+                                    <p class="price">¥{{ number_format(round($same_area_coupon->store_pay_price) + $same_area_coupon->service_price) }}</p>
+                                @endif
+                                <p class="date">予約日時：{{ $same_area_coupon->format_cource_start }}</p>
+                                <p class="course">{{ $same_area_coupon->coupon_name }}</p>
+                            </div>
+                            <?php /* 一旦アイコンなし
+                            <div class="recommend-footer">
+                                <div class="icons">
+                                    <button class="icon-btn heart">♡</button>
+                                    <button aria-label="共有" class="icon-btn share">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" fill="currentColor" style="display:block">
+                                            <path d="M18 16.08c-.76 0-1.44.3-1.97.8l-7.12-4.18c.05-.23.09-.47.09-.7s-.04-.47-.09-.7l7.12-4.18c.53.5 1.21.8 1.97.8 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7l-7.12 4.18c-.5-.5-1.18-.8-1.91-.8C5.33 9.08 4 10.42 4 12s1.33 2.92 2.99 2.92c.74 0 1.42-.3 1.91-.8l7.12 4.18c-.05.23-.09.47-.09.7 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            */ ?>
+                        </a>
+                    @endforeach
+                @else
+                    現在クーポンがありません。
+                @endif
             </div>
         </div>
 

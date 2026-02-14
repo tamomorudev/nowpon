@@ -224,7 +224,9 @@ class SiteController extends Controller
         if (!$coupon_code) {
             abort(404);
         } else {
-            $coupon = Coupons::join('stores', 'coupons.store_id', '=', 'stores.id')
+            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
                 ->where('coupon_code', $coupon_code)
                 ->where('expire_start_date', '<=', $date)
                 ->where('expire_end_date', '>=', $date)
@@ -277,7 +279,25 @@ class SiteController extends Controller
 
         $coupon->coupon_images = $coupon_images;
 
-        return view('site.coupondetail', compact('user', 'coupon'));
+
+        //同じエリアクーポン
+        $coupon_city = $coupon->city;
+        
+        $same_area_coupons = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+            ->join('stores', 'coupons.store_id', '=', 'stores.id')
+            ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
+            ->where('expire_start_date', '<=', $date)
+            ->where('expire_end_date', '>=', $date)
+            ->where('zipcodes.city', '=', $coupon_city)
+            ->where('coupons.id', '!=', $coupon->id)
+            ->inRandomOrder()
+            ->limit(4)->get();
+
+        foreach ($same_area_coupons as $same_area_coupon) {
+            $same_area_coupon->format_cource_start = Carbon::parse($same_area_coupon->cource_start_time)->format('Y年n月j日 G時i分～');
+        }
+
+        return view('site.coupondetail', compact('user', 'coupon', 'same_area_coupons'));
     }
 
     public function terms(Request $request)
