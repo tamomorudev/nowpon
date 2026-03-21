@@ -47,6 +47,7 @@ class AdminSpecialFutureController extends Controller
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
         $stores = Stores::select()->get(); //stores情報
         $request = $request->all();
+        $defaultweeks = [];
 
         if (isset($request['name'])) {
             $validated_data = Validator::make($request, [
@@ -63,12 +64,13 @@ class AdminSpecialFutureController extends Controller
                     ->withInput();
             }
 
-            //date covert
-            $start_date = str_replace('T', ' ', $request['start_date']).':00';
-            $end_date = str_replace('T', ' ', $request['end_date']).':59';
-            if (isset($request['coupon_date_start']) && isset($request['coupon_date_end'])) {
-                $coupon_date_start = str_replace('T', ' ', $request['coupon_date_start']).':00';
-                $coupon_date_end = str_replace('T', ' ', $request['coupon_date_end']).':59';
+            // date convert
+            $start_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['start_date'])));
+            $end_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['end_date'])));
+
+            if (!empty($request['coupon_date_start']) && !empty($request['coupon_date_end'])) {
+                $coupon_date_start = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['coupon_date_start'])));
+                $coupon_date_end = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['coupon_date_end'])));
             } else {
                 $coupon_date_start = null;
                 $coupon_date_end = null;
@@ -77,15 +79,16 @@ class AdminSpecialFutureController extends Controller
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
+                $maxSize = 1000 * 1024 * 1024; // 一旦1GB制限
                 if ($fileSize > $maxSize) {
-                    return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                } 
+                    return redirect()->route('admin.special_future.create')
+                        ->withErrors("ファイルサイズが1GBを超えています。")
+                        ->withInput();
+                }
+
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('special_future_image','pub_images');
+                    $img_path = $img->store('special_future_image', 'pub_images');
                 } else {
                     $img_path = '';
                 }
@@ -105,26 +108,33 @@ class AdminSpecialFutureController extends Controller
                 $create_special_future_array['image'] = $img_path;
                 $create_special_future_array['coupon_date_start'] = $coupon_date_start;
                 $create_special_future_array['coupon_date_end'] = $coupon_date_end;
+
                 if ($request['sex'] != null) {
                     $create_special_future_array['sex'] = $request['sex'];
                 } else {
-                    $create_special_future_array['sex'] = 99; //all
+                    $create_special_future_array['sex'] = 99; // all
                 }
+
                 if (isset($request['discount_rate']) && $request['discount_rate'] > 0) {
                     $create_special_future_array['discount_rate'] = $request['discount_rate'];
                 }
-                if ($request['genre'] != null) {
-                    $create_special_future_array['genre'] = json_encode([$request['genre']]);
+
+                if (isset($request['genre']) && $request['genre'] !== '') {
+                    $create_special_future_array['genre'] = $request['genre'];
                 } else {
-                    $create_special_future_array['genre'] = json_encode([99]); //all
+                    $create_special_future_array['genre'] = 99; // all
                 }
-                if (isset($request['day_of_week']) && $request['day_of_week']) {
-                    $create_special_future_array['coupon_date_end'] = json_encode($request['day_of_week']);
+
+                if (!empty($request['day_of_week'])) {
+                    $create_special_future_array['day_of_the_weeks'] = json_encode($request['day_of_week']);
+                } else {
+                    $create_special_future_array['day_of_the_weeks'] = null;
                 }
+
                 $create_special_future_array['created_by'] = $user->id;
                 $create_special_future_array['updated_by'] = $user->id;
 
-                SpecialFutures::firstOrCreate($create_special_future_array);
+                SpecialFutures::create($create_special_future_array);
 
                 DB::commit();
             } catch (\Exception $e) {
@@ -136,7 +146,7 @@ class AdminSpecialFutureController extends Controller
             return redirect('/admin/special_future');
         }
 
-        return view('admin.special_future.create', compact('user', 'stores'));
+        return view('admin.special_future.create', compact('user', 'stores', 'defaultweeks'));
     }
 
     public function edit(Request $request)
@@ -145,19 +155,23 @@ class AdminSpecialFutureController extends Controller
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
         $request = $request->all();
 
-        if(!isset($request['id'])) {
+        if (!isset($request['id'])) {
             abort(404);
         }
 
         $special_future_id = $request['id'];
         $special_future_data = SpecialFutures::where('id', $special_future_id)->first();
 
-        if(!$special_future_data) {
+        if (!$special_future_data) {
             abort(404);
         }
 
         $special_future_data->start_date = date('Y-m-d H:i', strtotime($special_future_data->start_date));
         $special_future_data->end_date = date('Y-m-d H:i', strtotime($special_future_data->end_date));
+
+        $defaultweeks = !empty($special_future_data->day_of_the_weeks)
+            ? json_decode($special_future_data->day_of_the_weeks, true)
+            : [];
 
         if (isset($request['name']) && isset($request['p_type']) && $request['p_type'] == 'edit') {
             $validated_data = Validator::make($request, [
@@ -173,12 +187,13 @@ class AdminSpecialFutureController extends Controller
                     ->withInput();
             }
 
-            //date covert
-            $start_date = str_replace('T', ' ', $request['start_date']).':00';
-            $end_date = str_replace('T', ' ', $request['end_date']).':59';
-            if (isset($request['coupon_date_start']) && isset($request['coupon_date_end'])) {
-                $coupon_date_start = str_replace('T', ' ', $request['coupon_date_start']).':00';
-                $coupon_date_end = str_replace('T', ' ', $request['coupon_date_end']).':59';
+            // date convert
+            $start_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['start_date'])));
+            $end_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['end_date'])));
+
+            if (!empty($request['coupon_date_start']) && !empty($request['coupon_date_end'])) {
+                $coupon_date_start = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['coupon_date_start'])));
+                $coupon_date_end = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['coupon_date_end'])));
             } else {
                 $coupon_date_start = null;
                 $coupon_date_end = null;
@@ -187,15 +202,16 @@ class AdminSpecialFutureController extends Controller
             if (isset($request['images']) && $request['images']) {
                 //画像チェック
                 $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
+                $maxSize = 1000 * 1024 * 1024; // 一旦1GB制限
                 if ($fileSize > $maxSize) {
                     return redirect()->back()
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                } 
+                        ->withErrors("ファイルサイズが1GBを超えています。")
+                        ->withInput();
+                }
+
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('special_future_image','pub_images');
+                    $img_path = $img->store('special_future_image', 'pub_images');
                 } else {
                     $img_path = $special_future_data->image;
                 }
@@ -215,22 +231,29 @@ class AdminSpecialFutureController extends Controller
                 $create_special_future_array['coupon_date_start'] = $coupon_date_start;
                 $create_special_future_array['coupon_date_end'] = $coupon_date_end;
                 $create_special_future_array['image'] = $img_path;
+
                 if ($request['sex'] != null) {
                     $create_special_future_array['sex'] = $request['sex'];
                 } else {
-                    $create_special_future_array['sex'] = 99; //all
+                    $create_special_future_array['sex'] = 99; // all
                 }
+
                 if (isset($request['discount_rate']) && $request['discount_rate'] > 0) {
                     $create_special_future_array['discount_rate'] = $request['discount_rate'];
                 }
-                if ($request['genre'] != null) {
-                    $create_special_future_array['genre'] = json_encode([$request['genre']]);
+
+                if (isset($request['genre']) && $request['genre'] !== '') {
+                    $create_special_future_array['genre'] = $request['genre'];
                 } else {
-                    $create_special_future_array['genre'] = json_encode([99]); //all
+                    $create_special_future_array['genre'] = 99; // all
                 }
-                if (isset($request['day_of_week']) && $request['day_of_week']) {
-                    $create_special_future_array['coupon_date_end'] = json_encode($request['day_of_week']);
+
+                if (!empty($request['day_of_week'])) {
+                    $create_special_future_array['day_of_the_weeks'] = json_encode($request['day_of_week']);
+                } else {
+                    $create_special_future_array['day_of_the_weeks'] = null;
                 }
+
                 $create_special_future_array['updated_by'] = $user->id;
 
                 SpecialFutures::where('id', $special_future_data->id)->update($create_special_future_array);
@@ -245,7 +268,7 @@ class AdminSpecialFutureController extends Controller
             return redirect('/admin/special_future');
         }
 
-        return view('admin.special_future.edit', compact('user', 'stores', 'special_future_data'));
+        return view('admin.special_future.edit', compact('user', 'stores', 'special_future_data', 'defaultweeks'));
     }
 
     public function delete(Request $request)
