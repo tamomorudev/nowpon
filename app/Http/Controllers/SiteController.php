@@ -293,23 +293,37 @@ class SiteController extends Controller
                 if (!empty($weekdays)) {
                     $q->whereIn('coupons.day_of_the_week', $weekdays);
                 }
+
                 // 特集にカテゴリ（ジャンル）の指定がある場合
-                $genres = json_decode($special_futures->genre, true);
-                if (!empty($genres)) {
-                    $q->whereIn('stores.genre', $genres);
+                $rawGenre = $special_futures->genre;
+                $genres = json_decode($rawGenre, true);
+                if (is_array($genres)) {
+                    $genreList = $genres;
+                } elseif ($rawGenre !== null && $rawGenre !== '') {
+                    $genreList = [$rawGenre];
+                } else {
+                    $genreList = [];
                 }
+                $genreList = array_values(array_filter($genreList, function ($genre) {return $genre !== null && $genre !== '' && $genre != 99;}));
+                if ($genreList) {
+                    $q->whereIn('stores.genre', $genreList);
+                }
+
                 // 特集に割引率の指定がある場合
                 if ($special_futures->discount_rate > 0) {
                     $q->where('coupons.discount_rate', '>=', $special_futures->discount_rate);
                 }
+
                 // 特集に開始日時の指定がある場合
                 if ($special_futures->coupon_date_start > 0) {
                     $q->where('coupons.cource_time', '<=', $date);
                 }
+
                 // 特集に終了日付の指定がある場合
                 if ($special_futures->coupon_date_start > 0) {
                     $q->where('coupons.cource_time', '>=', $date);
                 }
+
                 // 特集に性別の指定がある場合
                 if (!empty($special_futures->sex)) {
                     // ユーザー情報をみる（仕様が決定してから）▼
@@ -426,7 +440,7 @@ class SiteController extends Controller
 
         //同じエリアクーポン
         $coupon_city = $coupon->city;
-        
+
         $same_area_coupons = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
             ->join('stores', 'coupons.store_id', '=', 'stores.id')
             ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
