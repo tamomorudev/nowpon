@@ -18,6 +18,7 @@ use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\SpecialFutures;
 use App\Models\Zipcodes;
+use App\Models\PurchaseCoupos;
 use Carbon\Carbon;
 
 class SiteController extends Controller
@@ -52,8 +53,146 @@ class SiteController extends Controller
 
     public function checkout(Request $request)
     {
-        $category = 'hair';
-        return view('site.checkout', compact('category'));
+        $date = date('Y-m-d H:i:s');
+        $user = Auth::guard('web')->user(); //ユーザー情報
+
+        //クーポン情報
+        $coupon_code = $request->cid;
+
+        //一旦idなしは404
+        if (!$coupon_code) {
+            abort(404);
+        } else {
+            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
+                ->where('coupon_code', $coupon_code)
+                ->where('expire_start_date', '<=', $date)
+                ->where('expire_end_date', '>=', $date)
+                ->where('coupons.status', 0)
+                ->first();
+            if (!$coupon) {
+                abort(404);
+            }
+        }
+
+        //残り分数
+        $end_date = Carbon::parse($coupon->expire_end_date, 'Asia/Tokyo');
+        $now = Carbon::now('Asia/Tokyo');
+        $remaining_minutes = $now->diffInMinutes($end_date, false);
+
+        if ($remaining_minutes > 0) {
+            //〇時間 or 〇分の形
+            $remaining_hours = floor($remaining_minutes / 60);
+            $remaining_minutes = $remaining_minutes % 60;
+
+            if ($remaining_hours > 0) {
+                $coupon->remaining_minute = '残り'.$remaining_hours.'時間';
+            } else {
+                $coupon->remaining_minute = '残り'.$remaining_minutes.'分';
+            }
+        } else {
+            $coupon->remaining_minute = '終了しました';
+        }
+
+        //割引率
+        $discount_rate = 0;
+        if ($coupon->discount_price) {
+            if ($coupon->discount_type == 1) {
+                $coupon->discount_rate = $coupon->discount_price;
+            } else {
+                $discount_rate = ($coupon->discount_price / $coupon->price) * 100;
+                $coupon->discount_rate = round($discount_rate); // 四捨五入
+            }
+        }
+
+        //コース開始時間
+        $cource_start_time = $coupon->cource_start;
+        $coupon->format_cource_start = Carbon::parse($cource_start_time)->format('Y年n月j日 G時i分～');
+
+        //画像
+        $coupon_images[] = $coupon->img_url;
+        $coupon_images[] = $coupon->img_url_2;
+        $coupon_images[] = $coupon->img_url_3;
+        $coupon_images[] = $coupon->img_url_4;
+        $coupon_images[] = $coupon->img_url_5;
+
+        $coupon->coupon_images = $coupon_images;
+
+        return view('site.checkout', compact('user', 'coupon'));
+    }
+
+    public function checkoutComplete(Request $request)
+    {
+        $date = date('Y-m-d H:i:s');
+        $user = Auth::guard('web')->user(); //ユーザー情報
+
+        //クーポン情報
+        $coupon_code = $request->cid;
+
+        //一旦idなしは404
+        if (!$coupon_code) {
+            abort(404);
+        } else {
+            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+                ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
+                ->where('coupon_code', $coupon_code)
+                ->where('expire_start_date', '<=', $date)
+                ->where('expire_end_date', '>=', $date)
+                ->first();
+            if (!$coupon) {
+                abort(404);
+            }
+
+            //クーポンのステータスが購入可能でなかった場合エラー
+            if ($coupon->status != 0) {
+                abort(404);
+            }
+
+            //購入金額
+            if ($coupon->discount_rate > 0) {
+                $payment_amount = number_format(round($coupon->store_pay_price) + $coupon->service_price);
+            } else {
+                $payment_amount = number_format($coupon->price + $coupon->original_service_price);
+            }
+
+            //購入
+            DB::beginTransaction();
+            try {
+
+                //購入コード生成
+                $purchase_code = 'PU'.rand(1000000, 9999999);
+
+                $purchase_coupon_array = array();
+                $purchase_coupon_array['purchase_code'] = $purchase_code;
+                $purchase_coupon_array['coupon_id'] = $coupon->id;
+                $purchase_coupon_array['coupon_code'] = $coupon->coupon_code;
+                $purchase_coupon_array['company_id'] = $coupon->company_id;
+                $purchase_coupon_array['store_id'] = $coupon->store_id;
+                $purchase_coupon_array['purchase_user_id'] = $user->id;
+                $purchase_coupon_array['purchase_date'] = date('Y-m-d H:i:s');
+                $purchase_coupon_array['status'] = 0;
+                $purchase_coupon_array['payment_id'] = '';
+                $purchase_coupon_array['payment_amount'] = $payment_amount;
+                $purchase_coupon_array['cancel_flg'] = 0;
+                $purchase_coupon_array['created_by'] = $user->id;
+                $purchase_coupon_array['updated_by'] = $user->id;
+
+                $purchase_id = PurchaseCoupos::create($purchase_coupon_array);
+
+                Coupons::where('id', $coupon->id)->update([
+                    'status' => 1 //購入済み
+                ]);
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+                abort(404);
+            }
+        }
+
+        return view('site.checkout_complete', compact('user', 'coupon'));
     }
 
     public function couponlist(Request $request)
@@ -80,6 +219,7 @@ class SiteController extends Controller
                     ->where('expire_start_date', '<=', $date)
                     ->where('expire_end_date', '>=', $date)
                     ->where('zipcodes.city', '=', $user_zipcode->city)
+                    ->where('coupons.status', 0)
                     ->orderBy('created_at', 'DESC')
                     ->get();
             }
@@ -88,6 +228,7 @@ class SiteController extends Controller
             $query = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time')
                 ->join('stores', 'coupons.store_id', '=', 'stores.id')
                 ->join('stations', 'stores.postal_code', '=', 'postal')
+                ->where('coupons.status', 0)
                 ->where('expire_start_date', '<=', $date)
                 ->where('expire_end_date', '>=', $date);
             // 都道府県
@@ -123,6 +264,7 @@ class SiteController extends Controller
                     ->join('stores', 'coupons.store_id', '=', 'stores.id')
                     ->where('expire_start_date', '<=', $date)
                     ->where('expire_end_date', '>=', $date)
+                    ->where('coupons.status', 0)
                     ->where('stores.genre', '=', $request['gid'])
                     ->orderBy('created_at', 'DESC')
                     ->get();
@@ -142,6 +284,7 @@ class SiteController extends Controller
                     'stores.time',
                 )
                 ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                ->where('coupons.status', 0)
                 ->where('coupons.expire_start_date', '<=', $date)
                 ->where('coupons.expire_end_date', '>=', $date);
 
@@ -230,6 +373,7 @@ class SiteController extends Controller
                 ->where('coupon_code', $coupon_code)
                 ->where('expire_start_date', '<=', $date)
                 ->where('expire_end_date', '>=', $date)
+                ->where('coupons.status', 0)
                 ->first();
             if (!$coupon) {
                 abort(404);
@@ -290,6 +434,7 @@ class SiteController extends Controller
             ->where('expire_end_date', '>=', $date)
             ->where('zipcodes.city', '=', $coupon_city)
             ->where('coupons.id', '!=', $coupon->id)
+            ->where('coupons.status', 0)
             ->inRandomOrder()
             ->limit(4)->get();
 

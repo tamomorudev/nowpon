@@ -41,6 +41,7 @@
         </p>
 
         <div class="order-button" style="text-align: center; margin-bottom: 30px;">
+            <!--
             <button style="
             background-color: #f9e98f;
             color: #999;
@@ -50,7 +51,23 @@
             border-radius: 20px;
             padding: 12px 40px;
             cursor: not-allowed;
-        " disabled>注文を確定する</button>
+        " disabled>注文を確定する</button>-->
+            <form action="/site/checkout_complete" method="post">
+                @csrf
+                <input type="hidden" name="cid" value="{{$coupon->coupon_code}}">
+                <button type="submit" style="
+                    background-color: #f9e98f;
+                    color: #000;
+                    font-weight: bold;
+                    font-size: 16px;
+                    border: none;
+                    border-radius: 20px;
+                    padding: 12px 40px;
+                    cursor: pointer;
+                ">
+                    注文を確定する
+                </button>
+            </form>
         </div>
 
         <!-- 🔻 線追加（ボタン下） -->
@@ -59,15 +76,27 @@
         <table style="width: 100%; max-width: 400px; margin: 0 auto 30px; font-size: 16px;">
             <tr>
                 <td style="text-align: left;">商品の小計：</td>
-                <td style="text-align: right;">￥3000</td>
+                @if ($coupon->discount_rate > 0)
+                    <td style="text-align: right;">￥{{ number_format(round($coupon->store_pay_price)) }}</td>
+                @else
+                    <td style="text-align: right;">￥{{ number_format($coupon->price) }}</td>
+                @endif
             </tr>
             <tr>
                 <td style="text-align: left;">手数料：</td>
-                <td style="text-align: right;">￥0</td>
+                @if ($coupon->discount_rate > 0)
+                    <td style="text-align: right;">￥{{ number_format($coupon->service_price) }}</td>
+                @else
+                    <td style="text-align: right;">￥{{ number_format($coupon->original_service_price) }}</td>
+                @endif
             </tr>
             <tr style="font-weight: bold;">
                 <td style="text-align: left;">ご請求：</td>
-                <td style="text-align: right;">￥3000</td>
+                @if ($coupon->discount_rate > 0)
+                    <td style="text-align: right;">￥{{ number_format(round($coupon->store_pay_price) + $coupon->service_price) }}</td>
+                @else
+                    <td style="text-align: right;">￥{{ number_format($coupon->price + $coupon->original_service_price) }}</td>
+                @endif
             </tr>
         </table>
 

@@ -238,7 +238,7 @@
         <!-- 上部ボタン -->
         <div class="btn-group">
             <button type="button" onclick="location.href='/site/cart';">カートに入れる</button>
-            <button type="button" onclick="location.href='/site/checkout';">今すぐ購入する</button>
+            <button type="button" onclick="location.href='/site/checkout?cid={{$coupon->coupon_code}}';">今すぐ購入する</button>
         </div>
 
         <div class="detail-body">

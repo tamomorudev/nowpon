@@ -29,7 +29,6 @@ Route::get('/', function () {
 Route::get('/', [App\Http\Controllers\TopController::class, 'index'])->name('top');
 Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->name('site_list');
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
-Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
 Route::match(['GET','POST'], 'site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
 // 利用規約
@@ -46,6 +45,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');   // 画面表示
     Route::put('/account', [AccountController::class, 'update'])->name('account.update'); // 更新
+
+    //購入
+    Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
+    Route::match(['get', 'post'], '/site/checkout_complete', 'App\Http\Controllers\SiteController@checkoutComplete')->name('checkout.complete');
 });
 
 Route::group(['prefix' => 'store'], function () {
