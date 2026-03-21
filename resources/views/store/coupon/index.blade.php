@@ -61,7 +61,8 @@
                                 <option value="">すべて</option>
                                 <option value="prepare" {{ request('status')=='prepare' ? 'selected' : '' }}>掲載予定</option>
                                 <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>掲載中</option>
-                                <option value="expired" {{ request('status')=='expired' ? 'selected' : '' }}>終了</option>
+                                <option value="expired" {{ request('status')=='expired' ? 'selected' : '' }}>掲載終了</option>
+                                <option value="selled" {{ request('status')=='selled' ? 'selected' : '' }}>購入済み</option>
                             </select>
                         </div>
 

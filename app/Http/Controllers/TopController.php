@@ -62,6 +62,7 @@ class TopController extends Controller
             ->join('stores', 'coupons.store_id', '=', 'stores.id')
             ->where('expire_start_date', '<=', $date)
             ->where('expire_end_date', '>=', $date)
+            ->where('coupons.status', 0)
             ->orderBy('created_at', 'DESC')
             ->limit(6)
             ->get();
