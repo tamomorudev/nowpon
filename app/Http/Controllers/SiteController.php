@@ -125,22 +125,28 @@ class SiteController extends Controller
     public function checkoutComplete(Request $request)
     {
         $date = date('Y-m-d H:i:s');
-        $user = Auth::guard('web')->user(); //ユーザー情報
-
+        //ユーザー情報
+        $user = Auth::guard('web')->user();
         //クーポン情報
-        $coupon_code = $request->cid;
+        $coupon_code = !empty($request->input('cid')) ? $request->input('cid') : "";
 
         //一旦idなしは404
         if (!$coupon_code) {
             abort(404);
         } else {
-            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+            $coupon = Coupons::select(
+                    'coupons.*',
+                    'stores.store_name', 'stores.phone_number', 'stores.genre', 'stores.url',
+                    'stores.line', 'stores.station', 'stores.transportation', 'stores.time',
+                    'stores.line_2', 'stores.station_2', 'stores.transportation_2', 'stores.time_2',
+                    'zipcodes.city')
                 ->join('stores', 'coupons.store_id', '=', 'stores.id')
                 ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
                 ->where('coupon_code', $coupon_code)
                 ->where('expire_start_date', '<=', $date)
                 ->where('expire_end_date', '>=', $date)
                 ->first();
+
             if (!$coupon) {
                 abort(404);
             }
@@ -152,15 +158,14 @@ class SiteController extends Controller
 
             //購入金額
             if ($coupon->discount_rate > 0) {
-                $payment_amount = number_format(round($coupon->store_pay_price) + $coupon->service_price);
+                $payment_amount = round($coupon->store_pay_price) + $coupon->service_price;
             } else {
-                $payment_amount = number_format($coupon->price + $coupon->original_service_price);
+                $payment_amount = $coupon->price + $coupon->original_service_price;
             }
 
             //購入
             DB::beginTransaction();
             try {
-
                 //購入コード生成
                 $purchase_code = 'PU'.rand(1000000, 9999999);
 
@@ -191,7 +196,6 @@ class SiteController extends Controller
                 abort(404);
             }
         }
-
         return view('site.checkout_complete', compact('user', 'coupon'));
     }
 
@@ -458,6 +462,16 @@ class SiteController extends Controller
 
         return view('site.coupondetail', compact('user', 'coupon', 'same_area_coupons'));
     }
+
+
+    public function purchaseHistory(Request $request)
+    {
+        $category = 'hair';
+        return view('site.purchase_history', compact('category'));
+    }
+
+
+
 
     public function terms(Request $request)
     {

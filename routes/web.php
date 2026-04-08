@@ -31,6 +31,8 @@ Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->n
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
 Route::match(['GET','POST'], 'site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
+Route::get('site/purchase_history', [App\Http\Controllers\SiteController::class, 'purchaseHistory'])->name('purchaseHistory');
+
 // 利用規約
 Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])->name('terms');
 // プライバシーポリシー

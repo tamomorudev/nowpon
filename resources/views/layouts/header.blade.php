@@ -111,9 +111,9 @@
     <div class="header-nav">
         <a href="/" class="{{ isActive(['/']) }}">HOME</a>
         @if(Auth::guard('web')->check())
-        <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a>
-        <a href="#">購入履歴</a>
+        <!-- <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a> -->
+        <a href="/site/purchase_history" class="{{ isActive(['site/purchase_history']) }}">購入履歴</a>
         @endif
-        <a href="/site/contact">CONTACT</a>
+        <a href="/site/contact" class="{{ isActive(['site/contact']) }}">CONTACT</a>
     </div>
 </div>
