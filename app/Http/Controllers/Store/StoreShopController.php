@@ -23,7 +23,7 @@ class StoreShopController extends Controller
      *
      * @return void
      */
-    public function __construct(ImageService $imageService) { 
+    public function __construct(ImageService $imageService) {
         $this->imageService = $imageService;
     }
 
@@ -86,8 +86,8 @@ class StoreShopController extends Controller
 
             //画像登録
             $result = $this->imageService->upload($request, 'store_image', 'images');
-            if (isset($result['error']) && $result['error']) { 
-                return redirect()->route('store.shop.create')->withErrors($result['error'])->withInput(); 
+            if (isset($result['error']) && $result['error']) {
+                return redirect()->route('store.shop.create')->withErrors($result['error'])->withInput();
             }
             $img_path = $result['path'];
             /*
@@ -99,7 +99,7 @@ class StoreShopController extends Controller
                     return redirect()->route('store.coupon.create')
                     ->withErrors("ファイルサイズが1GBを超えています。")
                     ->withInput();
-                } 
+                }
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
                     $img_path = $img->store('store_image','pub_images');
@@ -110,7 +110,7 @@ class StoreShopController extends Controller
                 $img_path = '';
             }
             */
-            
+
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
@@ -210,9 +210,14 @@ class StoreShopController extends Controller
             }
 
             $result = $this->imageService->upload($request, 'store_image', 'images');
-            if ($result['error']) { 
-                return redirect()->route('store.shop.edit')->withErrors($result['error'])->withInput(); 
+
+            if ($result['error']) {
+                return redirect()
+                    ->route('store.shop.edit', $request->filled('si') ? ['si' => $request->get('si')] : [])
+                    ->withErrors($result['error'])
+                    ->withInput();
             }
+
             $img_path = $result['path'];
             /*
             if (isset($request['images']) && $request['images']) {
@@ -223,7 +228,7 @@ class StoreShopController extends Controller
                     return redirect()->back()
                     ->withErrors("ファイルサイズが1GBを超えています。")
                     ->withInput();
-                } 
+                }
                 $img = $request['images'];
                 if (strpos($request['images']->getMimeType(), 'image') !== false) {
                     $img_path = $img->store('store_image','pub_images');

@@ -234,7 +234,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="images" class="col-md-4 col-form-label text-md-end">画像</label>
+                <label for="images" class="col-md-4 col-form-label text-md-end">画像<span class="text-danger">*</span></label>
                 @if($store_data->image)
                     <div class="col-sm-10 mb-3 mb-sm-0">
                         <img width="50" height="50" src="{{ asset('/assets/images/'. $store_data->image) }}" >
