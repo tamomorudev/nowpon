@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -19,7 +20,10 @@ use App\Models\StoreServices;
 use App\Models\SpecialFutures;
 use App\Models\Zipcodes;
 use App\Models\PurchaseCoupos;
+use App\Models\StripeLogs;
 use Carbon\Carbon;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class SiteController extends Controller
 {
@@ -122,17 +126,228 @@ class SiteController extends Controller
         return view('site.checkout', compact('user', 'coupon'));
     }
 
+    public function charge(Request $request)
+    {
+        $user = Auth::guard('web')->user();
+        $coupon_code = $request->cid;
+
+        if (!$coupon_code) {
+            return response()->json(['success' => false, 'message' => 'クーポンが見つかりません'], 422);
+        }
+
+        $date = date('Y-m-d H:i:s');
+        $coupon = Coupons::select('coupons.*', 'stores.store_name')
+            ->join('stores', 'coupons.store_id', '=', 'stores.id')
+            ->where('coupon_code', $coupon_code)
+            ->where('expire_start_date', '<=', $date)
+            ->where('expire_end_date', '>=', $date)
+            ->where('coupons.status', 0)
+            ->first();
+
+        if (!$coupon) {
+            return response()->json(['success' => false, 'message' => 'このクーポンは購入することができません'], 422);
+        }
+
+        //支払い金額
+        if ($coupon->discount_rate > 0) {
+            $amount = round($coupon->store_pay_price) + $coupon->service_price;
+        } else {
+            $amount = $coupon->price + $coupon->original_service_price;
+        }
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        //決済ログ初期値
+        $log_data = [
+            'coupon_code'       => $coupon_code,
+            'user_id'           => $user->id,
+            'payment_method_id' => $request->payment_method_id,
+            'amount'            => $amount,
+            'currency'          => 'jpy',
+            'status'            => 'failed', //一旦failed
+            'error_code'        => null,
+            'error_message'     => null,
+            'decline_code'      => null,
+            'stripe_response'   => null,
+        ];
+
+        try {
+            if ($request->payment_intent_id) {
+                // 3DS認証済み
+                $paymentIntent = PaymentIntent::retrieve($request->payment_intent_id);
+                //$paymentIntent = $paymentIntent->confirm();
+                //$paymentIntent = PaymentIntent::retrieve($paymentIntent->id);
+            } else {
+                /*
+                //新規PaymentIntentを作成
+                $paymentIntent = PaymentIntent::create([
+                    'amount'              => $amount,
+                    'currency'            => 'jpy',
+                    'payment_method'      => $request->payment_method_id,
+                    'confirmation_method' => 'manual',
+                    'confirm'             => true,
+                    'return_url'          => route('checkout') . '?cid=' . $coupon_code . '&3ds_error=1',
+                ]);*/
+
+                //新規PaymentIntentを作成
+                $paymentIntent = PaymentIntent::create([
+                    'amount'              => $amount,
+                    'currency'            => 'jpy',
+                    'payment_method'      => $request->payment_method_id,
+                    'confirmation_method' => 'manual',
+                    'confirm'             => true,
+                    'return_url'          => route('checkout.3ds_callback') . '?cid=' . $coupon_code,
+                ]);
+            }
+
+            //レスポンスログ
+            $log_data['payment_intent_id'] = $paymentIntent->id;
+            $log_data['status']            = $paymentIntent->status;
+
+            $intentArray = $paymentIntent->toArray();
+            $log_data['stripe_response']   = json_encode([
+                'card_brand' => $intentArray['charges']['data'][0]['payment_method_details']['card']['brand'] ?? null,
+                'card_last4' => $intentArray['charges']['data'][0]['payment_method_details']['card']['last4'] ?? null,
+            ]);
+
+            //3Dセキュア認証
+            if ($paymentIntent->status === 'requires_action') {
+                StripeLogs::create($log_data);
+                return response()->json([
+                    'success'        => false,
+                    'requires_action' => true,
+                    'payment_intent_id'         => $paymentIntent->id,
+                    'client_secret'  => $paymentIntent->client_secret,
+                ]);
+            }
+
+            //成功
+            if ($paymentIntent->status === 'succeeded') {
+                StripeLogs::create($log_data);
+                return response()->json([
+                    'success'    => true,
+                    'payment_id' => $paymentIntent->id,
+                    'redirect'   => route('checkout.complete') . '?cid=' . $coupon_code . '&payment_id=' . $paymentIntent->id,
+                ]);
+            }
+
+            $log_data['error_message'] = 'exeption error: ' . $paymentIntent->status;
+            StripeLogs::create($log_data);
+            return response()->json(['success' => false, 'message' => '決済処理に失敗しました'], 500);
+
+        } catch (\Stripe\Exception\CardException $e) {
+            //カードエラー
+            $log_data['error_code']    = $e->getStripeCode();
+            $log_data['error_message'] = $e->getMessage();
+            $log_data['decline_code']  = $e->getDeclineCode();
+
+            //$log_data['stripe_response'] = json_encode($e->getJsonBody()) ?? null;
+            $log_data['stripe_response'] = null;
+            StripeLogs::create($log_data);
+
+            return response()->json([
+                'success' => false,
+                'message' => $this->getCardErrorMessage($e->getDeclineCode()), //エラーメッセージ変換
+            ], 422);
+
+        } catch (\Exception $e) {
+            // その他エラー
+            $log_data['error_message'] = $e->getMessage();
+            StripeLogs::create($log_data);
+
+            //return response()->json(['success' => false, 'message' => '決済処理に失敗しました。時間をおいて再度お試しください。'], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    private function getCardErrorMessage(?string $declineCode): string
+    {
+        $messages = [
+            'insufficient_funds'      => '残高不足です。別のカードをお試しください。',
+            'card_declined'           => 'カードが拒否されました。別のカードをお試しください。',
+            'expired_card'            => 'カードの有効期限が切れています。',
+            'incorrect_cvc'           => 'セキュリティコードが正しくありません。',
+            'incorrect_number'        => 'カード番号が正しくありません。',
+            'stolen_card'             => 'このカードは使用できません。',
+            'lost_card'               => 'このカードは使用できません。',
+            'fraudulent'              => 'このカードは使用できません。',
+            'do_not_honor'            => 'カードが拒否されました。カード会社にお問い合わせください。',
+        ];
+
+        return $messages[$declineCode] ?? 'カードが拒否されました。別のカードをお試しください。';
+    }
+
+    public function threeDsCallback(Request $request)
+    {
+        $coupon_code       = $request->cid;
+        $payment_intent_id = $request->payment_intent;
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        try {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+
+            //requires_confirmationの場合は確定させる
+            if ($paymentIntent->status === 'requires_confirmation') {
+                $paymentIntent->confirm([
+                    'return_url' => route('checkout.3ds_callback') . '?cid=' . $coupon_code,
+                ]);
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+            }
+
+            if ($paymentIntent->status === 'succeeded') {
+                return redirect()->route('checkout.complete', [
+                    'cid'        => $coupon_code,
+                    'payment_id' => $payment_intent_id,
+                ]);
+            } else {
+                return redirect()->route('checkout', [
+                    'cid'       => $coupon_code,
+                    '3ds_error' => 1,
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error($coupon_code. ': 3ds_callback error');
+            Log::error($e->getMessage());
+
+            return redirect()->route('checkout', [
+                'cid'       => $coupon_code,
+                '3ds_error' => 1,
+            ]);
+        }
+    }
+
     public function checkoutComplete(Request $request)
     {
         $date = date('Y-m-d H:i:s');
         //ユーザー情報
         $user = Auth::guard('web')->user();
+
+        //payment_idチェック
+        if (!$request->payment_id) {
+            Log::error($user->id.' : credit complete not paymentid error');
+            abort(500);
+        }
+        Stripe::setApiKey(config('services.stripe.secret'));
+        try {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($request->payment_id);
+            if ($paymentIntent->status !== 'succeeded') {
+                Log::error($user->id.' : credit complete not success error');
+                abort(500);
+            }
+        } catch (\Exception $e) {
+            Log::error('credit complete stripe error:'.$user->id);
+            Log::error($e->getMessage());
+            abort(500);
+        }
+
         //クーポン情報
         $coupon_code = !empty($request->input('cid')) ? $request->input('cid') : "";
 
-        //一旦idなしは404
         if (!$coupon_code) {
-            abort(404);
+            Log::error($user->id. ':credit complete not coupon code error');
+            abort(500);
         } else {
             $coupon = Coupons::select(
                     'coupons.*',
@@ -148,12 +363,14 @@ class SiteController extends Controller
                 ->first();
 
             if (!$coupon) {
-                abort(404);
+                Log::error($user->id. ':credit complete not coupon data error');
+                abort(500);
             }
 
-            //クーポンのステータスが購入可能でなかった場合エラー
+            //クーポンのステータスが購入可能でなかった場合エラー(直前でバッティングなど)
             if ($coupon->status != 0) {
-                abort(404);
+                Log::error($user->id. ':credit complete coupon status error');
+                abort(500);
             }
 
             //購入金額
@@ -178,7 +395,8 @@ class SiteController extends Controller
                 $purchase_coupon_array['purchase_user_id'] = $user->id;
                 $purchase_coupon_array['purchase_date'] = date('Y-m-d H:i:s');
                 $purchase_coupon_array['status'] = 0;
-                $purchase_coupon_array['payment_id'] = '';
+                //$purchase_coupon_array['payment_id'] = '';
+                $purchase_coupon_array['payment_id'] = $request->payment_id ?? '';
                 $purchase_coupon_array['payment_amount'] = $payment_amount;
                 $purchase_coupon_array['cancel_flg'] = 0;
                 $purchase_coupon_array['created_by'] = $user->id;
@@ -192,8 +410,9 @@ class SiteController extends Controller
 
                 DB::commit();
             } catch (\Exception $e) {
+                Log::error($user->id. ':credit complete registation error');
                 DB::rollback();
-                abort(404);
+                abort(500);
             }
         }
         return view('site.checkout_complete', compact('user', 'coupon'));
@@ -381,7 +600,7 @@ class SiteController extends Controller
         //クーポン情報
         $coupon_code = $request->cid;
 
-        //一旦idなしは404
+        //idなしは404
         if (!$coupon_code) {
             abort(404);
         } else {
