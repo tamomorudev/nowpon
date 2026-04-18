@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -133,56 +134,6 @@ class StoreCouponController extends Controller
             
             $coupon_image_array = $result['data'];
 
-            /*
-            foreach ($image_keys as $key) {
-                if (isset($request[$key]) && $request[$key]) {
-                    $file = $request[$key];
-                    $fileSize = $file->getSize();
-                    $maxSize = 1000 * 1024 * 1024; // 一旦1GB制限
-
-                    if ($fileSize > $maxSize) {
-                        return redirect()->route('store.coupon.create')
-                            ->withErrors(["{$key}" => "ファイルサイズが1MBを超えています。"])
-                            ->withInput();
-                    }
-
-                    if (strpos($file->getMimeType(), 'image') !== false) {
-                        $img_path = $file->store('coupon_image', 'pub_images');
-
-                        // 画像がある順に詰める
-                        if ($img_index == 0) {
-                            $field_name = 'img_url';
-                        } else {
-                            $field_name = 'img_url_' . ($img_index + 1);
-                        }
-                        $coupon_image_array[$field_name] = $img_path;
-                        $img_index++;
-                    }
-                }
-            }
-            */
-
-            /*
-            if (isset($request['images']) && $request['images']) {
-                //画像チェック
-                $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
-                if ($fileSize > $maxSize) {
-                    return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                } 
-                $img = $request['images'];
-                if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('coupon_image','pub_images');
-                } else {
-                    $img_path = '';
-                }
-            } else {
-                $img_path = '';
-            }
-            */
-
             //サービス料算出
             $service_price = round($request['store_pay_price'] * 0.15);
             $original_service_price = round($request['price'] * 0.15);
@@ -244,8 +195,9 @@ class StoreCouponController extends Controller
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
-                echo $e;
-                exit;
+                Log::error($user->id. ': coupon regist error');
+                Log::error($e->getMessage());
+                abort(500);
             }
 
             return redirect('/store/coupon');
@@ -391,27 +343,6 @@ class StoreCouponController extends Controller
                 }
             }
 
-            /*
-            if (isset($request['images']) && $request['images']) {
-                //画像チェック
-                $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
-                if ($fileSize > $maxSize) {
-                    return redirect()->back()
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                } 
-                $img = $request['images'];
-                if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('coupon_image','pub_images');
-                } else {
-                    $img_path = $coupon_data->img_url;
-                }
-            } else {
-                $img_path = $coupon_data->img_url;
-            }
-            */
-
             //サービス料算出
             $service_price = round($request['store_pay_price'] * 0.15);
             $original_service_price = round($request['price'] * 0.15);
@@ -470,7 +401,8 @@ class StoreCouponController extends Controller
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
-                echo $e;
+                Log::error($user->id. ': coupon edit error');
+                Log::error($e->getMessage());
                 exit;
             }
 

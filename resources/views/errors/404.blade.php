@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>page not found ナウポン</title>
+    <title>404 Page Not Found | nowpon</title>
      <style>
         /* カルーセル ここから */
         .carousel-wrapper {
@@ -340,13 +340,82 @@
             display: inline-block;     /* ← ボタン風維持 */
         }
         /* 「まずは会員登録」「ログイン」ここまで */
+
+        /* 404エラーページ */
+        .error-section {
+            text-align: center;
+            padding: 60px 20px 80px;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #f9e98f;
+            line-height: 1;
+            margin: 0;
+            letter-spacing: -4px;
+        }
+        .error-border {
+            width: 60px;
+            height: 4px;
+            background: #d2a679;
+            border-radius: 2px;
+            margin: 16px auto 24px;
+        }
+        .error-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .error-message {
+            font-size: 14px;
+            color: #888;
+            line-height: 2;
+            margin-bottom: 40px;
+        }
+        .error-back-button {
+            display: inline-block;
+            background-color: #d2a679;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 14px 48px;
+            border-radius: 9999px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .error-back-button:hover {
+            opacity: 0.75;
+        }
+        .error-sub-links {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .error-sub-links a {
+            font-size: 13px;
+            color: #b08968;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     @include('layouts.header')
-    <div class="carousel-wrapper">
-        ページが見つかりませんでした
+    <div class="error-section">
+        <p class="error-code">404</p>
+        <div class="error-border"></div>
+        <p class="error-title">ページが見つかりませんでした</p>
+        <p class="error-message">
+            お探しのページは存在しないか、移動・削除された可能性があります。<br>
+            URLをご確認いただくか、トップページからお探しください。
+        </p>
+        <a href="/" class="error-back-button">トップページへ戻る</a>
+        <div class="error-sub-links">
+            <a href="/site/contact">お問い合わせ</a>
+        </div>
     </div>
 </div>
 </body>

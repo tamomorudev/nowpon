@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use App\Models\Stores;
 use App\Models\StoreServices;
@@ -90,27 +91,6 @@ class StoreShopController extends Controller
                 return redirect()->route('store.shop.create')->withErrors($result['error'])->withInput();
             }
             $img_path = $result['path'];
-            /*
-            if (isset($request['images']) && $request['images']) {
-                //画像チェック
-                $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
-                if ($fileSize > $maxSize) {
-                    return redirect()->route('store.coupon.create')
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                }
-                $img = $request['images'];
-                if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('store_image','pub_images');
-                } else {
-                    $img_path = '';
-                }
-            } else {
-                $img_path = '';
-            }
-            */
-
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
@@ -219,26 +199,6 @@ class StoreShopController extends Controller
             }
 
             $img_path = $result['path'];
-            /*
-            if (isset($request['images']) && $request['images']) {
-                //画像チェック
-                $fileSize = $request['images']->getSize();
-                $maxSize = 1000 * 1024 * 1024; // 一旦1MB制限
-                if ($fileSize > $maxSize) {
-                    return redirect()->back()
-                    ->withErrors("ファイルサイズが1GBを超えています。")
-                    ->withInput();
-                }
-                $img = $request['images'];
-                if (strpos($request['images']->getMimeType(), 'image') !== false) {
-                    $img_path = $img->store('store_image','pub_images');
-                } else {
-                    $img_path = '';
-                }
-            } else {
-                $img_path = '';
-            }
-            */
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
