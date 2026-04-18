@@ -44,7 +44,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">ナウポン店舗管理</div>
+                <div class="sidebar-brand-text mx-3">Nowpon店舗管理</div>
             </a>
 
             <!-- Divider -->
@@ -171,7 +171,17 @@
 
 
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="/site/contact" target="_blank">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>お問い合わせ</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
         </ul>
         <!-- End of Sidebar -->
 

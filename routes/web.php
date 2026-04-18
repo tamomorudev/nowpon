@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
     //購入
     Route::get('site/checkout', [App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
     Route::match(['get', 'post'], '/site/checkout_complete', 'App\Http\Controllers\SiteController@checkoutComplete')->name('checkout.complete');
+    //決済
+    Route::post('/site/checkout/charge', [App\Http\Controllers\SiteController::class, 'charge'])->name('checkout.charge');
+    Route::get('/site/checkout/3ds_callback', [App\Http\Controllers\SiteController::class, 'threeDsCallback'])->name('checkout.3ds_callback');
 });
 
 Route::group(['prefix' => 'store'], function () {

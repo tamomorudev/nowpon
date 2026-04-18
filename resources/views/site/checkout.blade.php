@@ -26,7 +26,33 @@
                 margin: 0 auto 30px;
             }
         }
+
+        #card-element {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            max-width: 400px;
+            margin: 0 auto 12px;
+            background: #fff;
+        }
+        #card-errors {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-bottom: 12px;
+            min-height: 20px;
+        }
+        #pay-loading {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        #pay-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
+
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 <div class="container">
@@ -40,35 +66,33 @@
             nowponにおいては、発行会社をあらかじめ特定することが困難であるため、発行会社及びその所在国についてはお客様ご自身においてご確認ください。所在国が外国である場合における各国の個人情報保護制度に関する制度の参考情報については、個人情報保護委員会による情報提供をご参照ください。
         </p>
 
-        <div class="order-button" style="text-align: center; margin-bottom: 30px;">
-            <!--
-            <button style="
-            background-color: #f9e98f;
-            color: #999;
-            font-weight: bold;
-            font-size: 16px;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 40px;
-            cursor: not-allowed;
-        " disabled>注文を確定する</button>-->
-            <form action="/site/checkout_complete" method="post">
-                @csrf
-                <input type="hidden" name="cid" value="{{$coupon->coupon_code}}">
-                <button type="submit" style="
-                    background-color: #f9e98f;
-                    color: #000;
-                    font-weight: bold;
-                    font-size: 16px;
-                    border: none;
-                    border-radius: 20px;
-                    padding: 12px 40px;
-                    cursor: pointer;
-                ">
-                    注文を確定する
-                </button>
-            </form>
+        <div style="max-width: 400px; margin: 0 auto 16px; text-align: left;">
+            <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">カード情報を入力してください</p>
+            <div id="card-element"></div>
+            <div id="card-errors"></div>
+            @if(request('3ds_error'))
+                <div style="color: red; font-size: 14px; margin-bottom: 12px;">
+                    3Dセキュア認証に失敗しました。もう一度お試しください。
+                </div>
+            @endif
         </div>
+
+        <div class="order-button" style="text-align: center; margin-bottom: 30px;">
+            <button id="pay-button" type="button" style="
+                background-color: #f9e98f;
+                color: #000;
+                font-weight: bold;
+                font-size: 16px;
+                border: none;
+                border-radius: 20px;
+                padding: 12px 40px;
+                cursor: pointer;
+            ">
+                注文を確定する
+            </button>
+        </div>
+
+        <div id="pay-loading" style="display:none;">決済処理中です。そのままでしばらくお待ちください。</div>
 
         <!-- 🔻 線追加（ボタン下） -->
         <hr style="border: none; border-top: 3px solid #b08968; width: 100%; max-width: 400px; margin: 0 auto 30px;" />
@@ -100,6 +124,7 @@
             </tr>
         </table>
 
+        <?php /*一旦都度入力のためコメントアウト* /
         <!-- 🔻 線追加（ご請求の下） -->
         <hr style="border: none; border-top: 3px solid #b08968; width: 100%; max-width: 400px; margin: 0 auto 30px;" />
 
@@ -109,8 +134,87 @@
                 <a href="#" style="color: #555; text-decoration: underline;">お支払い方法を変更する</a>
             </div>
         </div>
+        */?>
     </div>
 </div>
 @include('layouts.footer')
+
+<script>
+    const stripe = Stripe('{{ config("services.stripe.key") }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        hidePostalCode: true,
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#333',
+            }
+        }
+    });
+    cardElement.mount('#card-element');
+
+    document.getElementById('pay-button').addEventListener('click', async () => {
+        document.getElementById('pay-button').disabled = true;
+        document.getElementById('pay-loading').style.display = 'block';
+        document.getElementById('card-errors').textContent = '';
+
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (error) {
+            document.getElementById('card-errors').textContent = error.message;
+            document.getElementById('pay-button').disabled = false;
+            document.getElementById('pay-loading').style.display = 'none';
+            return;
+        }
+
+        //決済処理
+        try {
+            const response = await fetch('{{ route("checkout.charge") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({
+                    payment_method_id: paymentMethod.id,
+                    cid: '{{ $coupon->coupon_code }}',
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                //決済成功
+                window.location.href = result.redirect;
+
+            } else if (result.requires_action) {
+                //3Dセキュア認証
+                const { error: confirmError, paymentIntent } = await stripe.handleCardAction(
+                    result.client_secret
+                );
+
+                let finalPaymentIntent = paymentIntent;
+
+                if (confirmError) {
+                    //3Dセキュア認証失敗
+                    document.getElementById('card-errors').textContent = '認証に失敗しました。もう一度お試しください。';
+                    document.getElementById('pay-button').disabled = false;
+                    document.getElementById('pay-loading').style.display = 'none';
+                }
+            } else {
+                document.getElementById('card-errors').textContent = result.message ?? '決済に失敗しました。もう一度お試しください。';
+                document.getElementById('pay-button').disabled = false;
+                document.getElementById('pay-loading').style.display = 'none';
+            }
+        } catch (e) {
+            document.getElementById('card-errors').textContent = '通信エラーが発生しました。もう一度お試しください。';
+            document.getElementById('pay-button').disabled = false;
+            document.getElementById('pay-loading').style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>

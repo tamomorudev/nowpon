@@ -41,6 +41,31 @@ class Handler extends ExceptionHandler
         });
     }
 
+    //エラーページ制御
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException || $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+
+        $statusCode = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 404;
+
+        if ($request->is('store') || $request->is('store/*')) {
+            $view = 'errors.store.' . $statusCode;
+            if (view()->exists($view)) {
+                return response()->view($view, [], $statusCode);
+            }
+        }
+
+        if ($request->is('admin') || $request->is('admin/*')) {
+            $view = 'errors.admin.' . $statusCode;
+            if (view()->exists($view)) {
+                return response()->view($view, [], $statusCode);
+            }
+        }
+    }
+
+        return parent::render($request, $e);
+    }
+
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
