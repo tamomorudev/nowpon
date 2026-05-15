@@ -152,12 +152,30 @@
             object-fit: cover;
             border-radius: 6px;
         }
-        .discount-image {
-            position: absolute;
-            top: 80px;
-            left: 0;
-            right: 0;
+        .discount-card-label {
+            margin: 8px 0 4px;
+            padding: 6px 10px;
+        }
+        .card p {
+            margin: 6px 0;
+        }
+        .discount-card-label {
+            margin: 10px 0 6px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: #fff1f2;
+            color: #e63946;
+            font-size: 13px;
+            font-weight: bold;
             text-align: center;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .discount-card-label span {
+            margin: 0 6px;
         }
         .pr-badge {
             position: absolute;
@@ -454,9 +472,13 @@
                                         <img src="https://picsum.photos/320/200?random={{ $i }}" alt="クーポン画像" />
                                     @endif
                                     <div class="pr-badge">PR</div>
-                                    <div class="discount-image">
-                                        <img src="/images/40off.png" alt="40% OFF" style="width: 100px" />
-                                    </div>
+                                    @if ($new_coupon->discount_rate > 0)
+                                        <div class="discount-card-label">
+                                            {{ $new_coupon->discount_rate }}%OFF
+                                            <span>｜</span>
+                                            {{ number_format(($new_coupon->price + $new_coupon->original_service_price) - (round($new_coupon->store_pay_price) + $new_coupon->service_price)) }}円お得
+                                        </div>
+                                    @endif
                                     <div style="text-align: center; margin-top: 10px">
                                         <p>
                                             @if ($new_coupon->discount_rate > 0)
@@ -591,7 +613,6 @@
                 <span style="font-size: 20px; margin-right: 8px;">📰</span>
                 特集
             </h2>
-            <a href="#" style="color: #3b82f6; font-size: 14px;">もっと見る ＞</a>
         </div>
         <div class="feature-grid">
             @if($special_futures)
