@@ -235,14 +235,30 @@
             </div>
             <div class="form-group">
                 <label for="images" class="col-md-4 col-form-label text-md-end">画像<span class="text-danger">*</span></label>
-                @if($store_data->image)
-                    <div class="col-sm-10 mb-3 mb-sm-0">
-                        <img width="50" height="50" src="{{ asset('/assets/images/'. $store_data->image) }}" >
-                    </div>
-                @endif
-                <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="file" class="form-control" name="images">
+            @if($store_data->image)
+                <div class="col-sm-10 mb-3">
+                    <p style="margin-bottom:8px;">現在の画像</p>
+
+                    <img
+                        src="{{ asset('/assets/images/'. $store_data->image) }}"
+                        style="
+                            width:120px;
+                            height:120px;
+                            object-fit:cover;
+                            border-radius:8px;
+                            border:1px solid #ddd;
+                        "
+                    >
                 </div>
+            @endif
+            <div class="col-sm-10 mb-3 mb-sm-0">
+                @if($store_data->image)
+                <p style="font-size:12px;color:#666;">
+                    画像を変更する場合のみ、新しい画像を選択してください
+                </p>
+                @endif
+                <input type="file" class="form-control" name="images">
+            </div>
             </div>
             <div class="form-group row"style="margin-left:10px">
                 <div class="col-sm-3 mb-3 mb-sm-0">

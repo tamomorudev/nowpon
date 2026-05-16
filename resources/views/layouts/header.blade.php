@@ -44,7 +44,7 @@
 
     .header-logo img {
         display: block;
-        height: 52px;
+        height: 38px;
         width: auto;
         max-width: none;
         object-fit: contain;
@@ -114,7 +114,7 @@
         }
 
         .header-logo img {
-            height: 44px;
+            height: 38px;
         }
 
         .header-right {

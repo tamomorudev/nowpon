@@ -189,16 +189,20 @@ class StoreShopController extends Controller
                     ->withInput();
             }
 
-            $result = $this->imageService->upload($request, 'store_image', 'images');
+            $img_path = $store_data->image;
 
-            if ($result['error']) {
-                return redirect()
-                    ->route('store.shop.edit', $request->filled('si') ? ['si' => $request->get('si')] : [])
-                    ->withErrors($result['error'])
-                    ->withInput();
+            if ($request->hasFile('images')) {
+                $result = $this->imageService->upload($request, 'store_image', 'images');
+
+                if ($result['error']) {
+                    return redirect()
+                        ->route('store.shop.edit', $request->filled('si') ? ['si' => $request->get('si')] : [])
+                        ->withErrors($result['error'])
+                        ->withInput();
+                }
+
+                $img_path = $result['path'];
             }
-
-            $img_path = $result['path'];
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
