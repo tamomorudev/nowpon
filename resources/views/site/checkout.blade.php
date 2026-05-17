@@ -99,7 +99,7 @@
 
         <table style="width: 100%; max-width: 400px; margin: 0 auto 30px; font-size: 16px;">
             <tr>
-                <td style="text-align: left;">商品の小計：</td>
+                <td style="text-align: left;">店舗支払金額：</td>
                 @if ($coupon->discount_rate > 0)
                     <td style="text-align: right;">￥{{ number_format(round($coupon->store_pay_price)) }}</td>
                 @else
@@ -117,9 +117,9 @@
             <tr style="font-weight: bold;">
                 <td style="text-align: left;">ご請求：</td>
                 @if ($coupon->discount_rate > 0)
-                    <td style="text-align: right;">￥{{ number_format(round($coupon->store_pay_price) + $coupon->service_price) }}</td>
+                    <td style="text-align: right;">￥{{ number_format($coupon->service_price) }}</td>
                 @else
-                    <td style="text-align: right;">￥{{ number_format($coupon->price + $coupon->original_service_price) }}</td>
+                    <td style="text-align: right;">￥{{ number_format($coupon->original_service_price) }}</td>
                 @endif
             </tr>
         </table>

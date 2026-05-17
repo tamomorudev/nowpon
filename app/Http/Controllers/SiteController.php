@@ -24,6 +24,7 @@ use App\Models\StripeLogs;
 use Carbon\Carbon;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Stripe\Refund;
 
 class SiteController extends Controller
 {
@@ -150,9 +151,11 @@ class SiteController extends Controller
 
         //支払い金額
         if ($coupon->discount_rate > 0) {
-            $amount = round($coupon->store_pay_price) + $coupon->service_price;
+            //$amount = round($coupon->store_pay_price) + $coupon->service_price;
+            $amount = $coupon->service_price;
         } else {
-            $amount = $coupon->price + $coupon->original_service_price;
+            //$amount = $coupon->price + $coupon->original_service_price;
+            $amount = $coupon->original_service_price;
         }
 
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -375,9 +378,11 @@ class SiteController extends Controller
 
             //購入金額
             if ($coupon->discount_rate > 0) {
-                $payment_amount = round($coupon->store_pay_price) + $coupon->service_price;
+                //$payment_amount = round($coupon->store_pay_price) + $coupon->service_price;
+                $payment_amount = $coupon->service_price;
             } else {
-                $payment_amount = $coupon->price + $coupon->original_service_price;
+                //$payment_amount = $coupon->price + $coupon->original_service_price;
+                $payment_amount = $coupon->original_service_price;
             }
 
             //購入
@@ -685,12 +690,88 @@ class SiteController extends Controller
 
     public function purchaseHistory(Request $request)
     {
-        $category = 'hair';
-        return view('site.purchase_history', compact('category'));
+        $date = date('Y-m-d H:i:s');
+        $user = Auth::guard('web')->user(); //ユーザー情報
+
+        $purchase_coupons = Coupons::select(
+                'coupons.*',
+                'stores.store_name',
+                'stores.phone_number',
+                'stores.genre',
+                'stores.station',
+                'stores.transportation',
+                'stores.time',
+                'stores.address1',
+                'stores.address2',
+                'stores.address3',
+                'purchase_coupons.purchase_code',
+                'purchase_coupons.purchase_date',
+                'purchase_coupons.payment_amount',
+            )
+            ->join('stores', 'coupons.store_id', '=', 'stores.id')
+            ->join('purchase_coupons', 'coupons.id', '=', 'purchase_coupons.coupon_id')
+            ->where('coupons.status', 1)
+            ->where('purchase_coupons.cancel_flg', 0)
+            ->where('purchase_coupons.purchase_user_id', '=', $user->id)
+            ->orderBy('purchase_coupons.purchase_date', 'DESC')
+            ->limit(20)
+            ->get();
+
+        return view('site.purchase_history', compact('purchase_coupons'));
     }
 
+    public function purchaseCancel(Request $request)
+    {
+        if (!isset($request['purchase_code']) || !isset($request['cancel_reason'])) {
+            abort(404);
+        }
 
+        $date = date('Y-m-d H:i:s');
+        $user = Auth::guard('web')->user(); //ユーザー情報
 
+        //payment_intent_id取得
+        $purchase = PurchaseCoupos::where('purchase_code', $request['purchase_code'])->first();
+
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            //全額返金
+            Refund::create([
+                'payment_intent' => $purchase->payment_id,
+            ]);
+
+            //キャンセル済みに更新
+            $purchase->update([
+                'status'        => 2,
+                'cancel_flg' => 1,
+                'cancell_reason'  => $request['cancel_reason'],
+                'cancelled_date'  => $date,
+            ]);
+
+            Coupons::where('id', $purchase->coupon_id)->update([
+                'status' => 2 //キャンセル済み
+            ]);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            Log::error($user->id. ':credit cancel error'.$e->getMessage());
+            DB::rollback();
+            abort(500);
+        }
+
+        return redirect()->route('purchase.cancel_complete');
+
+        /*
+        return view('site.cancel_complete', [
+            'purchase_code' => $request['purchase_code'],
+            'cancel_reason' => $request['cancel_reason'],
+        ]);
+        */
+    }
+
+    public function purchaseCancelComplete()
+    {
+        return view('site.cancel_complete');
+    }
 
     public function terms(Request $request)
     {

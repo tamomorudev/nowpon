@@ -62,6 +62,8 @@ class StoreCouponController extends Controller
                 $coupons->where('expire_end_date', '<', $date);
             } else if ($status === 'selled') { 
                 $coupons->where('coupons.status', 1);
+            } else if ($status === 'cancelled') { 
+                $coupons->where('coupons.status', 2);
             }
         }
 

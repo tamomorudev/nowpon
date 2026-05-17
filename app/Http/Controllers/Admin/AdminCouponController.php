@@ -36,8 +36,36 @@ class AdminCouponController extends Controller
     public function index(Request $request)
     {
         $user = Auth::guard('admin_user')->user(); //ユーザー情報
-        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
+        //$coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
         $stores = Stores::select()->get(); //stores情報
+
+        $coupon_name = $request->coupon_name;
+        $coupon_code = $request->coupon_code;
+        $status = $request->status;
+
+        $date = date('Y-m-d H:i:s');
+
+        $coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id');
+
+        if ($coupon_name) { $coupons->where('coupon_name', 'like', "%{$coupon_name}%"); }
+        if ($coupon_code) { $coupons->where('coupon_code', 'like', "%{$coupon_code}%"); }
+        if ($status) {
+            if ($status === 'prepare') { 
+                $coupons->where('expire_start_date', '>', $date);
+            } else if ($status === 'active') {
+                $coupons->where('expire_start_date', '<=', $date)->where('expire_end_date', '>=', $date);
+            } else if ($status === 'expired') { 
+                $coupons->where('expire_end_date', '<', $date);
+            } else if ($status === 'selled') { 
+                $coupons->where('coupons.status', 1);
+            } else if ($status === 'cancelled') { 
+                $coupons->where('coupons.status', 2);
+            }
+        }
+
+        $coupons = $coupons->orderBy('coupons.created_at', 'DESC')->paginate(50);
+
+
         return view('admin.coupon.index', compact('user', 'stores', 'coupons'));
     }
 

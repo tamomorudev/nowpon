@@ -311,6 +311,13 @@
             cursor: pointer;
         }
 
+        .cancel-modal-bottom form {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            width: 100%;
+        }
+
         .cancel-submit-button:hover {
             opacity: 0.92;
         }
@@ -358,6 +365,66 @@
                 padding: 0;
             }
         }
+
+        /* ページャー */
+        .purchase-pager {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 56px 0 40px;
+        }
+
+        .pager-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #c54b33;
+            background: transparent;
+            color: #c54b33;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+            line-height: 1;
+        }
+
+        .pager-btn:hover:not(:disabled) {
+            background: #c54b33;
+            color: #fff;
+        }
+
+        .pager-btn.is-active {
+            background: #c54b33;
+            color: #fff;
+            border-color: #c54b33;
+        }
+
+        .pager-btn:disabled {
+            border-color: #d9cfc8;
+            color: #d9cfc8;
+            cursor: default;
+        }
+
+        .pager-arrow {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        @media screen and (max-width: 768px) {
+            .purchase-pager {
+                gap: 6px;
+                margin: 40px 0 28px;
+            }
+            .pager-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -375,27 +442,27 @@
 
                 <div class="cancel-modal-top">
                     <div class="cancel-info-box">
-                        <p>注文日:　　2025/03/15</p>
-                        <p>注文番号:　55555555</p>
-                        <p>注文合計　¥3500</p>
+                        <p>注文日:　　<span class="modal-pdate"></span></p>
+                        <p>注文番号:　<span class="modal-code"></span></p>
+                        <p>店舗支払金額:　<span class="modal-storeprice"></span>円</p>
+                        <p>サービス手数料:　<span class="modal-serviceprice"></span>円</p>
+                        <p>注文合計　<span class="modal-totalprice"></span>円</p>
                     </div>
 
                     <div class="cancel-info-box">
                         <p>お支払い情報</p>
                         <p>支払い方法</p>
-                        <p>visa下4桁1234</p>
+                        <p>クレジットカード</p>
                         <p>一括払い</p>
                     </div>
 
                     <div class="cancel-info-box">
                         <p>領収書/明細書</p>
-                        <p>商品: 整体</p>
-                        <p>金額3500円</p>
-                        <p>手数料350円</p>
-                        <p class="cancel-info-total">合計</p>
+                        <p>商品: <span class="modal-genre"></span></p>
+                        <p>サービス手数料:<span class="modal-serviceprice2"></span>円</p>
+                        <p class="cancel-info-total">合計:<span class="modal-price"></span>円</p>
                     </div>
                 </div>
-
                 <div class="cancel-item-box">
                     <div class="cancel-item-image-wrap">
                         <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80" alt="整体イメージ" class="cancel-item-image" id="cancelModalImage">
@@ -404,25 +471,34 @@
                     <div class="cancel-item-content">
                         <div class="cancel-item-meta">
                             <div class="cancel-item-right">
-                                <p>購入日　2025/03/15</p>
-                                <p>利用日　2025/03/16　12:30〜</p>
-                                <p class="cancel-item-name">ジャンルー店舗名</p>
-                                <p class="cancel-item-tel">☎</p>
-                                <p class="cancel-item-address">住所</p>
+                                <p>購入日　<span class="modal-pdate"></span></p>
+                                <p>利用日　<span class="modal-udate"></span></p>
+                                <p class="cancel-item-name"><span class="modal-storename"></span></p>
+                                <p class="cancel-item-tel">☎<span class="modal-tel"></span></p>
+                                <p class="cancel-item-address"><span class="modal-address"></span></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="cancel-modal-bottom">
-                    <select class="cancel-reason-select">
-                        <option selected>キャンセルの理由</option>
-                        <option>予定が変わったため</option>
-                        <option>日時を間違えたため</option>
-                        <option>別の店舗を利用するため</option>
-                    </select>
+                    <p id="cancelMessage" style="color:#c54b33; font-size:15px; margin:0;"></p>
+                    <form method="POST" action="{{ route('purchase.cancel') }}">
+                        @csrf
+                        <input type="hidden" name="purchase_code" class="modal-hidden-code" value="">
 
-                    <button type="button" class="cancel-submit-button">キャンセルする</button>
+                        <select name="cancel_reason" class="cancel-reason-select">
+                            <option value="" selected>キャンセルの理由</option>
+                            @foreach(config('commons.cancel_reasons') as $r_key => $cancel_reason)
+                                <option value="{{ $r_key }}"
+                                    {{ old('genre', '') == $r_key ? 'selected' : '' }}>
+                                    {{ $cancel_reason }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <button type="submit" class="cancel-submit-button">キャンセルする</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -434,47 +510,54 @@
             <p class="purchase-history-count">過去20件</p>
         </div>
 
-        <div class="purchase-history-grid">
-            <button type="button" class="purchase-card js-open-cancel-modal">
-                <div class="purchase-card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80" alt="整体イメージ" class="purchase-card-image">
-                </div>
-                <div class="purchase-card-body">
-                    <p class="purchase-card-title">3月15日 整体ー店舗名</p>
-                    <p class="purchase-card-access">○○駅 北口徒歩何分</p>
-                </div>
-            </button>
-
-            <button type="button" class="purchase-card js-open-cancel-modal">
-                <div class="purchase-card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt="美容室イメージ" class="purchase-card-image">
-                </div>
-                <div class="purchase-card-body">
-                    <p class="purchase-card-title">3月16日 ヘアサロンー店舗名</p>
-                    <p class="purchase-card-access">○○駅 北口徒歩何分</p>
-                </div>
-            </button>
-
-            <button type="button" class="purchase-card js-open-cancel-modal">
-                <div class="purchase-card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=1200&q=80" alt="整体イメージ" class="purchase-card-image">
-                </div>
-                <div class="purchase-card-body">
-                    <p class="purchase-card-title">3月17日 整体ー店舗名</p>
-                    <p class="purchase-card-access">○○駅 北口徒歩何分</p>
-                </div>
-            </button>
-
-            <button type="button" class="purchase-card js-open-cancel-modal">
-                <div class="purchase-card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt="美容室イメージ" class="purchase-card-image">
-                </div>
-                <div class="purchase-card-body">
-                    <p class="purchase-card-title">3月18日 ヘアサロンー店舗名</p>
-                    <p class="purchase-card-access">○○駅 北口徒歩何分</p>
-                </div>
-            </button>
-        </div>
+        @if (count($purchase_coupons) > 0)
+            <div class="purchase-history-grid">
+                @foreach($purchase_coupons as $key => $purchase_coupon)
+                    @php
+                        $now = \Carbon\Carbon::now();
+                        $start = \Carbon\Carbon::parse($purchase_coupon->cource_start);
+                        
+                        if ($now->greaterThanOrEqualTo($start)) {
+                            $date_pat = 2;
+                        } elseif ($now->greaterThanOrEqualTo($start->copy()->subHour())) {
+                            $date_pat = 1;
+                        } else {
+                            $date_pat = 0;
+                        }
+                    @endphp
+                    <button type="button" class="purchase-card js-open-cancel-modal"
+                        data-pdate="{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('n月j日') }}"
+                        data-udate="{{ \Carbon\Carbon::parse($purchase_coupon->cource_start)->format('n月j日 G時i分～') }}"
+                        data-code="{{ $purchase_coupon->purchase_code }}"
+                        data-price="{{ $purchase_coupon->payment_amount }}"
+                        data-storeprice="{{ $purchase_coupon->store_pay_price }}"
+                        data-serviceprice="{{ $purchase_coupon->service_price }}"
+                        data-serviceprice2="{{ $purchase_coupon->service_price }}"
+                        data-totalprice="{{ $purchase_coupon->store_pay_price + $purchase_coupon->service_price }}"
+                        data-genre="{{ config('commons.genre')[$purchase_coupon->genre] }}"
+                        data-storename="{{ $purchase_coupon->store_name }}"
+                        data-tel="{{ $purchase_coupon->phone_number }}"
+                        data-image="{{ asset('/assets/images/'. $purchase_coupon->img_url) }}"
+                        data-pat="{{ $date_pat }}"
+                        data-address="{{ $purchase_coupon->address1 }} {{ $purchase_coupon->address2 }} {{ $purchase_coupon->address3 }}">
+                        <div class="purchase-card-image-wrap">
+                            @if($purchase_coupon->img_url)
+                                <img src="{{ asset('/assets/images/'. $purchase_coupon->img_url) }}" alt="クーポン画像" class="purchase-card-image">
+                            @else
+                                <!--<img src="https://picsum.photos/80/80?random=1" alt="店舗画像" class="coupon-thumb" />-->
+                            @endif
+                        </div>
+                        <div class="purchase-card-body">
+                            <p class="purchase-card-title">{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('n月j日') }} {{ config('commons.genre')[$purchase_coupon->genre] }}ー{{ $purchase_coupon->store_name }}</p>
+                            <p class="purchase-card-access">{{ $purchase_coupon->station }}駅 {{ config('commons.transportation')[$purchase_coupon->transportation] }}{{ $purchase_coupon->time }}分</p>
+                        </div>
+                    </button>
+                @endforeach
+            </div>
+            <nav class="purchase-pager" id="purchasePager" aria-label="ページ切り替え"></nav>
+        @else
+            <h4 class="" id="">直近の購入履歴はありません</h2>
+        @endif
     </div>
 </div>
 </body>
@@ -485,15 +568,45 @@
         const openButtons = document.querySelectorAll('.js-open-cancel-modal');
         const closeButton = document.getElementById('closeCancelModal');
         const modalImage = document.getElementById('cancelModalImage');
+        const cancelForm = document.querySelector('.cancel-modal-bottom form'); 
 
         openButtons.forEach(function (button) {
             button.addEventListener('click', function () {
-                const cardImage = button.querySelector('.purchase-card-image');
+               const d = button.dataset;
 
-                if (cardImage && modalImage) {
-                    modalImage.src = cardImage.src;
-                    modalImage.alt = cardImage.alt;
+                //画像
+                modalImage.src = d.image;
+                modalImage.alt = d.storename;
+
+                const hiddenCode = document.querySelector('.modal-hidden-code');
+                if (hiddenCode) hiddenCode.value = d.code;
+
+                const cancelMsg = document.getElementById('cancelMessage');
+
+                if (d.pat === '0') {
+                    cancelForm.style.display = 'flex';
+                    cancelMsg.textContent = '';
+                } else if (d.pat === '1') {
+                    cancelForm.style.display = 'none';
+                    cancelMsg.textContent = '利用時間の1時間前を過ぎているため、キャンセルできません。';
+                } else if (d.pat === '2') {
+                    cancelForm.style.display = 'none';
+                    cancelMsg.textContent = '利用日時を過ぎているため、キャンセルできません。';
                 }
+
+                //注文
+                document.querySelector('.modal-pdate').textContent     = d.pdate;
+                document.querySelector('.modal-udate').textContent     = d.udate;
+                document.querySelector('.modal-code').textContent      = d.code;
+                document.querySelector('.modal-price').textContent     = Number(d.price).toLocaleString();
+                document.querySelector('.modal-storeprice').textContent   = Number(d.storeprice).toLocaleString();
+                document.querySelector('.modal-serviceprice').textContent   = Number(d.serviceprice).toLocaleString();
+                document.querySelector('.modal-serviceprice2').textContent   = Number(d.serviceprice2).toLocaleString();
+                document.querySelector('.modal-totalprice').textContent   = Number(d.totalprice).toLocaleString();
+                document.querySelector('.modal-storename').textContent = d.storename;
+                document.querySelector('.modal-genre').textContent = d.storename;
+                document.querySelector('.modal-tel').textContent       = d.tel;
+                document.querySelector('.modal-address').textContent   = d.address;
 
                 modal.classList.add('is-open');
                 document.body.classList.add('modal-open');
@@ -518,6 +631,66 @@
                 document.body.classList.remove('modal-open');
             }
         });
+
+        //4件ページング
+        const ITEMS_PER_PAGE = 4;
+        const grid = document.querySelector('.purchase-history-grid');
+        const pager = document.getElementById('purchasePager');
+
+        function getCards() {
+            return Array.from(grid.querySelectorAll('.purchase-card'));
+        }
+
+        function showPage(page) {
+            const cards = getCards();
+            const totalPages = Math.ceil(cards.length / ITEMS_PER_PAGE);
+
+            cards.forEach(function (card, i) {
+                const inPage = i >= (page - 1) * ITEMS_PER_PAGE && i < page * ITEMS_PER_PAGE;
+                card.style.display = inPage ? '' : 'none';
+            });
+
+            renderPager(page, totalPages);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPager(current, total) {
+            pager.innerHTML = '';
+            if (total <= 1) return;
+
+            const prev = document.createElement('button');
+            prev.type = 'button';
+            prev.className = 'pager-btn pager-arrow';
+            prev.textContent = '‹';
+            prev.setAttribute('aria-label', '前のページ');
+            prev.disabled = current === 1;
+            prev.addEventListener('click', function () { showPage(current - 1); });
+            pager.appendChild(prev);
+
+            for (let p = 1; p <= total; p++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pager-btn' + (p === current ? ' is-active' : '');
+                btn.textContent = p;
+                btn.setAttribute('aria-label', p + 'ページ目');
+                btn.setAttribute('aria-current', p === current ? 'page' : '');
+                ;(function (page) {
+                    btn.addEventListener('click', function () { showPage(page); });
+                })(p);
+                pager.appendChild(btn);
+            }
+
+            const next = document.createElement('button');
+            next.type = 'button';
+            next.className = 'pager-btn pager-arrow';
+            next.textContent = '›';
+            next.setAttribute('aria-label', '次のページ');
+            next.disabled = current === total;
+            next.addEventListener('click', function () { showPage(current + 1); });
+            pager.appendChild(next);
+        }
+
+        showPage(1);
     });
 </script>
 @include('layouts.footer')

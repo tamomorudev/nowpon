@@ -22,6 +22,8 @@ if (!function_exists('couponStatus')) {
             return '削除済み';
         } else if ($coupon->status == 1) {
             return '購入済み';
+        } else if ($coupon->status == 2) {
+            return 'キャンセル';
         } else if ($coupon->expire_start_date <= date('Y-m-d H:i:s') && $coupon->expire_end_date >= date('Y-m-d H:i:s')) {
             return '掲載中';
         } else if ($coupon->expire_start_date > date('Y-m-d H:i:s')) {
