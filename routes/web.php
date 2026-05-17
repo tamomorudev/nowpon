@@ -31,7 +31,6 @@ Route::get('site/list', [App\Http\Controllers\SiteController::class, 'list'])->n
 Route::get('site/cart', [App\Http\Controllers\SiteController::class, 'cart'])->name('cart');
 Route::match(['GET','POST'], 'site/couponlist', [App\Http\Controllers\SiteController::class, 'couponlist'])->name('couponlist');
 Route::get('site/coupondetail', [App\Http\Controllers\SiteController::class, 'coupondetail'])->name('coupondetail');
-Route::get('site/purchase_history', [App\Http\Controllers\SiteController::class, 'purchaseHistory'])->name('purchaseHistory');
 
 // 利用規約
 Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])->name('terms');
@@ -54,6 +53,11 @@ Route::middleware('auth')->group(function () {
     //決済
     Route::post('/site/checkout/charge', [App\Http\Controllers\SiteController::class, 'charge'])->name('checkout.charge');
     Route::get('/site/checkout/3ds_callback', [App\Http\Controllers\SiteController::class, 'threeDsCallback'])->name('checkout.3ds_callback');
+
+    //履歴・キャンセル
+    Route::get('/site/purchase_history', [App\Http\Controllers\SiteController::class, 'purchaseHistory'])->name('purchaseHistory');
+    Route::post('/site/purchase_cancel', [App\Http\Controllers\SiteController::class, 'purchaseCancel'])->name('purchase.cancel');
+    Route::get('/site/purchase_cancel_complete', [App\Http\Controllers\SiteController::class, 'purchaseCancelComplete'])->name('purchase.cancel_complete');
 });
 
 Route::group(['prefix' => 'store'], function () {

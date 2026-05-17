@@ -20,6 +20,56 @@
             <h1 class="h3 mb-0 text-gray-800">クーポン一覧</h1>
         </div>
 
+        <!-- Search Form -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('admin.coupon') }}">
+
+                    <!-- 1行目：検索項目 -->
+                    <div class="form-row">
+
+                        <div class="col-md-3 mb-3">
+                            <label for="coupon_name">クーポン名</label>
+                            <input type="text" name="coupon_name" id="coupon_name"
+                                value="{{ request('coupon_name') }}"
+                                class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="coupon_code">クーポンコード</label>
+                            <input type="text" name="coupon_code" id="coupon_code"
+                                value="{{ request('coupon_code') }}"
+                                class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="status">ステータス</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="">すべて</option>
+                                <option value="prepare" {{ request('status')=='prepare' ? 'selected' : '' }}>掲載予定</option>
+                                <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>掲載中</option>
+                                <option value="expired" {{ request('status')=='expired' ? 'selected' : '' }}>掲載終了</option>
+                                <option value="selled" {{ request('status')=='selled' ? 'selected' : '' }}>購入済み</option>
+                                <option value="cancelled" {{ request('status')=='cancelled' ? 'selected' : '' }}>キャンセル</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- 2行目：ボタン -->
+                    <div class="form-row mt-2">
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-block">検索</button>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{ route('admin.coupon') }}" class="btn btn-secondary btn-block">クリア</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-body">
