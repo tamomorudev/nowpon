@@ -154,7 +154,7 @@ class StoreShopController extends Controller
 
         if ($request->isMethod('post') && isset($request['p_type']) && $request['p_type'] == 'edit') {
             //$request = $request->all();
-            $image_rules = empty($store_data->image) ? 'required|image' : 'nullable|image';
+            $image_rules = empty($store_data->image) || $request->boolean('delete_image') ? 'required|image' : 'nullable|image';
 
             $validated_data = Validator::make($request->all(), [
                 'store_name'     => 'required',

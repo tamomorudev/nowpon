@@ -239,7 +239,10 @@
             <div class="form-group">
                 <label for="images" class="col-md-4 col-form-label text-md-end">画像<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="file" class="form-control @error('images') is-invalid @enderror" name="images" accept="image/*" required>
+                    <div class="store-image-slot" style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+                        <div class="store-image-preview" style="width:120px;height:120px;border:1px dashed #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#777;">未登録</div>
+                        <input type="file" class="form-control @error('images') is-invalid @enderror store-image-input" name="images" accept="image/*" required style="max-width:360px;">
+                    </div>
                     @error('images')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -261,6 +264,74 @@
             $.ajaxSetup({
                 headers: { 'X-CSRF-TOKEN': $("[name='csrf-token']").attr("content") },
             })
+            $('.store-image-input').on('change', function() {
+                const file = this.files && this.files[0];
+                if (!file || !file.type.startsWith('image/')) {
+                    return;
+                }
+
+                const slot = $(this).closest('.store-image-slot');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = $('<div>', {
+                        class: 'store-image-preview-wrap'
+                    }).css({
+                        position: 'relative',
+                        width: '120px',
+                        height: '120px'
+                    }).append($('<img>', {
+                        src: e.target.result,
+                        width: 120,
+                        height: 120
+                    }).css({
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                        border: '1px solid #ddd'
+                    })).append($('<button>', {
+                        type: 'button',
+                        class: 'store-image-remove',
+                        html: '&times;'
+                    }).css({
+                        position: 'absolute',
+                        top: '-8px',
+                        right: '-8px',
+                        width: '22px',
+                        height: '22px',
+                        borderRadius: '50%',
+                        border: '1px solid #dc3545',
+                        background: '#fff',
+                        color: '#dc3545',
+                        fontWeight: 'bold',
+                        lineHeight: '18px',
+                        padding: 0
+                    }));
+
+                    slot.children().eq(0).replaceWith(preview);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            $(document).on('click', '.store-image-remove', function() {
+                const slot = $(this).closest('.store-image-slot');
+                slot.find('.store-image-input').val('');
+                slot.find('.store-image-delete').val('1');
+
+                const emptyPreview = $('<div>')
+                    .text('未登録')
+                    .css({
+                        width: '120px',
+                        height: '120px',
+                        border: '1px dashed #ccc',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        color: '#777'
+                    });
+
+                slot.children().eq(0).replaceWith(emptyPreview);
+            });
             $("#address1").on('change', function() {
                 var pval = $(this).val();
                 if (pval) {
