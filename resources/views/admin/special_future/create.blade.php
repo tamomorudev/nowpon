@@ -23,7 +23,14 @@
         </div>
 
         @if($errors->any())
-            <div class="d-sm-flex align-items-center justify-content-between mb-4" style="color:red">入力値に誤りがあります。</div>
+            <div class="mb-4" style="color:red">
+                <div>入力値に誤りがあります。</div>
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
         <form class="user" method="POST" action="{{ route('admin.special_future.create') }}" enctype="multipart/form-data">
@@ -170,8 +177,36 @@
         $(function() {
             $('#summernote').summernote({
                 height: 300,
-                lang: 'ja-JP'
+                lang: 'ja-JP',
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadSpecialFutureDetailImages(files, $(this));
+                    }
+                }
             });
+
+            function uploadSpecialFutureDetailImages(files, editor) {
+                Array.from(files).forEach(function(file) {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    formData.append('_token', '{{ csrf_token() }}');
+
+                    $.ajax({
+                        url: '{{ route('admin.special_future.detail_image') }}',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false
+                    }).done(function(response) {
+                        editor.summernote('insertImage', response.url);
+                    }).fail(function(xhr) {
+                        const message = xhr.responseJSON && xhr.responseJSON.message
+                            ? xhr.responseJSON.message
+                            : '画像のアップロードに失敗しました。';
+                        alert(message);
+                    });
+                });
+            }
         });
     </script>
 @endsection

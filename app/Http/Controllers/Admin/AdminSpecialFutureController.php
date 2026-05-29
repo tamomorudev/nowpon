@@ -64,6 +64,14 @@ class AdminSpecialFutureController extends Controller
                     ->withInput();
             }
 
+            $request['detail'] = $this->convertEmbeddedDetailImages($request['detail']);
+
+            if ($this->hasEmbeddedDetailImages($request['detail'])) {
+                return redirect()->route('admin.special_future.create')
+                    ->withErrors(['detail' => '本文内の画像はアップロード画像として挿入してください。'])
+                    ->withInput();
+            }
+
             // date convert
             $start_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['start_date'])));
             $end_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['end_date'])));
@@ -187,6 +195,14 @@ class AdminSpecialFutureController extends Controller
                     ->withInput();
             }
 
+            $request['detail'] = $this->convertEmbeddedDetailImages($request['detail']);
+
+            if ($this->hasEmbeddedDetailImages($request['detail'])) {
+                return redirect()->back()
+                    ->withErrors(['detail' => '本文内の画像はアップロード画像として挿入してください。'])
+                    ->withInput();
+            }
+
             // date convert
             $start_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['start_date'])));
             $end_date = date('Y-m-d H:i:s', strtotime(str_replace('T', ' ', $request['end_date'])));
@@ -257,6 +273,7 @@ class AdminSpecialFutureController extends Controller
                 $create_special_future_array['updated_by'] = $user->id;
 
                 SpecialFutures::where('id', $special_future_data->id)->update($create_special_future_array);
+                $this->deleteRemovedDetailImages($special_future_data->detail, $request['detail']);
 
                 DB::commit();
             } catch (\Exception $e) {
@@ -286,8 +303,111 @@ class AdminSpecialFutureController extends Controller
             if ($special_future_data->image && File::exists('assets/images/'. $special_future_data->image)) {
                 File::delete('assets/images/'. $special_future_data->image);
             }
+            $this->deleteDetailImages($special_future_data->detail);
         }
 
         return redirect('/admin/special_future');
+    }
+
+    public function uploadDetailImage(Request $request)
+    {
+        if (!$request->hasFile('image')) {
+            return response()->json(['message' => '画像を選択してください。'], 422);
+        }
+
+        $file = $request->file('image');
+
+        if (strpos($file->getMimeType(), 'image') === false) {
+            return response()->json(['message' => '画像ファイルを選択してください。'], 422);
+        }
+
+        $maxSize = 10 * 1024 * 1024;
+        if ($file->getSize() > $maxSize) {
+            return response()->json(['message' => '画像サイズは10MB以内にしてください。'], 422);
+        }
+
+        $path = $file->store('special_future_detail', 'pub_images');
+
+        return response()->json([
+            'path' => $path,
+            'url' => asset('/assets/images/'. $path),
+        ]);
+    }
+
+    private function hasEmbeddedDetailImages($detail)
+    {
+        return preg_match('/<img[^>]+src=["\']data:image\//i', $detail ?? '') === 1;
+    }
+
+    private function convertEmbeddedDetailImages($detail)
+    {
+        return preg_replace_callback(
+            '~<img\b([^>]*?)\bsrc=(["\'])(data:image/(png|jpeg|jpg|gif|webp);base64,([^"\']+))\2([^>]*)>~i',
+            function ($matches) {
+                $extension = strtolower($matches[4]);
+                $extension = $extension === 'jpeg' ? 'jpg' : $extension;
+                $base64 = preg_replace('/\s+/', '', $matches[5]);
+                $binary = base64_decode($base64, true);
+
+                if ($binary === false || strlen($binary) > 10 * 1024 * 1024) {
+                    return $matches[0];
+                }
+
+                $path = 'special_future_detail/'. date('YmdHis') .'_'. bin2hex(random_bytes(8)) .'.'. $extension;
+                Storage::disk('pub_images')->put($path, $binary);
+
+                return '<img'. $matches[1] .'src='. $matches[2] . asset('/assets/images/'. $path) . $matches[2] . $matches[6] .'>';
+            },
+            $detail ?? ''
+        );
+    }
+
+    private function extractDetailImagePaths($detail)
+    {
+        preg_match_all('/<img[^>]+src=["\']([^"\']+)["\']/i', $detail ?? '', $matches);
+
+        $paths = [];
+        foreach ($matches[1] ?? [] as $src) {
+            $path = parse_url($src, PHP_URL_PATH);
+            if (!$path) {
+                continue;
+            }
+
+            $prefix = '/assets/images/';
+            $prefixPos = strpos($path, $prefix);
+            if ($prefixPos === false) {
+                continue;
+            }
+
+            $relativePath = ltrim(substr($path, $prefixPos + strlen($prefix)), '/');
+            if (strpos($relativePath, 'special_future_detail/') !== 0 || strpos($relativePath, '..') !== false) {
+                continue;
+            }
+
+            $paths[] = $relativePath;
+        }
+
+        return array_values(array_unique($paths));
+    }
+
+    private function deleteRemovedDetailImages($oldDetail, $newDetail)
+    {
+        $oldImages = $this->extractDetailImagePaths($oldDetail);
+        $newImages = $this->extractDetailImagePaths($newDetail);
+
+        foreach (array_diff($oldImages, $newImages) as $path) {
+            if (Storage::disk('pub_images')->exists($path)) {
+                Storage::disk('pub_images')->delete($path);
+            }
+        }
+    }
+
+    private function deleteDetailImages($detail)
+    {
+        foreach ($this->extractDetailImagePaths($detail) as $path) {
+            if (Storage::disk('pub_images')->exists($path)) {
+                Storage::disk('pub_images')->delete($path);
+            }
+        }
     }
 }

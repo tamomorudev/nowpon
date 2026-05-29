@@ -146,6 +146,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/special_future', 'App\Http\Controllers\Admin\AdminSpecialFutureController@index')->name('admin.special_future');
         Route::match(['get', 'post'], '/special_future/create', 'App\Http\Controllers\Admin\AdminSpecialFutureController@create')->name('admin.special_future.create');
         Route::match(['get', 'post'], '/special_future/edit', 'App\Http\Controllers\Admin\AdminSpecialFutureController@edit')->name('admin.special_future.edit');
+        Route::post('/special_future/detail_image', 'App\Http\Controllers\Admin\AdminSpecialFutureController@uploadDetailImage')->name('admin.special_future.detail_image');
         Route::post('/special_future/delete', 'App\Http\Controllers\Admin\AdminSpecialFutureController@delete')->name('admin.special_future.delete');
         // マスタ
         Route::match(['get', 'post'], '/store_images', 'App\Http\Controllers\Admin\AdminMasterController@store_images')->name('admin.master.store_images');
