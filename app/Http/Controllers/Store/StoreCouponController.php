@@ -121,12 +121,12 @@ class StoreCouponController extends Controller
             $day_of_the_week = $date->format('w');
 
             //画像
-            $image_keys = ['images', 'images_2', 'images_3', 'images_4', 'images_5'];
-            $img_paths = [];
-            $img_index = 0;
-            $coupon_image_array = array();
+            $re_image_coupon = null;
+            if (isset($request['image_re']) && $request['image_re']) {
+                $re_image_coupon = Coupons::where('id', $request['image_re'])->where('company_id', $user->company_id)->first();
+            }
 
-            $result = $this->imageService->uploadCouponImages($request);
+            $result = $this->buildCouponImageArray($request, $re_image_coupon);
             
             if ($result['error']) {
                 return redirect()->route('store.coupon.create')
@@ -167,20 +167,8 @@ class StoreCouponController extends Controller
                 $create_coupon_array['detail'] = $request['detail'];
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;
-                //$create_coupon_array['img_url'] = $img_path;
-                if ($coupon_image_array) {
-                    foreach ($coupon_image_array as $field_name => $coupon_image_path) {
-                        $create_coupon_array[$field_name] = $coupon_image_path;
-                    }
-                } else if (isset($request['image_re']) && $request['image_re']) {
-                    $re_image_coupon = Coupons::where('id', $request['image_re'])->where('company_id', $user->company_id)->first();
-                    if ($re_image_coupon) {  
-                        $create_coupon_array['img_url'] = $re_image_coupon->img_url;
-                        $create_coupon_array['img_url_2'] = $re_image_coupon->img_url_2;
-                        $create_coupon_array['img_url_3'] = $re_image_coupon->img_url_3;
-                        $create_coupon_array['img_url_4'] = $re_image_coupon->img_url_4;
-                        $create_coupon_array['img_url_5'] = $re_image_coupon->img_url_5;
-                    }
+                foreach ($coupon_image_array as $field_name => $coupon_image_path) {
+                    $create_coupon_array[$field_name] = $coupon_image_path;
                 }
                 $create_coupon_array['created_by'] = $user->id;
                 $create_coupon_array['updated_by'] = $user->id;
@@ -263,14 +251,6 @@ class StoreCouponController extends Controller
         $coupon_data->expire_start_date = date('Y-m-d H:i', strtotime($coupon_data->expire_start_date));
         $coupon_data->expire_end_date = date('Y-m-d H:i', strtotime($coupon_data->expire_end_date));
 
-        $old_img_paths = [
-            $coupon_data->img_url,
-            $coupon_data->img_url_2,
-            $coupon_data->img_url_3,
-            $coupon_data->img_url_4,
-            $coupon_data->img_url_5,
-        ];
-
         if (isset($request['store_name']) && isset($request['p_type']) && $request['p_type'] == 'edit') {
             $validated_data = Validator::make($request, [
                 'store_name' => 'required',
@@ -313,37 +293,15 @@ class StoreCouponController extends Controller
             $day_of_the_week = $date->format('w');
 
             //画像
-            $image_keys = ['images', 'images_2', 'images_3', 'images_4', 'images_5'];
-            $img_paths = [];
-            $img_index = 0;
-            $coupon_image_array = array();
+            $result = $this->buildCouponImageArray($request, $coupon_data, true);
 
-            foreach ($image_keys as $key) {
-                if (isset($request[$key]) && $request[$key]) {
-                    $file = $request[$key];
-                    $fileSize = $file->getSize();
-                    $maxSize = 1000 * 1024 * 1024; // 一旦1GB制限
-
-                    if ($fileSize > $maxSize) {
-                        return redirect()->route('store.coupon.create')
-                            ->withErrors(["{$key}" => "ファイルサイズが1MBを超えています。"])
-                            ->withInput();
-                    }
-
-                    if (strpos($file->getMimeType(), 'image') !== false) {
-                        $img_path = $file->store('coupon_image', 'pub_images');
-
-                        // 画像がある順に詰める
-                        if ($img_index == 0) {
-                            $field_name = 'img_url';
-                        } else {
-                            $field_name = 'img_url_' . ($img_index + 1);
-                        }
-                        $coupon_image_array[$field_name] = $img_path;
-                        $img_index++;
-                    }
-                }
+            if ($result['error']) {
+                return redirect()->back()
+                    ->withErrors(['images' => $result['message']])
+                    ->withInput();
             }
+
+            $coupon_image_array = $result['data'];
 
             //サービス料算出
             $service_price = round($request['store_pay_price'] * 0.15);
@@ -362,20 +320,6 @@ class StoreCouponController extends Controller
                 $create_coupon_array = array();
 
                 //更新画像が1枚でもセットされていた場合画像リセット
-                if (count($coupon_image_array) > 0) {
-                    $create_coupon_array['img_url'] = null;
-                    $create_coupon_array['img_url_2'] = null;
-                    $create_coupon_array['img_url_3'] = null;
-                    $create_coupon_array['img_url_4'] = null;
-                    $create_coupon_array['img_url_5'] = null;
-
-                    foreach ($old_img_paths as $path) {
-                        if ($path && Storage::disk('pub_images')->exists($path)) {
-                            Storage::disk('pub_images')->delete($path);
-                        }
-                    }
-                }
-
                 $create_coupon_array['coupon_name'] = $request['coupon_name'];
                 $create_coupon_array['company_id'] = $user->company_id;
                 $create_coupon_array['store_id'] = $request['store_name'];
@@ -412,6 +356,101 @@ class StoreCouponController extends Controller
         }
 
         return view('store.coupon.edit', compact('user', 'stores', 'coupon_data'));
+    }
+
+    private function couponImageFields()
+    {
+        return [
+            'images' => 'img_url',
+            'images_2' => 'img_url_2',
+            'images_3' => 'img_url_3',
+            'images_4' => 'img_url_4',
+            'images_5' => 'img_url_5',
+        ];
+    }
+
+    private function buildCouponImageArray(array $request, $existingCoupon = null, $deleteOldFiles = false)
+    {
+        $coupon_image_array = [];
+        $delete_images = $request['delete_images'] ?? [];
+
+        if (!is_array($delete_images)) {
+            $delete_images = [];
+        }
+
+        foreach ($this->couponImageFields() as $input_name => $field_name) {
+            $old_path = $existingCoupon ? ($existingCoupon->{$field_name} ?? null) : null;
+
+            if ($existingCoupon) {
+                $coupon_image_array[$field_name] = $old_path;
+            }
+
+            if (in_array($field_name, $delete_images, true)) {
+                if ($deleteOldFiles && $old_path && Storage::disk('pub_images')->exists($old_path)) {
+                    Storage::disk('pub_images')->delete($old_path);
+                }
+                $coupon_image_array[$field_name] = null;
+                $old_path = null;
+            }
+
+            if (!isset($request[$input_name]) || !$request[$input_name]) {
+                continue;
+            }
+
+            $file = $request[$input_name];
+            $maxSize = 1000 * 1024 * 1024;
+
+            if ($file->getSize() > $maxSize) {
+                return [
+                    'error' => true,
+                    'message' => 'ファイルサイズが1GBを超えています。',
+                    'data' => [],
+                ];
+            }
+
+            if (strpos($file->getMimeType(), 'image') === false) {
+                return [
+                    'error' => true,
+                    'message' => '画像ファイルを選択してください。',
+                    'data' => [],
+                ];
+            }
+
+            $img_path = $file->store('coupon_image', 'pub_images');
+
+            if ($deleteOldFiles && $old_path && Storage::disk('pub_images')->exists($old_path)) {
+                Storage::disk('pub_images')->delete($old_path);
+            }
+
+            $coupon_image_array[$field_name] = $img_path;
+        }
+
+        $coupon_image_array = $this->compactCouponImages($coupon_image_array);
+
+        return [
+            'error' => false,
+            'message' => null,
+            'data' => $coupon_image_array,
+        ];
+    }
+
+    private function compactCouponImages(array $coupon_image_array)
+    {
+        $fields = array_values($this->couponImageFields());
+        $paths = [];
+
+        foreach ($fields as $field_name) {
+            if (!empty($coupon_image_array[$field_name])) {
+                $paths[] = $coupon_image_array[$field_name];
+            }
+        }
+
+        $compacted = [];
+        foreach ($fields as $index => $field_name) {
+            $compacted[$field_name] = $paths[$index] ?? null;
+        }
+
+        return $compacted;
     }
 
     public function delete(Request $request)
