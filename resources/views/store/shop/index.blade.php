@@ -20,6 +20,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th>画像</th>
                                 <th>店舗名</th>
                                 <th>メールアドレス</th>
                                 <th>電話番号</th>
@@ -31,6 +32,19 @@
                         <tbody>
                             @foreach($stores as $store)
                             <tr>
+                                <td style="width:96px;text-align:center;">
+                                    @if($store->image)
+                                        <img
+                                            src="{{ asset('/assets/images/'. $store->image) }}"
+                                            alt="{{ $store->store_name }}"
+                                            width="80"
+                                            height="80"
+                                            style="object-fit:cover;border-radius:4px;border:1px solid #ddd;"
+                                        >
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>{{$store->store_name}}</td>
                                 <td>{{$store->email}}</td>
                                 <td>{{$store->phone_number}}</td>
