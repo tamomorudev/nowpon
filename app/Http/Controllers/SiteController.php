@@ -68,7 +68,7 @@ class SiteController extends Controller
         if (!$coupon_code) {
             abort(404);
         } else {
-            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.image as store_image', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
                 ->join('stores', 'coupons.store_id', '=', 'stores.id')
                 ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
                 ->where('coupon_code', $coupon_code)
@@ -609,7 +609,7 @@ class SiteController extends Controller
         if (!$coupon_code) {
             abort(404);
         } else {
-            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
+            $coupon = Coupons::select('coupons.*', 'stores.store_name', 'stores.image as store_image', 'stores.genre', 'stores.station', 'stores.transportation', 'stores.time', 'zipcodes.city')
                 ->join('stores', 'coupons.store_id', '=', 'stores.id')
                 ->join('zipcodes', 'stores.postal_code', '=', 'zipcodes.zipcode')
                 ->where('coupon_code', $coupon_code)

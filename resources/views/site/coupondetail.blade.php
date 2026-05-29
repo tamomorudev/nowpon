@@ -63,6 +63,16 @@
             font-weight: bold;
             font-size: 14px;
         }
+        .coupon-detail .store-image {
+            margin: 8px 0 14px;
+        }
+        .coupon-detail .store-image img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
 
         /* 商品情報テキスト */
         .coupon-detail .info-panel .info {
@@ -300,6 +310,11 @@
                 <div class="tab">商品内容</div>
                 <div class="info">
                     <p><strong>{{ config('commons.genre')[$coupon->genre] }}ー{{ $coupon->store_name }}</strong></p>
+                    @if($coupon->store_image)
+                        <div class="store-image">
+                            <img src="{{ asset('/assets/images/'. $coupon->store_image) }}" alt="{{ $coupon->store_name }}">
+                        </div>
+                    @endif
                     <p>最寄り駅：{{ $coupon->station }}駅 {{ config('commons.transportation')[$coupon->transportation] }}{{ $coupon->time }}分
                     @if ($coupon->station_2 && $coupon->time_2)
                         <br>最寄り駅：{{ $coupon->station_2 }}駅 {{ config('commons.transportation')[$coupon->transportation_2] }}{{ $coupon->time_2 }}分

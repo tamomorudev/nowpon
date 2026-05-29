@@ -257,7 +257,12 @@
                     画像を変更する場合のみ、新しい画像を選択してください
                 </p>
                 @endif
-                <input type="file" class="form-control" name="images">
+                <input type="file" class="form-control @error('images') is-invalid @enderror" name="images" accept="image/*" @if(!$store_data->image) required @endif>
+                @error('images')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
             </div>
             <div class="form-group row"style="margin-left:10px">

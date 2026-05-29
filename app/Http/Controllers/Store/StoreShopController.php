@@ -60,6 +60,7 @@ class StoreShopController extends Controller
                 'station'        => 'required',
                 'transportation' => 'required',
                 'time'           => 'required',
+                'images'         => 'required|image',
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
                 'email.required'          => 'メールアドレスを入力してください。',
@@ -77,6 +78,8 @@ class StoreShopController extends Controller
                 'station.required'        => '駅を選択してください。',
                 'transportation.required' => '交通手段を選択してください。',
                 'time.required'           => '時間を入力してください。',
+                'images.required'         => '画像を登録してください。',
+                'images.image'            => '画像ファイルを選択してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -151,6 +154,8 @@ class StoreShopController extends Controller
 
         if ($request->isMethod('post') && isset($request['p_type']) && $request['p_type'] == 'edit') {
             //$request = $request->all();
+            $image_rules = empty($store_data->image) ? 'required|image' : 'nullable|image';
+
             $validated_data = Validator::make($request->all(), [
                 'store_name'     => 'required',
                 'email'          => 'required|email|max:190',
@@ -164,6 +169,7 @@ class StoreShopController extends Controller
                 'station'        => 'required',
                 'transportation' => 'required',
                 'time'           => 'required',
+                'images'         => $image_rules,
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
                 'email.required'          => 'メールアドレスを入力してください。',
@@ -181,6 +187,8 @@ class StoreShopController extends Controller
                 'station.required'        => '駅を選択してください。',
                 'transportation.required' => '交通手段を選択してください。',
                 'time.required'           => '時間を入力してください。',
+                'images.required'         => '画像を登録してください。',
+                'images.image'            => '画像ファイルを選択してください。',
             ]);
 
             if ($validated_data->fails()) {

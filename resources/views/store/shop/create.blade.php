@@ -239,7 +239,12 @@
             <div class="form-group">
                 <label for="images" class="col-md-4 col-form-label text-md-end">画像<span class="text-danger">*</span></label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="file" class="form-control" name="images">
+                    <input type="file" class="form-control @error('images') is-invalid @enderror" name="images" accept="image/*" required>
+                    @error('images')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
             </div>
             <div class="form-group row"style="margin-left:10px">
