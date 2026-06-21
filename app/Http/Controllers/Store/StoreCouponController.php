@@ -16,6 +16,7 @@ use Illuminate\View\View;
 use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
+use App\Models\PurchaseCoupos;
 use App\Services\ImageService;
 use Carbon\Carbon;
 
@@ -102,8 +103,8 @@ class StoreCouponController extends Controller
                 'cource_time.required' => 'コース時間を入力してください。',
                 'cource_start.required' => 'コース開始時間を入力してください。',
                 'detail.required' => '説明を入力してください。',
-                'start_date.required' => '有効期限を入力してください。',
-                'end_date.required' => '有効期限を入力してください。',
+                'start_date.required' => '掲載期間を入力してください。',
+                'end_date.required' => '掲載期間を入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -116,6 +117,36 @@ class StoreCouponController extends Controller
             $start_date = str_replace('T', ' ', $request['start_date']).':00';
             $end_date = str_replace('T', ' ', $request['end_date']).':59';
             $cource_start = str_replace('T', ' ', $request['cource_start']).':00';
+
+            //比較用
+            $start_dt = new \DateTime($start_date);
+            $end_dt = new \DateTime($end_date);
+            $cource_dt = new \DateTime($cource_start);
+
+            //日付エラーチェック
+            $current_plus_30 = new \DateTime('+30 minutes');
+            $current_plus_60 = new \DateTime('+60 minutes');
+            $end_dt_plus_30 = clone $end_dt;
+            $end_dt_plus_30->modify('+30 minutes');
+            $date_errors = [];
+
+            if ($start_dt > $end_dt) {
+                $errors['end_date'] = '掲載期間終了日時は開始日時より後にしてください。';
+            }
+            if ($cource_dt <= $end_dt_plus_30) {
+                $errors['cource_start'] = 'コース開始時間は掲載期間終了日時より30分以上後に設定してください。';
+            }
+            if ($cource_dt <= $current_plus_60) {
+                $errors['cource_start'] = 'コース開始時間は現在時刻より1時間以上後に設定してください。';
+            }
+            if ($end_dt <= $current_plus_30) {
+                $errors['end_date'] = '掲載期間終了日時は現在時刻より30分以上後に設定してください。';
+            }
+            if (!empty($errors)) {
+                return redirect()->route('store.coupon.create')
+                    ->withErrors($errors)
+                    ->withInput();
+            }
 
             $date = new \DateTime($cource_start);
             $day_of_the_week = $date->format('w');
@@ -274,8 +305,8 @@ class StoreCouponController extends Controller
                 'cource_time.required' => 'コース時間を入力してください。',
                 'cource_start.required' => 'コース開始時間を入力してください。',
                 'detail.required' => '説明を入力してください。',
-                'start_date.required' => '有効期限を入力してください。',
-                'end_date.required' => '有効期限を入力してください。',
+                'start_date.required' => '掲載期間を入力してください。',
+                'end_date.required' => '掲載期間を入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -288,6 +319,36 @@ class StoreCouponController extends Controller
             $start_date = str_replace('T', ' ', $request['start_date']).':00';
             $end_date = str_replace('T', ' ', $request['end_date']).':59';
             $cource_start = str_replace('T', ' ', $request['cource_start']).':00';
+
+            //比較用
+            $start_dt = new \DateTime($start_date);
+            $end_dt = new \DateTime($end_date);
+            $cource_dt = new \DateTime($cource_start);
+
+            //日付エラーチェック
+            $current_plus_30 = new \DateTime('+30 minutes');
+            $current_plus_60 = new \DateTime('+60 minutes');
+            $end_dt_plus_30 = clone $end_dt;
+            $end_dt_plus_30->modify('+30 minutes');
+            $date_errors = [];
+
+            if ($start_dt > $end_dt) {
+                $errors['end_date'] = '掲載期間終了日時は開始日時より後にしてください。';
+            }
+            if ($cource_dt <= $end_dt_plus_30) {
+                $errors['cource_start'] = 'コース開始時間は掲載期間終了日時より30分以上後に設定してください。';
+            }
+            if ($cource_dt <= $current_plus_60) {
+                $errors['cource_start'] = 'コース開始時間は現在時刻より1時間以上後に設定してください。';
+            }
+            if ($end_dt <= $current_plus_30) {
+                $errors['end_date'] = '掲載期間終了日時は現在時刻より30分以上後に設定してください。';
+            }
+            if (!empty($errors)) {
+                return redirect()->route('store.coupon.create')
+                    ->withErrors($errors)
+                    ->withInput();
+            }
 
             $date = new \DateTime($cource_start);
             $day_of_the_week = $date->format('w');
@@ -505,6 +566,13 @@ class StoreCouponController extends Controller
             abort(404);
         }
 
-        return view('store.coupon.detail', compact('user', 'stores', 'coupon_data'));
+        //購入データ
+        $purchase_coupon_data = PurchaseCoupos::select()
+            ->join('users', 'purchase_coupons.purchase_user_id', '=', 'users.id')
+            ->where('coupon_id', $coupon_data->id)->where('purchase_coupons.company_id', $user->company_id)
+            ->orderBy('purchase_coupons.created_at', 'ASC')
+            ->get();
+
+        return view('store.coupon.detail', compact('user', 'stores', 'coupon_data', 'purchase_coupon_data'));
     }
 }

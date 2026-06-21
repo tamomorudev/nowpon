@@ -50,7 +50,6 @@
                                 <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>掲載中</option>
                                 <option value="expired" {{ request('status')=='expired' ? 'selected' : '' }}>掲載終了</option>
                                 <option value="selled" {{ request('status')=='selled' ? 'selected' : '' }}>購入済み</option>
-                                <option value="cancelled" {{ request('status')=='cancelled' ? 'selected' : '' }}>キャンセル</option>
                             </select>
                         </div>
 
@@ -87,8 +86,8 @@
                                 <th>掲載金額</th>
                                 <th>コース時間</th>
                                 <th>コース開始時間</th>
-                                <th>発行開始時間</th>
-                                <th>発行終了時間</th>
+                                <th>掲載開始時間</th>
+                                <th>掲載終了時間</th>
                                 <th>画像</th>
                                 <th>ステータス</th>
                                 <th>詳細</th>

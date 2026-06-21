@@ -70,11 +70,11 @@
                                     <td>{{$coupon_data->cource_start}}</td>
                                 </tr>
                                 <tr>
-                                    <th>発行開始時間</th>
+                                    <th>掲載開始時間</th>
                                     <td>{{$coupon_data->expire_start_date}}</td>
                                 </tr>
                                 <tr>
-                                    <th>発行終了時間</th>
+                                    <th>掲載終了時間</th>
                                     <td>{{$coupon_data->expire_end_date}}</td>
                                 </tr>
                                 <tr>
@@ -108,6 +108,37 @@
                     </div>
                 </div>
 
+                @if(isset($purchase_coupon_data) && count($purchase_coupon_data) > 0)
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h5 class="font-weight-bold mb-3">購入者情報</h5>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ユーザー名</th>
+                                        <th>メールアドレス</th>
+                                        <th>電話番号</th>
+                                        <th>購入日時</th>
+                                        <th>キャンセル日時</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($purchase_coupon_data as $purchase)
+                                        <tr>
+                                            <td>{{ $purchase->name }}</td>
+                                            <td>{{ $purchase->email }}</td>
+                                            <td>{{ $purchase->phone_number }}</td>
+                                            <td>{{ $purchase->purchase_date }}</td>
+                                            <td>{{ $purchase->cancelled_date ?? '—' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="text-left d-flex">
 
                         @if ($coupon_data->expire_start_date > date('Y-m-d H:i:s'))
@@ -123,16 +154,18 @@
                             </button>
                         </form>
 
-                        <form action="{{ route('store.coupon.delete') }}" method="POST" class="btn-space">
-                            @csrf
-                            <div>
-                                <input type="hidden" id="p_type" name="p_type" value="edit">
-                                <input type="hidden" id="ci" name="ci" value="{{$coupon_data->id}}">
-                                <button type="submit" class="btn btn-danger">
-                                    削除
-                                </button>
-                            </div>
-                        </form>
+                        @if ($coupon_data->status != 1)
+                            <form action="{{ route('store.coupon.delete') }}" method="POST" class="btn-space">
+                                @csrf
+                                <div>
+                                    <input type="hidden" id="p_type" name="p_type" value="edit">
+                                    <input type="hidden" id="ci" name="ci" value="{{$coupon_data->id}}">
+                                    <button type="submit" class="btn btn-danger">
+                                        削除
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
 
                         <a href="/store/coupon" class="btn btn-secondary btn-space">
                         戻る
