@@ -15,6 +15,7 @@ use Illuminate\View\View;
 use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
+use App\Models\PurchaseCoupos;
 
 class AdminCouponController extends Controller
 {
@@ -85,7 +86,14 @@ class AdminCouponController extends Controller
             abort(404);
         }
 
-        return view('admin.coupon.detail', compact('user', 'stores', 'coupon_data'));
+        //購入データ
+        $purchase_coupon_data = PurchaseCoupos::select()
+            ->join('users', 'purchase_coupons.purchase_user_id', '=', 'users.id')
+            ->where('coupon_id', $coupon_data->id)
+            ->orderBy('purchase_coupons.created_at', 'ASC')
+            ->get();
+
+        return view('admin.coupon.detail', compact('user', 'stores', 'coupon_data', 'purchase_coupon_data'));
     }
 
     public function delete(Request $request)

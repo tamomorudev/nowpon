@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                <label for="name" class="col-md-4 col-form-label text-md-end">有効期限<span class="text-danger">*</span></label>
+                <label for="name" class="col-md-4 col-form-label text-md-end">掲載期間<span class="text-danger">*</span></label>
                     <div class="row"style="margin-left:0px">
                         <div class="col-sm-3 mb-3 mb-sm-0">
                             <input type="datetime-local" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $coupon_data->expire_start_date) }}">

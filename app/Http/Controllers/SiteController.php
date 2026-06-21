@@ -749,7 +749,7 @@ class SiteController extends Controller
             ]);
 
             Coupons::where('id', $purchase->coupon_id)->update([
-                'status' => 2 //キャンセル済み
+                'status' => 0 //キャンセルされた場合はステータス元に戻す
             ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
