@@ -75,7 +75,7 @@ class TopController extends Controller
         $special_futures = SpecialFutures::select()->where('start_date', '<=', $date)->where('end_date', '>=', $date)->get();
 
         // お知らせ…最新3件
-        $inforamtion = Information::query()
+        $information = Information::query()
             ->where('delete_flg', 0)            // 削除されていない
             ->where('start_date', '<=', $date)  // 公開開始日時が過去
             ->where('end_date', '>=', $date)    // 公開終了日時が未来
@@ -83,7 +83,7 @@ class TopController extends Controller
             ->limit(3)
             ->get();
 
-        return view('index', compact('user', 'new_coupons', 'special_futures', 'inforamtion'));
+        return view('index', compact('user', 'new_coupons', 'special_futures', 'information'));
     }
 
     /**

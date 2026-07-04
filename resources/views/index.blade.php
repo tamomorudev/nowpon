@@ -17,28 +17,26 @@
 <div class="container">
     @include('layouts.header')
 
-    {{-- ▼ inforamtion（おしらせ）バー：最大3件 ▼ --}}
-    @if(isset($inforamtion) && $inforamtion->count())
-        <nav class="information-bar" aria-label="inforamtion">
+    {{-- ▼ information（おしらせ）バー：最大3件 ▼ --}}
+    @if(isset($information) && $information->count())
+        <section class="information-bar" aria-labelledby="informationTitle">
             <div class="information-bar__head">
-                <h2>
+                <h2 id="informationTitle">
                     <span>📢</span>
                     お知らせ
                 </h2>
             </div>
 
             <ul class="information-list" role="list">
-                @foreach($inforamtion as $info)
+                @foreach($information as $info)
                     <li class="information-item">
-                        <a href="{{ url('/inforamtion/'.$info->id) }}" title="{{ $info->name }}">
-                            {{ $info->name }}
-                        </a>
+                        <span class="information-item__text">{{ $info->name }}</span>
                     </li>
                 @endforeach
             </ul>
-        </nav>
+        </section>
     @endif
-    {{-- ▲ inforamtion バー ▲ --}}
+    {{-- ▲ information バー ▲ --}}
 
     <div class="carousel-wrapper">
         <div class="swiper-container">

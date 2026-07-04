@@ -62,33 +62,13 @@
     flex-shrink: 0;
 }
 
-.information-item a,
-.information-bar a,
-.information-bar a:link,
-.information-bar a:visited {
-    color: var(--site-color-brand-dark);
-    text-decoration: none;
-}
-
-.information-item a {
+.information-item__text {
     max-width: 100%;
     overflow: hidden;
+    color: var(--site-color-brand-dark);
     font-size: 14px;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.information-item a:hover,
-.information-bar a:hover {
-    color: var(--site-color-brand-dark);
-    text-decoration: underline;
-}
-
-.information-bar a:active,
-.information-bar a:focus {
-    color: var(--site-color-brand-dark);
-    outline: 2px solid var(--site-color-brand);
-    outline-offset: 2px;
 }
 
 /* 新着クーポンのカルーセル */
