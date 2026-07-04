@@ -73,7 +73,8 @@
                     <label for="name" class="col-md-4 col-form-label text-md-end">店舗支払金額<span class="text-danger">*</span></label>
                     <div class="col-sm-3 mb-3 mb-sm-0">
                         <input type="number" class="form-control @error('store_pay_price') is-invalid @enderror" name="store_pay_price" id="store_pay_price"
-                               value="{{ old('store_pay_price', (int)$re_coupon->store_pay_price, 0) }}" min="0" step="1" placeholder="店舗支払金額を入力してください">
+                               value="{{ old('store_pay_price', (int)$re_coupon->store_pay_price, 0) }}" min="50" step="1" placeholder="店舗支払金額を入力してください">
+                        <small class="form-text text-muted">店舗支払金額は50円以上で入力してください。</small>
                         @error('store_pay_price')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>

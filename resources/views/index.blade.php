@@ -50,14 +50,16 @@
                                         $couponImagePath = $new_coupon->img_url ? public_path('assets/images/'.$new_coupon->img_url) : null;
                                         $hasCouponImage = $couponImagePath && file_exists($couponImagePath);
                                     @endphp
-                                    @if($hasCouponImage)
-                                        <img src="{{ asset('/assets/images/'. $new_coupon->img_url) }}" alt="クーポン画像" class="coupon-card-image">
-                                    @else
-                                        <div class="coupon-card-placeholder" aria-label="クーポン画像未設定">
-                                            <span class="coupon-card-placeholder__title">Nowpon</span>
-                                            <span class="coupon-card-placeholder__text">画像準備中</span>
-                                        </div>
-                                    @endif
+                                    <div class="coupon-card-image-frame">
+                                        @if($hasCouponImage)
+                                            <img src="{{ asset('/assets/images/'. $new_coupon->img_url) }}" alt="クーポン画像" class="coupon-card-image">
+                                        @else
+                                            <div class="coupon-card-placeholder" aria-label="クーポン画像未設定">
+                                                <span class="coupon-card-placeholder__title">Nowpon</span>
+                                                <span class="coupon-card-placeholder__text">画像準備中</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                     <div class="pr-badge">PR</div>
                                     @if ($new_coupon->discount_rate > 0)
                                         <div class="discount-card-label">
@@ -131,14 +133,18 @@
             <span class="site-section-icon">🔖</span>
             カテゴリ検索
         </h2>
-        <div class="category-list">
-            @foreach(config('commons.genre') as $gkey => $genre)
-                <a href="/site/couponlist?search=category&gid={{$gkey}}" class="category-item">
-                    <img src="{{ asset('assets/images/material/category' . $gkey . '.png') }}" alt="{{ $genre }}">
-                    <!--<img src="https://picsum.photos/seed/{{ rawurlencode($genre) }}/64/64" alt="{{ $genre }}">-->
-                    <span>{{ $genre }}</span>
-                </a>
-            @endforeach
+        <div class="category-scroll">
+            <button type="button" class="swiper-button-prev category-scroll-button category-scroll-button--prev js-category-scroll-prev" aria-label="前のカテゴリへ"></button>
+            <div class="category-list js-category-list">
+                @foreach(config('commons.genre') as $gkey => $genre)
+                    <a href="/site/couponlist?search=category&gid={{$gkey}}" class="category-item">
+                        <img src="{{ asset('assets/images/material/category' . $gkey . '.png') }}" alt="{{ $genre }}">
+                        <!--<img src="https://picsum.photos/seed/{{ rawurlencode($genre) }}/64/64" alt="{{ $genre }}">-->
+                        <span>{{ $genre }}</span>
+                    </a>
+                @endforeach
+            </div>
+            <button type="button" class="swiper-button-next category-scroll-button category-scroll-button--next js-category-scroll-next" aria-label="次のカテゴリへ"></button>
         </div>
     </div>
 

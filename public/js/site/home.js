@@ -1,6 +1,6 @@
 /*
  * TOPページ専用処理。
- * 新着クーポンカルーセルのSwiper初期化だけを担当する。
+ * 新着クーポンカルーセルとカテゴリ横スクロールの操作を担当する。
  */
 document.addEventListener('DOMContentLoaded', function () {
     const initHomeCarousel = function (retryCount) {
@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 disableOnInteraction: false
             },
             navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev'
+                nextEl: carousel.querySelector('.swiper-button-next'),
+                prevEl: carousel.querySelector('.swiper-button-prev')
             },
             breakpoints: {
                 0: {
@@ -56,6 +56,44 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    const initCategoryScroll = function () {
+        const categoryList = document.querySelector('.js-category-list');
+        const prevButton = document.querySelector('.js-category-scroll-prev');
+        const nextButton = document.querySelector('.js-category-scroll-next');
+
+        if (!categoryList || !prevButton || !nextButton) return;
+
+        // PCで横スクロールしやすいよう、左右ボタンで表示幅の約8割ずつ送る。
+        const getScrollAmount = function () {
+            return Math.max(Math.round(categoryList.clientWidth * 0.8), 180);
+        };
+
+        const updateButtonState = function () {
+            const maxScrollLeft = categoryList.scrollWidth - categoryList.clientWidth;
+            prevButton.disabled = categoryList.scrollLeft <= 1;
+            nextButton.disabled = categoryList.scrollLeft >= maxScrollLeft - 1;
+        };
+
+        prevButton.addEventListener('click', function () {
+            categoryList.scrollBy({
+                left: -getScrollAmount(),
+                behavior: 'smooth'
+            });
+        });
+
+        nextButton.addEventListener('click', function () {
+            categoryList.scrollBy({
+                left: getScrollAmount(),
+                behavior: 'smooth'
+            });
+        });
+
+        categoryList.addEventListener('scroll', updateButtonState);
+        window.addEventListener('resize', updateButtonState);
+        updateButtonState();
+    };
+
     // Swiperライブラリとカルーセル要素があるページでだけ初期化する。
     initHomeCarousel(10);
+    initCategoryScroll();
 });
