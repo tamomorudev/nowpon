@@ -39,17 +39,24 @@
     {{-- ▲ information バー ▲ --}}
 
     <div class="carousel-wrapper">
-        <div class="swiper-container">
+        <div class="swiper swiper-container js-home-carousel">
             <div class="swiper-wrapper">
                 @if (count($new_coupons))
                     @foreach ($new_coupons as $i => $new_coupon)
                         <div class="swiper-slide">
                             <a href="/site/coupondetail?cid={{ urlencode($new_coupon->coupon_code) }}" class="card-link">
                                 <div class="card">
-                                    @if($new_coupon->img_url)
-                                        <img src="{{ asset('/assets/images/'. $new_coupon->img_url) }}" alt="クーポン画像">
+                                    @php
+                                        $couponImagePath = $new_coupon->img_url ? public_path('assets/images/'.$new_coupon->img_url) : null;
+                                        $hasCouponImage = $couponImagePath && file_exists($couponImagePath);
+                                    @endphp
+                                    @if($hasCouponImage)
+                                        <img src="{{ asset('/assets/images/'. $new_coupon->img_url) }}" alt="クーポン画像" class="coupon-card-image">
                                     @else
-                                        <img src="https://picsum.photos/320/200?random={{ $i }}" alt="クーポン画像" />
+                                        <div class="coupon-card-placeholder" aria-label="クーポン画像未設定">
+                                            <span class="coupon-card-placeholder__title">Nowpon</span>
+                                            <span class="coupon-card-placeholder__text">画像準備中</span>
+                                        </div>
                                     @endif
                                     <div class="pr-badge">PR</div>
                                     @if ($new_coupon->discount_rate > 0)

@@ -27,8 +27,21 @@
                 <!-- メインスライダー -->
                 <div class="swiper swiper-main">
                     <div class="swiper-wrapper">
+                        @php
+                            $validCouponImages = collect($coupon->coupon_images ?? [])->filter(function ($coupon_image) {
+                                return $coupon_image && file_exists(public_path('assets/images/'.$coupon_image));
+                            });
+                        @endphp
+                        @if ($validCouponImages->isEmpty())
+                            <div class="swiper-slide">
+                                <div class="coupon-detail-placeholder coupon-detail-placeholder--main" aria-label="クーポン画像未設定">
+                                    <span class="coupon-detail-placeholder__title">Nowpon</span>
+                                    <span class="coupon-detail-placeholder__text">画像準備中</span>
+                                </div>
+                            </div>
+                        @endif
                         @foreach ($coupon->coupon_images as $image_key => $coupon_image)
-                            @if ($coupon_image)
+                            @if ($coupon_image && file_exists(public_path('assets/images/'.$coupon_image)))
                             <div class="swiper-slide">
                                 <img src="{{ asset('/assets/images/'. $coupon_image) }}" alt="クーポン画像{{$image_key}}">
                             </div>
@@ -54,12 +67,19 @@
                 <div class="swiper swiper-thumbs">
                     <div class="swiper-wrapper">
                         @foreach ($coupon->coupon_images as $image_key => $coupon_image)
-                            @if ($coupon_image)
+                            @if ($coupon_image && file_exists(public_path('assets/images/'.$coupon_image)))
                             <div class="swiper-slide">
                                 <img src="{{ asset('/assets/images/'. $coupon_image) }}" alt="クーポン画像{{$image_key}}">
                             </div>
                             @endif
                         @endforeach
+                        @if ($validCouponImages->isEmpty())
+                            <div class="swiper-slide">
+                                <div class="coupon-detail-placeholder coupon-detail-placeholder--thumb" aria-label="クーポン画像未設定">
+                                    <span class="coupon-detail-placeholder__text">画像なし</span>
+                                </div>
+                            </div>
+                        @endif
                         <?php /*
                         @foreach (range(1,6) as $i)
                             <div class="swiper-slide">
@@ -80,9 +100,15 @@
                 <div class="tab">商品内容</div>
                 <div class="info">
                     <p><strong>{{ config('commons.genre')[$coupon->genre] }}ー{{ $coupon->store_name }}</strong></p>
-                    @if($coupon->store_image)
+                    @if($coupon->store_image && file_exists(public_path('assets/images/'.$coupon->store_image)))
                         <div class="store-image">
                             <img src="{{ asset('/assets/images/'. $coupon->store_image) }}" alt="{{ $coupon->store_name }}">
+                        </div>
+                    @else
+                        <div class="store-image">
+                            <div class="coupon-detail-placeholder coupon-detail-placeholder--store" aria-label="店舗画像未設定">
+                                <span class="coupon-detail-placeholder__text">店舗画像準備中</span>
+                            </div>
                         </div>
                     @endif
                     <p>最寄り駅：{{ $coupon->station }}駅 {{ config('commons.transportation')[$coupon->transportation] }}{{ $coupon->time }}分
@@ -160,7 +186,14 @@
                     @foreach ($same_area_coupons as $area_key => $same_area_coupon)
                         <a href="/site/coupondetail?cid={{$same_area_coupon->coupon_code}}" class="recommend-item">
                             <div class="card-wrapper">
-                                <img src="{{ asset('/assets/images/'. $same_area_coupon->img_url) }}" alt="area_{{$area_key}}">
+                                @if ($same_area_coupon->img_url && file_exists(public_path('assets/images/'.$same_area_coupon->img_url)))
+                                    <img src="{{ asset('/assets/images/'. $same_area_coupon->img_url) }}" alt="area_{{$area_key}}">
+                                @else
+                                    <div class="coupon-detail-placeholder coupon-detail-placeholder--recommend" aria-label="クーポン画像未設定">
+                                        <span class="coupon-detail-placeholder__title">Nowpon</span>
+                                        <span class="coupon-detail-placeholder__text">画像準備中</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="recommend-info">
                                 <p class="shop-name">{{ config('commons.genre')[$same_area_coupon->genre] }}ー{{ $same_area_coupon->store_name }}</p>

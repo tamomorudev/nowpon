@@ -83,6 +83,51 @@
     display: block;
 }
 
+/* 詳細ページで画像が未設定・未配置のときの代替表示 */
+.coupon-detail-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px dashed #d9c6b1;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+    color: var(--site-color-brand);
+    text-align: center;
+}
+
+.coupon-detail-placeholder__title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.coupon-detail-placeholder__text {
+    color: var(--site-color-muted);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.coupon-detail-placeholder--main {
+    height: 100%;
+    min-height: 340px;
+}
+
+.coupon-detail-placeholder--thumb {
+    height: 80px;
+}
+
+.coupon-detail-placeholder--thumb .coupon-detail-placeholder__text {
+    font-size: 11px;
+}
+
+.coupon-detail-placeholder--store {
+    min-height: 120px;
+}
+
 .coupon-detail .info-panel .info {
     line-height: 1.6;
     color: #333;
@@ -101,7 +146,8 @@
 
 .swiper-main {
     width: 100%;
-    height: auto;
+    aspect-ratio: 16 / 9;
+    min-height: 340px;
     margin-bottom: 12px;
 }
 
@@ -113,7 +159,7 @@
 
 .swiper-main .swiper-slide img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: contain;
     border-radius: 8px;
     display: block;
@@ -187,11 +233,22 @@ a.recommend-item:hover {
 
 .card-wrapper {
     position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #fff8f0;
 }
 
 .card-wrapper img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
+}
+
+.coupon-detail-placeholder--recommend {
+    height: 100%;
+    border-radius: 0;
 }
 
 .recommend-info {
