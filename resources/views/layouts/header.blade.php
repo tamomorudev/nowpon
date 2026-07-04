@@ -26,7 +26,7 @@
         display: flex;
         align-items: center;
         padding: 0 24px 12px;
-        border-bottom: 3px solid #c29663;
+        border-bottom: 3px solid var(--site-color-brand, #c5a067);
         gap: 20px;
         margin-top: 10px;
     }
@@ -72,7 +72,7 @@
     }
 
     .header-nav a.active {
-        color: #b08968;
+        color: var(--site-color-brand, #c5a067);
         font-weight: bold;
     }
 
@@ -92,13 +92,13 @@
     }
 
     .header-user a:focus-visible {
-        outline: 2px solid #c29663;
+        outline: 2px solid var(--site-color-brand, #c5a067);
         outline-offset: 2px;
     }
 
     .user-icon {
         font-size: 20px;
-        color: #b08968;
+        color: var(--site-color-brand, #c5a067);
     }
 
     @media screen and (max-width: 767px) {

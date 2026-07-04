@@ -3,433 +3,15 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- ▼ 詳細検索パーツ ▼ --}}
-    <link rel="stylesheet" href="{{ asset('css/nowpon-search.css') }}">
-    <script src="{{ asset('js/nowpon-search.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
+    <script src="{{ asset('js/site/search.js') }}" defer></script>
+    <script src="{{ asset('js/site/home.js') }}" defer></script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
-    <style>
-
-        /* ── お知らせバー ───────────────────────── */
-        .information-bar{
-            width:100%;
-            max-width:100%;
-            min-width:0;
-            background:#fff8f0;
-            border-radius:8px;
-            padding-block:16px;
-            padding-inline:clamp(12px, 4vw, 24px);
-            box-sizing:border-box;
-            margin:8px 0 16px;
-            color:#6b4e3d;
-        }
-
-        .information-bar__head{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            margin-bottom:12px;
-        }
-
-        .information-bar .information-bar__head h2 {
-            display: flex;
-            align-items: center;
-            font-size: 20px;
-            margin: 0;
-            font-weight: 700;
-            color: #6b4e3d !important;
-        }
-        .information-bar .information-bar__head h2 span {
-            color: inherit;
-            margin-right: 8px;
-        }
-
-        .information-list{
-            margin:0;
-            padding:0;
-            list-style:none;
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-        }
-        .information-item{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-        .information-item::before{
-            content:'';
-            width:6px; height:6px;
-            background:#b08968;
-            border-radius:50%;
-            flex-shrink:0;
-        }
-        .information-item a{
-            color:#6b4e3d;
-            text-decoration:none;
-            font-size:14px;
-            max-width:100%;
-            overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-        }
-        .information-item a:hover{ text-decoration:underline; }
-
-        .information-bar a,
-        .information-bar a:link,
-        .information-bar a:visited {
-            color: #6b4e3d;
-            text-decoration: none;
-        }
-
-        .information-bar a:hover {
-            color: #6b4e3d;
-            text-decoration: underline;
-        }
-
-        .information-bar a:active,
-        .information-bar a:focus {
-            color: #6b4e3d;
-            outline: 2px solid #c29663;
-            outline-offset: 2px;
-        }
-
-        @media (max-width:767px){
-            .information-bar{
-                padding-block:12px;
-                padding-inline:16px;
-                margin:8px 0 12px;
-            }
-        }
-
-        /* カルーセル ここから */
-        .carousel-wrapper {
-            padding: 20px 0;
-        }
-        .swiper-container {
-            position: relative;
-            overflow: hidden;
-        }
-        .swiper-button-next,
-        .swiper-button-prev {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-        }
-        .swiper-button-prev {
-            left: 10px;
-        }
-        .swiper-button-next {
-            right: 10px;
-        }
-        .swiper-wrapper {
-            padding: 0;
-        }
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-        .card {
-            width: 100%;
-            max-width: 320px;
-            background: #fff;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 12px;
-            position: relative;
-        }
-        .card-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
-        .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        .discount-card-label {
-            margin: 8px 0 4px;
-            padding: 6px 10px;
-        }
-        .card p {
-            margin: 6px 0;
-        }
-        .discount-card-label {
-            margin: 10px 0 6px;
-            padding: 7px 10px;
-            border-radius: 8px;
-            background: #fff1f2;
-            color: #e63946;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .discount-card-label span {
-            margin: 0 6px;
-        }
-        .pr-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background-color: rgba(255, 0, 0, 0.9);
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 4px 6px;
-            border-radius: 4px;
-            z-index: 10;
-            pointer-events: none;
-        }
-        /* カルーセル ここまで */
-
-        /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここから */
-        .filter-buttons {
-            display: flex;
-            justify-content: flex-start;
-            gap: 12px;
-            margin: 30px 0;
-        }
-        .filter-buttons button {
-            padding: 12px 24px;
-            border-radius: 9999px;
-            border: 2px solid #b08968;
-            background: white;
-            color: #6b4e3d;
-            font-weight: bold;
-            font-size: 14px;
-            min-width: 120px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
-        .filter-buttons button:hover,
-        .filter-buttons button:focus {
-            background: #d2a679;
-            color: white;
-            outline: none;
-        }
-        .filter-buttons button.active {
-            background: #d2a679;
-            color: white;
-        }
-        @media (max-width: 767px) {
-            .filter-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
-            }
-
-            .filter-buttons button {
-                min-width: unset;
-                padding: 12px 16px;
-                font-size: 14px;
-                word-break: keep-all;
-                white-space: nowrap;
-                flex: 1 1 auto;
-            }
-        }
-        /* 「お気に入り」「エリア」「割引率」「ジャンル」ボタン ここまで */
-
-        /* カテゴリ検索ここから */
-        .category-search-section {
-            margin: 50px 0;
-            padding: 0 5px;
-        }
-        .category-list {
-            display: flex;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            gap: 12px;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            background-color: white;
-        }
-        .category-list::-webkit-scrollbar {
-            height: 6px;
-        }
-        .category-list::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.2);
-            border-radius: 3px;
-        }
-        .category-item {
-            flex: 0 0 auto;
-            width: 140px;
-            text-align: center;
-            font-size: 12px;
-            color: #333;
-            text-decoration: none;
-        }
-        .category-item img {
-            display: block;
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin: 0 auto 4px;
-        }
-        .category-item span {
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        /* カテゴリ検索ここまで */
-
-        /* 特集 ここから */
-        .feature-section {
-            margin-top: 50px;
-        }
-        .feature-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        @media (max-width: 767px) {
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .feature-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            gap: 16px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            align-items: center;
-        }
-        .feature-card img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .feature-card p {
-            font-size: 14px;
-            margin: 0;
-            line-height: 1.6;
-        }
-        /* 特集 ここまで */
-
-        /* 「まずは会員登録」「ログイン」ここから */
-        .bottom-buttons {
-            margin-top: 40px;
-            background: #e5e7eb;
-            padding: 24px 0;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .bottom-buttons .btn-register {
-            background: #d2a679;
-            color: white;
-            font-weight: bold;
-            padding: 14px 40px;
-            border-radius: 9999px;
-            font-size: 16px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .bottom-buttons .btn-login {
-            background: white;
-            color: #6b7280;
-            font-weight: bold;
-            padding: 14px 40px;
-            border-radius: 9999px;
-            font-size: 16px;
-            box-shadow: 0 0 0 1px #ccc inset;
-            text-decoration: none;
-            display: inline-block;
-        }
-        /* 「まずは会員登録」「ログイン」ここまで */
-
-        /* クーポンリストここから */
-        .coupon-list {
-            border: 2px solid #d4a373;
-            padding: 16px;
-            border-radius: 12px;
-            margin: 30px 0;
-            background: #fff8f0;
-        }
-        .coupon-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            border-bottom: 1px solid #000;
-            padding-bottom: 8px;
-        }
-        .coupon-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #666666;
-        }
-        .coupon-item:last-child {
-            border-bottom: none;
-        }
-        .coupon-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 6px;
-            line-height: 1.6;
-        }
-        .coupon-price {
-            font-size: 14px;
-            color: #555;
-        }
-        .discount-rate {
-            color: #e63946;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-        .price-before {
-            text-decoration: line-through;
-            color: #999;
-            margin-right: 8px;
-        }
-        .price-after {
-            color: #e63946;
-            font-weight: bold;
-        }
-        .new-badge {
-            background-color: #ff2e00;
-            color: white;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 999px;
-            display: inline-block;
-            line-height: 1;
-        }
-
-        .fading-text {
-            animation: fadePulse 2s ease-in-out infinite;
-            font-weight: bold;
-        }
-        @keyframes fadePulse {
-            0%   { opacity: 1; }
-            50%  { opacity: 0.1; }
-            100% { opacity: 1; }
-        }
-        /* クーポンリストここまで */
-    </style>
 </head>
 <body>
 <div class="container">
@@ -479,17 +61,17 @@
                                             {{ number_format(($new_coupon->price + $new_coupon->original_service_price) - (round($new_coupon->store_pay_price) + $new_coupon->service_price)) }}円お得
                                         </div>
                                     @endif
-                                    <div style="text-align: center; margin-top: 10px">
+                                    <div class="coupon-card-body">
                                         <p>
                                             @if ($new_coupon->discount_rate > 0)
                                                 <span class="price-before">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
-                                                <span style="color: #ef4444; font-weight: bold">⇒ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
+                                                <span class="price-after">⇒ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
                                             @else
-                                                <span style="color: #ef4444; font-weight: bold">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                                                <span class="price-after">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
                                             @endif
                                         </p>
                                         <p>{{ config('commons.genre')[$new_coupon->genre] }}ー{{ $new_coupon->store_name }}</p>
-                                        <p style="font-size: 12px; color: #6b7280">{{ $new_coupon->station }}駅 {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分</p>
+                                        <p class="coupon-card-access">{{ $new_coupon->station }}駅 {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分</p>
                                     </div>
                                 </div>
                             </a>
@@ -504,41 +86,44 @@
         </div>
     </div>
 
-    <div class="filter-buttons">
-        <button class="active" onclick="location.href='/site/couponlist'">新着</button>
-        <!-- <button onclick="location.href='/site/couponlist'">お気に入り</button> -->
-        <button onclick="location.href='/site/couponlist?search=area'">マイエリア</button>
-        <!-- <button onclick="location.href='/site/couponlist'">お得なクーポン</button> -->
-    </div>
+    <section class="home-coupon-list-section" aria-labelledby="homeCouponListTitle">
+        <div class="home-coupon-list-head">
+            <h2 class="home-coupon-list-title" id="homeCouponListTitle">クーポン一覧</h2>
+            <nav class="home-coupon-list-nav" aria-label="クーポン一覧の表示">
+                <a class="home-coupon-list-nav__link" href="/site/couponlist">新着</a>
+                <a class="home-coupon-list-nav__link" href="/site/couponlist?search=area">マイエリア</a>
+            </nav>
+        </div>
 
-    <!-- クーポンリスト -->
-    <div class="coupon-list">
-        @if (count($new_coupons))
-            @foreach ($new_coupons as $new_coupon)
-                <a href="/site/coupondetail?cid={{ urlencode($new_coupon->coupon_code) }}" class="coupon-link coupon-item">
-                    <div class="coupon-title">
-                        <span class="new-badge">NEW!</span>
-                        <span class="fading-text">{{ $new_coupon->remaining_minute }}</span>｜{{ $new_coupon->coupon_name }}｜{{ $new_coupon->store_name }}｜{{ $new_coupon->station }} {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分
-                    </div>
-                    <div class="coupon-price">
-                        @if ($new_coupon->discount_rate > 0)
-                            <span class="discount-rate">{{ $new_coupon->discount_rate }}%OFF</span>
-                            <span class="price-before">通常{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
-                            <span class="price-after">→ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
-                        @else
-                            <span class="price-after">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
-                        @endif
-                    </div>
-                </a>
-            @endforeach
-        @else
-            <p>現在、新着クーポンはありません</p>
-        @endif
-    </div>
+        <!-- クーポンリスト -->
+        <div class="coupon-list">
+            @if (count($new_coupons))
+                @foreach ($new_coupons as $new_coupon)
+                    <a href="/site/coupondetail?cid={{ urlencode($new_coupon->coupon_code) }}" class="coupon-link coupon-item">
+                        <div class="coupon-title">
+                            <span class="new-badge">NEW!</span>
+                            <span class="fading-text">{{ $new_coupon->remaining_minute }}</span>｜{{ $new_coupon->coupon_name }}｜{{ $new_coupon->store_name }}｜{{ $new_coupon->station }} {{ config('commons.transportation')[$new_coupon->transportation] }}{{ $new_coupon->time }}分
+                        </div>
+                        <div class="coupon-price">
+                            @if ($new_coupon->discount_rate > 0)
+                                <span class="discount-rate">{{ $new_coupon->discount_rate }}%OFF</span>
+                                <span class="price-before">通常{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                                <span class="price-after">→ {{ number_format(round($new_coupon->store_pay_price) + $new_coupon->service_price) }}円</span>
+                            @else
+                                <span class="price-after">{{ number_format($new_coupon->price + $new_coupon->original_service_price) }}円</span>
+                            @endif
+                        </div>
+                    </a>
+                @endforeach
+            @else
+                <p>現在、新着クーポンはありません</p>
+            @endif
+        </div>
+    </section>
 
     <div class="category-search-section">
-        <h2 style="display: flex; align-items: center; font-size: 20px;">
-            <span style="font-size: 20px; margin-right: 8px;">🔖</span>
+        <h2 class="site-section-title">
+            <span class="site-section-icon">🔖</span>
             カテゴリ検索
         </h2>
         <div class="category-list">
@@ -556,8 +141,8 @@
     <!-- 検索 -->
     <div class="detailed-search-section">
         <div>
-            <h2 style="display: flex; align-items: center; font-size: 20px;">
-                <span style="font-size: 20px; margin-right: 8px;">🔍</span>
+            <h2 class="site-section-title">
+                <span class="site-section-icon">🔍</span>
                 検索
             </h2>
         </div>
@@ -609,8 +194,8 @@
 
     <div class="feature-section">
         <div class="feature-header">
-            <h2 style="display: flex; align-items: center; font-size: 20px;">
-                <span style="font-size: 20px; margin-right: 8px;">📰</span>
+            <h2 class="site-section-title">
+                <span class="site-section-icon">📰</span>
                 特集
             </h2>
         </div>
@@ -644,45 +229,6 @@
         @endif
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const swiper = new Swiper('.swiper-container', {
-            slidesPerView: 8,
-            spaceBetween: 20,
-            centeredSlides: false,
-            loop: true,
-            autoplay: {
-                delay: 2500,
-                disableOnInteraction: false
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev'
-            },
-            breakpoints: {
-                0: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                },
-                480: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                },
-                768: { slidesPerView: 2.5 },
-                1024: { slidesPerView: 3.5 },
-                1280: { slidesPerView: 4 },
-                1440: { slidesPerView: 5 },
-            }
-        });
-    });
-
-    document.querySelectorAll('.filter-buttons button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-buttons button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-</script>
 </body>
 @include('layouts.footer')
 </html>

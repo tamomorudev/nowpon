@@ -1,7 +1,8 @@
 <style>
     /* フッターここから */
     .site-footer {
-        background-color: #b08968;
+        --site-color-brand: #c5a067;
+        background-color: var(--site-color-brand, #c5a067);
         color: white;
         padding: 24px 0;
         margin-top: 60px;

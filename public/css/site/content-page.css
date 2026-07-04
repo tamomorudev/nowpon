@@ -1,0 +1,150 @@
+/*
+ * 表側の読み物ページ用スタイル。
+ * 利用規約、プライバシーポリシー、お問い合わせなど、本文カード型ページで共通利用する。
+ */
+
+/* 本文ページの外枠 */
+.terms-page,
+.contact-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+    box-sizing: border-box;
+}
+
+/* ページタイトル */
+.terms-page__title,
+.contact-page__title {
+    margin: 24px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b4e3d;
+}
+
+.terms-page__title-icon,
+.contact-page__title-icon {
+    font-size: 24px;
+}
+
+.terms-page__title-text,
+.contact-page__title-text {
+    font-size: 24px;
+    margin: 0;
+    font-weight: 700;
+}
+
+/* 本文カード */
+.terms-page__card,
+.contact-page__card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    line-height: 1.8;
+    color: #374151;
+    font-size: 14px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 規約・ポリシー本文の章 */
+.terms-page__section {
+    margin-top: 24px;
+}
+
+.terms-page__section-title {
+    font-size: 18px;
+    margin: 0 0 8px;
+    color: #6b4e3d;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.terms-page__section-title::before {
+    content: "■";
+    font-size: 10px;
+    color: var(--site-color-brand);
+}
+
+.terms-page__section p {
+    margin: 0 0 8px;
+}
+
+.terms-page__section ol {
+    margin: 0 0 8px 1.2em;
+    padding: 0;
+}
+
+/* お問い合わせページのGoogleフォーム埋め込み */
+.contact-page__intro {
+    margin-bottom: 16px;
+}
+
+.contact-page__form-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.contact-page__iframe {
+    width: 100%;
+    min-height: 900px;
+    border: none;
+}
+
+/* 本文ページ下部の戻るリンク */
+.terms-page__back,
+.contact-page__back {
+    margin-top: 32px;
+    text-align: center;
+}
+
+.terms-page__back-link,
+.contact-page__back-link {
+    display: inline-block;
+    padding: 10px 28px;
+    border-radius: 999px;
+    background: var(--site-color-brand);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.terms-page__back-link:hover,
+.contact-page__back-link:hover {
+    opacity: 0.9;
+}
+
+@media (min-width: 1024px) {
+    .terms-page__card,
+    .contact-page__card {
+        padding: 32px 28px;
+    }
+}
+
+@media (max-width: 767px) {
+    .terms-page,
+    .contact-page {
+        padding: 16px 12px 60px;
+    }
+
+    .terms-page__card,
+    .contact-page__card {
+        padding: 18px 14px;
+        border-radius: 12px;
+    }
+
+    .terms-page__title-text,
+    .contact-page__title-text {
+        font-size: 20px;
+    }
+
+    .contact-page__iframe {
+        min-height: 1000px;
+    }
+}

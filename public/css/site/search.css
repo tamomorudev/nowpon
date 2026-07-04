@@ -1,7 +1,14 @@
-/* 詳細検索 ここから */
+/*
+ * 表側の詳細検索フォーム用スタイル。
+ * 都道府県・路線・駅のセレクトとキーワード検索ボタンを整える。
+ */
+
+/* 詳細検索フォーム全体 */
 .detailed-search-section {
     margin-top: 60px;
 }
+
+/* 検索条件を包むグレーのパネル */
 .search-panel {
     background: #e5e7eb;
     border-radius: 12px;
@@ -9,12 +16,16 @@
     margin-top: 20px;
     box-sizing: border-box;
 }
+
+/* 都道府県・路線・駅のセレクト行 */
 .search-tags {
     display: flex;
     gap: 12px;
     margin-bottom: 16px;
     flex-wrap: wrap;
 }
+
+/* セレクトボックスの見た目 */
 .search-select-box {
     background-color: #ffffff;
     border-radius: 10px;
@@ -38,7 +49,7 @@
     outline: none;
 }
 .search-icon-box {
-    background: #b08968;
+    background: var(--site-color-brand);
     color: white;
     font-weight: bold;
     height: 48px;
@@ -51,12 +62,16 @@
     font-size: 16px;
     cursor: pointer;
 }
+
+/* キーワード入力と検索ボタンの行 */
 .search-keyword-row {
     display: flex;
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
 }
+
+/* キーワード入力欄 */
 .search-keyword-box {
     flex: 1;
     background: white;
@@ -76,11 +91,15 @@
     outline: none;
     font-size: 14px;
 }
+
+/* 検索ボタン */
 .keyword-search-button {
     width: 100%;
     max-width: 300px;
     align-self: center;
 }
+
+/* スマホでは検索条件を縦積みにする */
 @media (max-width: 767px) {
     .search-panel {
         padding: 12px;
@@ -94,6 +113,8 @@
         box-sizing: border-box;
     }
 }
+
+/* タブレット以上ではキーワード入力と検索ボタンを横並びにする */
 @media (min-width: 768px) {
     .search-keyword-row {
         flex-direction: row;
@@ -105,4 +126,3 @@
         min-width: 160px;
     }
 }
-/* 詳細検索 ここまで */

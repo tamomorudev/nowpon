@@ -68,26 +68,7 @@ class TopController extends Controller
             ->get();
 
         foreach ($new_coupons as $coupons) {
-            //残り分数
-            $end_date = Carbon::parse($coupons->expire_end_date, 'Asia/Tokyo');
-            $now = Carbon::now('Asia/Tokyo');
-            $remaining_minutes = $now->diffInMinutes($end_date, false);
-
-            if ($remaining_minutes > 0) {
-                //〇時間 or 〇分の形
-                $remaining_hours = floor($remaining_minutes / 60);
-                $remaining_minutes = $remaining_minutes % 60;
-
-                if ($remaining_hours > 0) {
-                    $coupons->remaining_minute = '残り'.$remaining_hours.'時間';
-                } else {
-                    $coupons->remaining_minute = '残り'.$remaining_minutes.'分';
-                }
-                //$coupons->remaining_minute = $remaining_minutes;
-            } else {
-                $coupons->remaining_minute = '終了しました';
-            }
-
+            $coupons->remaining_minute = $this->formatRemainingTime($coupons->expire_end_date);
         }
 
         //特集
@@ -103,5 +84,33 @@ class TopController extends Controller
             ->get();
 
         return view('index', compact('user', 'new_coupons', 'special_futures', 'inforamtion'));
+    }
+
+    /**
+     * クーポン期限までの残り時間を「残り〇日〇時間〇分」形式にする。
+     */
+    private function formatRemainingTime($expireEndDate)
+    {
+        $endDate = Carbon::parse($expireEndDate, 'Asia/Tokyo');
+        $now = Carbon::now('Asia/Tokyo');
+        $remainingMinutes = $now->diffInMinutes($endDate, false);
+
+        if ($remainingMinutes <= 0) {
+            return '終了しました';
+        }
+
+        $remainingDays = floor($remainingMinutes / 1440);
+        $remainingHours = floor(($remainingMinutes % 1440) / 60);
+        $minutes = $remainingMinutes % 60;
+
+        if ($remainingDays > 0) {
+            return '残り'.$remainingDays.'日'.$remainingHours.'時間'.$minutes.'分';
+        }
+
+        if ($remainingHours > 0) {
+            return '残り'.$remainingHours.'時間'.$minutes.'分';
+        }
+
+        return '残り'.$minutes.'分';
     }
 }

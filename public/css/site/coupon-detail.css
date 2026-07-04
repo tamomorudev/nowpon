@@ -1,0 +1,246 @@
+/*
+ * クーポン詳細ページ用スタイル。
+ * 詳細情報、画像カルーセル、同エリアおすすめクーポンをまとめる。
+ */
+
+/* クーポン詳細の外枠 */
+.coupon-detail {
+    margin: 40px 16px;
+    font-family: sans-serif;
+}
+
+.coupon-detail h2 {
+    text-align: left;
+    margin-left: 24px;
+}
+
+/* 購入アクション */
+.coupon-detail .btn-group {
+    display: flex;
+    justify-content: left;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.coupon-detail .btn-group button,
+.coupon-detail-buy-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fde68a;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* 画像カルーセルと商品情報の2カラム */
+.coupon-detail .detail-body {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.coupon-detail .carousel-wrapper {
+    flex: 1;
+    min-width: 320px;
+    max-width: 600px;
+}
+
+.coupon-detail .info-panel {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.coupon-detail .info-panel .tab {
+    align-self: flex-start;
+    padding: 6px 80px;
+    border: 2px solid var(--site-color-brand);
+    border-radius: 9999px;
+    color: var(--site-color-brand);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.coupon-detail .store-image {
+    margin: 8px 0 14px;
+}
+
+.coupon-detail .store-image img {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.coupon-detail .info-panel .info {
+    line-height: 1.6;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Swiper本体とサムネイル */
+.swiper {
+    position: relative;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: #1e40af;
+}
+
+.swiper-main {
+    width: 100%;
+    height: auto;
+    margin-bottom: 12px;
+}
+
+.swiper-main .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-main .swiper-slide img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    display: block;
+}
+
+.swiper-thumbs {
+    width: 100%;
+    height: 80px;
+}
+
+.swiper-thumbs .swiper-slide {
+    width: 20%;
+    opacity: 0.4;
+}
+
+.swiper-thumbs .swiper-slide-thumb-active {
+    opacity: 1;
+}
+
+.swiper-thumbs .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* 同じエリアのおすすめクーポン */
+.recommend-section {
+    max-width: 1200px;
+    margin: 60px auto;
+}
+
+.recommend-separator {
+    border: none;
+    border-top: 2px solid var(--site-color-brand);
+    margin-bottom: 16px;
+}
+
+.recommend-title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.recommend-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+a.recommend-item {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+a.recommend-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.recommend-grid a.recommend-item {
+    width: 100%;
+}
+
+.card-wrapper {
+    position: relative;
+}
+
+.card-wrapper img {
+    width: 100%;
+    display: block;
+}
+
+.recommend-info {
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.recommend-info .price {
+    font-weight: bold;
+    margin: 4px 0;
+}
+
+.recommend-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px 12px;
+}
+
+.icons {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.icon-btn.heart {
+    color: #e74c3c;
+}
+
+.icon-btn.share {
+    color: #555;
+}
+
+@media (max-width: 1024px) {
+    .recommend-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .recommend-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -3,152 +3,14 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- ▼ 詳細検索パーツ ▼ --}}
-    <link rel="stylesheet" href="{{ asset('css/nowpon-search.css') }}">
-    <script src="{{ asset('js/nowpon-search.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/coupon-list.css') }}">
+    <script src="{{ asset('js/site/search.js') }}" defer></script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ナウポンTOP</title>
-    <style>
-        /* クーポンリストここから */
-        .coupon-list {
-            border: 2px solid #d4a373;
-            padding: 16px;
-            border-radius: 12px;
-            margin: 30px 0;
-            background: #fff8f0;
-        }
-        .coupon-item {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-
-            padding: 12px 0;
-            border-bottom: 1px solid #666666;
-        }
-        .coupon-item:last-child {
-            border-bottom: none;
-        }
-        .coupon-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 6px;
-            line-height: 1.6;
-        }
-        .coupon-price {
-            font-size: 14px;
-            color: #555;
-        }
-        .discount-rate {
-            color: #e63946;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-        .price-before {
-            text-decoration: line-through;
-            color: #999;
-            margin-right: 8px;
-        }
-        .price-after {
-            color: #e63946;
-            font-weight: bold;
-        }
-        .new-badge {
-            background-color: #ff2e00; /* 明るめの赤 */
-            color: white;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 999px; /* 丸くする */
-            display: inline-block;
-            line-height: 1;
-        }
-        /* 残り時間のフェードインフェードアウト */
-        .fading-text {
-            animation: fadePulse 2s ease-in-out infinite;
-            font-weight: bold;
-        }
-        @keyframes fadePulse {
-            0%   { opacity: 1; }
-            50%  { opacity: 0.1; }
-            100% { opacity: 1; }
-        }
-        /* クーポンリストここまで */
-
-
-        .coupon-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .coupon-thumb {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .coupon-text {
-            flex: 1;
-        }
-
-        /* ===== 特集表示 ===== */
-        .special-future-detail {
-            margin: 20px 0;
-            padding: 16px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .special-future-header {
-            margin-bottom: 12px;
-        }
-
-        .special-future-title {
-            display: flex;
-            align-items: center;
-            font-size: 20px;
-            margin: 0 0 6px;
-        }
-
-        .special-future-icon {
-            font-size: 20px;
-            margin-right: 8px;
-        }
-
-        .special-future-outline {
-            margin: 0;
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .special-future-image {
-            width: 100%;
-            max-width: 520px;
-            height: auto;
-            border-radius: 12px;
-            display: block;
-        }
-
-        .special-future-image {
-            width: 100%;
-            max-width: 520px;
-            height: auto;
-            border-radius: 12px;
-            display: inline-block;
-        }
-
-        .special-future-body {
-            font-size: 14px;
-            line-height: 1.8;
-            color: #333;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -188,8 +50,8 @@
         <!-- 通常検索 -->
         <div class="detailed-search-section">
             <div>
-                <h2 style="display: flex; align-items: center; font-size: 20px;">
-                    <span style="font-size: 20px; margin-right: 8px;">🔍</span>
+                <h2 class="site-section-title">
+                    <span class="site-section-icon">🔍</span>
                     検索
                 </h2>
             </div>

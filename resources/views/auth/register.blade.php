@@ -35,7 +35,7 @@
         top: 10px; left: 50%;
         transform: translateX(-50%);
         width: 72px; height: 4px;
-        background: #c29663;
+        background: var(--site-color-brand, #c5a067);
         border-radius: 9999px;
         opacity: .9;
     }
@@ -71,7 +71,7 @@
     }
     .form-control:focus,
     .form-select:focus {
-        border-color: #c29663;
+        border-color: var(--site-color-brand, #c5a067);
         box-shadow: 0 0 0 3px rgba(194,150,99,.2);
     }
     .invalid-feedback {
@@ -107,7 +107,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: #b08968;
+        background: var(--site-color-brand, #c5a067);
         color: #fff;
         border-radius: 9999px;
         border: none;
@@ -115,7 +115,7 @@
         cursor: pointer;
         transition: background .2s;
     }
-    .btn-primary:hover { background: #a17857; }
+    .btn-primary:hover { background: var(--site-color-brand, #c5a067); opacity: 0.88; }
 </style>
 
 <main class="page-main">

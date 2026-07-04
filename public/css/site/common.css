@@ -1,0 +1,230 @@
+/*
+ * 表側ページ共通スタイル。
+ * 全体の余白、フォント、色、ボタン、クーポン表示など、複数ページで使う部品だけを置く。
+ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+/* 色・角丸・影などの表側共通トークン */
+:root {
+    --site-color-text: #333333;
+    --site-color-muted: #6b7280;
+    --site-color-brand: #c5a067;
+    --site-color-brand-dark: #6b4e3d;
+    --site-color-brand-light: #d2a679;
+    --site-color-surface: #fff8f0;
+    --site-color-danger: #e63946;
+    --site-color-danger-strong: #ff2e00;
+    --site-border-color: #d4a373;
+    --site-radius-sm: 8px;
+    --site-radius-md: 12px;
+    --site-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --site-content-width: 1200px;
+}
+
+/* ページ全体の基本レイアウトとフォント */
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    color: var(--site-color-text);
+    font-family: 'Nunito', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: var(--site-content-width);
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 24px);
+    box-sizing: border-box;
+}
+
+/* 表側ページで使う共通セクション見出し */
+.site-section {
+    margin: 50px 0;
+}
+
+.site-section-title {
+    display: flex;
+    align-items: center;
+    margin: 0 0 16px;
+    color: var(--site-color-brand-dark);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.site-section-icon {
+    margin-right: 8px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.site-text-muted {
+    color: var(--site-color-muted);
+    font-size: 12px;
+}
+
+/* 表側ページで使う共通ボタン */
+.site-button,
+.site-button:link,
+.site-button:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 24px;
+    border: 2px solid var(--site-color-brand);
+    border-radius: 9999px;
+    background: #ffffff;
+    color: var(--site-color-brand-dark);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.site-button:hover,
+.site-button:focus,
+.site-button.is-active {
+    background: var(--site-color-brand);
+    color: #ffffff;
+    outline: none;
+}
+
+.site-button--primary,
+.site-button--primary:link,
+.site-button--primary:visited {
+    background: var(--site-color-brand);
+    color: #ffffff;
+}
+
+.site-button--secondary,
+.site-button--secondary:link,
+.site-button--secondary:visited {
+    border-color: #cccccc;
+    background: #ffffff;
+    color: var(--site-color-muted);
+}
+
+/* カードやクーポン行をリンク化するときの共通リセット */
+.card-link,
+.coupon-link,
+.coupon-item {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* クーポン一覧の共通枠 */
+.coupon-list {
+    margin: 30px 0;
+    padding: 16px;
+    border: 2px solid var(--site-border-color);
+    border-radius: var(--site-radius-md);
+    background: var(--site-color-surface);
+}
+
+.coupon-link,
+.coupon-item {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px solid #666666;
+}
+
+.coupon-link:last-child,
+.coupon-item:last-child {
+    border-bottom: none;
+}
+
+/* クーポン一覧内のタイトル・価格表示 */
+.coupon-title {
+    margin-bottom: 6px;
+    color: var(--site-color-text);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.coupon-price {
+    color: #555555;
+    font-size: 14px;
+}
+
+/* 割引率、通常価格、販売価格などの価格ラベル */
+.discount-rate,
+.price-after,
+.price-highlight {
+    color: var(--site-color-danger);
+    font-weight: 700;
+}
+
+.discount-rate,
+.price-before {
+    margin-right: 8px;
+}
+
+.price-before {
+    color: #999999;
+    text-decoration: line-through;
+}
+
+/* NEWなどの小さな状態バッジ */
+.new-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background-color: var(--site-color-danger-strong);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.fading-text {
+    animation: fadePulse 2s ease-in-out infinite;
+    font-weight: 700;
+}
+
+/* クーポンカード内の本文・アクセス表示 */
+.coupon-card-body {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.coupon-card-access {
+    color: var(--site-color-muted);
+    font-size: 12px;
+}
+
+/* 残り時間を点滅させるアニメーション */
+@keyframes fadePulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* スマホ表示での共通調整 */
+@media (max-width: 767px) {
+    .container {
+        padding-inline: 16px;
+    }
+
+    .site-button {
+        width: 100%;
+        min-width: 0;
+        padding-inline: 16px;
+    }
+}

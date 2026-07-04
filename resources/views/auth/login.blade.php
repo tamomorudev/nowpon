@@ -43,7 +43,7 @@
         transform: translateX(-50%);
         width: 64px;
         height: 4px;
-        background: #c29663;
+        background: var(--site-color-brand, #c5a067);
         border-radius: 9999px;
         opacity: 0.9;
     }
@@ -78,7 +78,7 @@
         box-sizing: border-box;          /* 横幅突き抜け防止 */
     }
     .login-input:focus {
-        border-color: #c29663;
+        border-color: var(--site-color-brand, #c5a067);
         box-shadow: 0 0 0 3px rgba(194,150,99,.2);
         background-color: #fffefd;
     }
@@ -109,14 +109,14 @@
 
         border: 0;
         border-radius: 9999px;
-        background: #b08968;
+        background: var(--site-color-brand, #c5a067);
         color: #fff;
         font-weight: 700;
         cursor: pointer;
         transition: transform .02s ease, background .2s ease;
         box-sizing: border-box;
     }
-    .login-button:hover { background: #a17857; }
+    .login-button:hover { background: var(--site-color-brand, #c5a067); opacity: 0.88; }
     .login-button:active { transform: translateY(1px); }
 
     .login-links {
