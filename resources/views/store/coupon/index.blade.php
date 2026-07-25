@@ -122,6 +122,7 @@
                                 <td>{{$coupon->expire_end_date}}</td>
                                 <td>
                                     @if($coupon->img_url)
+                                        <!--<img width="50" height="50" src="{{ Storage::disk('s3')->url($coupon->img_url) }}" >-->
                                         <img width="50" height="50" src="{{ asset('/assets/images/'. $coupon->img_url) }}" >
                                     @endif
                                 </td>
