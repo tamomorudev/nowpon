@@ -447,9 +447,19 @@ class StoreCouponController extends Controller
             }
 
             if (in_array($field_name, $delete_images, true)) {
+                if ($deleteOldFiles && $old_path) {
+                    if (Storage::disk('pub_images')->exists($old_path)) {
+                        Storage::disk('pub_images')->delete($old_path);
+                    }
+                    if (Storage::disk('s3')->exists($old_path)) {
+                        Storage::disk('s3')->delete($old_path);
+                    }
+                }
+                /*
                 if ($deleteOldFiles && $old_path && Storage::disk('pub_images')->exists($old_path)) {
                     Storage::disk('pub_images')->delete($old_path);
                 }
+                */
                 $coupon_image_array[$field_name] = null;
                 $old_path = null;
             }
@@ -479,9 +489,26 @@ class StoreCouponController extends Controller
 
             $img_path = $file->store('coupon_image', 'pub_images');
 
+            // 同じパスでS3にも保存する
+            $stream = fopen($file->getRealPath(), 'r');
+            Storage::disk('s3')->put($img_path, $stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+
+            if ($deleteOldFiles && $old_path) {
+                if (Storage::disk('pub_images')->exists($old_path)) {
+                    Storage::disk('pub_images')->delete($old_path);
+                }
+                if (Storage::disk('s3')->exists($old_path)) {
+                    Storage::disk('s3')->delete($old_path);
+                }
+            }
+            /*
             if ($deleteOldFiles && $old_path && Storage::disk('pub_images')->exists($old_path)) {
                 Storage::disk('pub_images')->delete($old_path);
             }
+            */
 
             $coupon_image_array[$field_name] = $img_path;
         }
@@ -528,19 +555,33 @@ class StoreCouponController extends Controller
             //一旦物理削除
             Coupons::where('id', $coupon_id)->delete();
 
+            $image_fields = ['img_url', 'img_url_2', 'img_url_3', 'img_url_4', 'img_url_5'];
+
+            foreach ($image_fields as $field) {
+                $path = $coupon_data->{$field};
+
+                if (!$path) {
+                    continue;
+                }
+
+                if (Storage::disk('s3')->exists($path)) {
+                    Storage::disk('s3')->delete($path);
+                }
+            }
+
             if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url)) {
                 File::delete('assets/images/'. $coupon_data->img_url);
             }
-            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_2)) {
+            if ($coupon_data->img_url_2 && File::exists('assets/images/'. $coupon_data->img_url_2)) {
                 File::delete('assets/images/'. $coupon_data->img_url_2);
             }
-            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_3)) {
+            if ($coupon_data->img_url_3 && File::exists('assets/images/'. $coupon_data->img_url_3)) {
                 File::delete('assets/images/'. $coupon_data->img_url_3);
             }
-            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_4)) {
+            if ($coupon_data->img_url_4 && File::exists('assets/images/'. $coupon_data->img_url_4)) {
                 File::delete('assets/images/'. $coupon_data->img_url_4);
             }
-            if ($coupon_data->img_url && File::exists('assets/images/'. $coupon_data->img_url_5)) {
+            if ($coupon_data->img_url_5 && File::exists('assets/images/'. $coupon_data->img_url_5)) {
                 File::delete('assets/images/'. $coupon_data->img_url_5);
             }
         } else {

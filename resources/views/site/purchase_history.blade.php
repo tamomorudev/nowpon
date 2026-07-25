@@ -112,8 +112,8 @@
                         }
                     @endphp
                     <button type="button" class="purchase-card js-open-cancel-modal"
-                        data-pdate="{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('n月j日') }}"
-                        data-udate="{{ \Carbon\Carbon::parse($purchase_coupon->cource_start)->format('n月j日 G時i分～') }}"
+                        data-pdate="{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('Y年n月j日') }}"
+                        data-udate="{{ \Carbon\Carbon::parse($purchase_coupon->cource_start)->format('Y年n月j日 G時i分～') }}"
                         data-code="{{ $purchase_coupon->purchase_code }}"
                         data-price="{{ $purchase_coupon->payment_amount }}"
                         data-storeprice="{{ $purchase_coupon->store_pay_price }}"
@@ -134,7 +134,7 @@
                             @endif
                         </div>
                         <div class="purchase-card-body">
-                            <p class="purchase-card-title">{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('n月j日') }} {{ config('commons.genre')[$purchase_coupon->genre] }}ー{{ $purchase_coupon->store_name }}</p>
+                            <p class="purchase-card-title">{{ \Carbon\Carbon::parse($purchase_coupon->purchase_date)->format('Y年n月j日') }} {{ config('commons.genre')[$purchase_coupon->genre] }}ー{{ $purchase_coupon->store_name }}</p>
                             <p class="purchase-card-access">{{ $purchase_coupon->station }}駅 {{ config('commons.transportation')[$purchase_coupon->transportation] }}{{ $purchase_coupon->time }}分</p>
                         </div>
                     </button>

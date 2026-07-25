@@ -51,14 +51,23 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        //postal_code整形
+        if (isset($data['postal_code'])) {
+            $data['postal_code'] = preg_replace('/[^0-9]/', '', $data['postal_code']);
+        }
+
         return Validator::make($data, [
             //'name' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:191'],
-            'nickname' => ['required', 'string', 'max:191'],
+            'name' => ['required', 'string', 'max:30'],
+            'nickname' => ['required', 'string', 'max:30'],
             //'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'postal_code' => ['required', 'max:10'],
+            'postal_code' => [
+                'required',
+                'max:20',
+                'exists:zipcodes,zipcode',
+            ],
             'prefecture' => ['required'],
             'city' => ['required', 'string', 'max:50'],
             'phone_number' => ['required', 'max:50'],
@@ -66,18 +75,39 @@ class RegisterController extends Controller
             'birth_date' => ['required'],
         ], [
             'name.required' => '氏名を入力してください。',
+            'name.string' => '氏名は文字列で入力してください。',
+            'name.max' => '氏名は30文字以内で入力してください。',
+
             'nickname.required' => 'ニックネームを入力してください。',
+            'nickname.string' => 'ニックネームは文字列で入力してください。',
+            'nickname.max' => 'ニックネームは30文字以内で入力してください。',
+
             'email.required' => 'メールアドレスを入力してください。',
+            'email.string' => 'メールアドレスは文字列で入力してください。',
             'email.email' => '有効なメールアドレスを入力してください。',
+            'email.max' => 'メールアドレスは255文字以内で入力してください。',
             'email.unique' => 'そのメールアドレスは既に使用されています。',
+
             'password.required' => 'パスワードを入力してください。',
+            'password.string' => 'パスワードは文字列で入力してください。',
             'password.min' => 'パスワードは8文字以上にしてください。',
             'password.confirmed' => 'パスワードが一致しません。',
+
             'postal_code.required' => '郵便番号を入力してください。',
+            'postal_code.max' => '郵便番号は20文字以内で入力してください。',
+            'postal_code.exists' => '設定できない郵便番号です。',
+
             'prefecture.required' => '都道府県を選択してください。',
+
             'city.required' => '市区町村を入力してください。',
+            'city.string' => '市区町村は文字列で入力してください。',
+            'city.max' => '市区町村は50文字以内で入力してください。',
+
             'phone_number.required' => '電話番号を入力してください。',
+            'phone_number.max' => '電話番号は50文字以内で入力してください。',
+
             'sex.required' => '性別を選択してください。',
+
             'birth_date.required' => '生年月日を入力してください。',
         ]);
     }

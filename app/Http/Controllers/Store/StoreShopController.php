@@ -50,7 +50,7 @@ class StoreShopController extends Controller
             $validated_data = Validator::make($request->all(), [
                 'store_name'     => 'required',
                 'email'          => 'required|email|max:190',
-                'postal_code'    => 'required|digits:7',
+                'postal_code'    => 'required|digits:7|exists:zipcodes,zipcode',
                 'address1'       => 'required',
                 'address2'       => 'required',
                 'address3'       => 'required',
@@ -68,6 +68,7 @@ class StoreShopController extends Controller
                 'email.max'               => 'メールアドレスは190文字以内で入力してください。',
                 'postal_code.required'    => '郵便番号を入力してください。',
                 'postal_code.digits'      => '郵便番号は7桁で入力してください。',
+                'postal_code.exists'      => '設定できない郵便番号です。',
                 'address1.required'       => '都道府県を入力してください。',
                 'address2.required'       => '市区町村を入力してください。',
                 'address3.required'       => '住所を入力してください。',
@@ -159,7 +160,7 @@ class StoreShopController extends Controller
             $validated_data = Validator::make($request->all(), [
                 'store_name'     => 'required',
                 'email'          => 'required|email|max:190',
-                'postal_code'    => 'required|digits:7',
+                'postal_code'    => 'required|digits:7|exists:zipcodes,zipcode',
                 'address1'       => 'required',
                 'address2'       => 'required',
                 'address3'       => 'required',
@@ -177,6 +178,7 @@ class StoreShopController extends Controller
                 'email.max'               => 'メールアドレスは190文字以内で入力してください。',
                 'postal_code.required'    => '郵便番号を入力してください。',
                 'postal_code.digits'      => '郵便番号は7桁で入力してください。',
+                'postal_code.exists'      => '設定できない郵便番号です。',
                 'address1.required'       => '都道府県を入力してください。',
                 'address2.required'       => '市区町村を入力してください。',
                 'address3.required'       => '住所を入力してください。',

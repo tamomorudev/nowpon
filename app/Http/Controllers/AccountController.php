@@ -38,12 +38,18 @@ class AccountController extends Controller
             $input['phone_number'] = preg_replace('/[^\d\-\+\(\) ]/', '', (string)$input['phone_number']);
         }
 
+        //postal_code整形
+        if (isset($input['postal_code'])) {
+            $input['postal_code_convert'] = str_replace('-', '', $input['postal_code']);
+        }
+
         // バリデーションルール
         $rules = [
             'name'         => ['required','string','max:30'],
             'nickname'     => ['required','string','max:30'],
             'email'        => ['required','string','email:filter','max:255', Rule::unique('users','email')->ignore($user->id)],
             'postal_code'  => ['required','string','max:20'],
+            'postal_code_convert' => ['required','string','exists:zipcodes,zipcode'],
             'prefecture'   => ['required', Rule::in($prefKeys)],
             'city'         => ['required','string','max:255'],
             'phone_number' => ['required','string','max:50'],
@@ -64,6 +70,7 @@ class AccountController extends Controller
             'password.min'  => 'パスワードは8文字以上で入力してください。',
             'prefecture.in' => '都道府県の選択が不正です。',
             'sex.in'        => '性別の選択が不正です。',
+            'postal_code_convert.exists' => '設定できない郵便番号です。',
         ];
 
         // 属性名（日本語化）
@@ -78,9 +85,12 @@ class AccountController extends Controller
             'sex'          => '性別',
             'birth_date'   => '生年月日',
             'password'     => 'パスワード',
+            'postal_code_convert' => '郵便番号'
         ];
 
         $validated = validator($input, $rules, $messages, $attributes)->validate();
+
+        unset($validated['postal_code_convert']);
 
         $emailChanged = isset($validated['email']) && $validated['email'] !== $user->email;
 
