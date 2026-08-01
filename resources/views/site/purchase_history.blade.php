@@ -11,7 +11,7 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ナウポンTOP</title>
+    <title>購入履歴 | ナウポン</title>
 </head>
 <body>
 <div class="container">
@@ -20,7 +20,7 @@
     <div class="purchase-history-section">
 
         <!-- モーダルここから -->
-        <div class="cancel-modal-overlay" id="cancelModal">
+        <div class="cancel-modal-overlay" id="cancelModal" aria-hidden="true">
             <div class="cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
                 <button type="button" class="cancel-modal-close" id="closeCancelModal" aria-label="閉じる">×</button>
 
@@ -142,11 +142,10 @@
             </div>
             <nav class="purchase-pager" id="purchasePager" aria-label="ページ切り替え"></nav>
         @else
-            <h4 class="" id="">直近の購入履歴はありません</h2>
+            <h2>直近の購入履歴はありません</h2>
         @endif
     </div>
 </div>
-</body>
-
 @include('layouts.footer')
+</body>
 </html>

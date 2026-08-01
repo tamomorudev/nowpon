@@ -11,7 +11,7 @@
 <title>@yield('title')</title>
 
 <!-- Custom fonts for this template-->
-<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" type="text/css">
 <link
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet">
@@ -51,7 +51,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item {{ request()->is('store') || request()->is('store/home') ? 'active' : '' }}">
                 <a class="nav-link" href="/store">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>ダッシュボード</span></a>
@@ -66,26 +66,26 @@
             </div>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/shop') || request()->is('store/shop/detail') || request()->is('store/shop/edit') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/shop">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗一覧</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/shop/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/shop/create">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗登録</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/account') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/account">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗ユーザー一覧</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/account/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/account/create">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗ユーザー登録</span></a>
@@ -156,14 +156,14 @@
             </li>-->
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/coupon') || request()->is('store/coupon/detail') || request()->is('store/coupon/edit') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/coupon">
                     <i class="fas fa-fw fa-table"></i>
                     <span>クーポン一覧</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('store/coupon/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/coupon/create">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>クーポン登録</span></a>
@@ -174,7 +174,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('site/contact') ? 'active' : '' }}">
                 <a class="nav-link" href="/site/contact" target="_blank">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>お問い合わせ</span></a>
@@ -549,14 +549,9 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <?php /*
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    */ ?>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>

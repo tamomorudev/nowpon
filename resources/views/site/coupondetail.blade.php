@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/coupon-detail.css') }}">
-    <title>ナウポンTOP</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <title>{{ $coupon->coupon_name }} | ナウポン</title>
 </head>
 
 <body>
@@ -15,11 +16,6 @@
     <!-- クーポン詳細 -->
     <div class="coupon-detail">
         <h2>商品に関する情報</h2>
-
-        <!-- 上部ボタン -->
-        <div class="btn-group">
-            <a href="/site/checkout?cid={{$coupon->coupon_code}}" class="coupon-detail-buy-button">今すぐ購入する</a>
-        </div>
 
         <div class="detail-body">
             <!-- 左：カルーセル -->
@@ -143,6 +139,10 @@
             */ ?>
         </div>
 
+        <div class="btn-group">
+            <a href="/site/checkout?cid={{$coupon->coupon_code}}" class="coupon-detail-buy-button">このクーポンを購入する</a>
+        </div>
+
 
         <?php /*
         <!-- こちらもおすすめ -->
@@ -234,6 +234,6 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/site/coupon-detail.js') }}" defer></script>
 
-</body>
 @include('layouts.footer')
+</body>
 </html>

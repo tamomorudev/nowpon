@@ -412,8 +412,22 @@ class SiteController extends Controller
         $list_coupons = array();
         $special_futures = array();
 
-        // 検索経由かどうか（prefecture or keyword）
-        $isSearch = $request->filled('prefecture') || $request->filled('keyword');
+        // 検索経由かどうか（都道府県・路線・駅・キーワード）
+        $isSearch = $request->filled('prefecture') || $request->filled('station_line') || $request->filled('station') || $request->filled('keyword');
+        $prefectures = config('commons.prefectures', []);
+
+        if ($request->filled('prefecture') && !array_key_exists($request->input('prefecture'), $prefectures)) {
+            abort(404);
+        }
+        if ($request->filled('station_line') && mb_strlen((string)$request->input('station_line')) > 100) {
+            abort(422);
+        }
+        if ($request->filled('station') && mb_strlen((string)$request->input('station')) > 100) {
+            abort(422);
+        }
+        if ($request->filled('keyword') && mb_strlen((string)$request->input('keyword')) > 100) {
+            abort(422);
+        }
 
         //マイエリアクーポン
         if (isset($request['search']) && $request['search'] == 'area') {
@@ -444,7 +458,7 @@ class SiteController extends Controller
                 ->where('expire_end_date', '>=', $date);
             // 都道府県
             if ($request->filled('prefecture')) {
-                $query->where('stations.prefecture', config('commons.prefectures')[$request->input('prefecture')]);
+                $query->where('stations.prefecture', $prefectures[$request->input('prefecture')]);
             }
             // 路線
             if ($request->filled('station_line')) {
@@ -464,6 +478,9 @@ class SiteController extends Controller
             $list_coupons = $query->distinct('coupons.id')->orderBy('coupons.created_at', 'DESC')->get();
         } else if (isset($request['search']) && $request['search'] == 'category') {
             if (isset($request['gid'])) {
+                if (!array_key_exists($request['gid'], config('commons.genre', []))) {
+                    abort(404);
+                }
                 $list_coupons = Coupons::select(
                         'coupons.*',
                         'stores.store_name',
@@ -484,7 +501,7 @@ class SiteController extends Controller
             // 特集検索の場合
             if (isset($request['id'])) {
                 // まず、特集の情報を取得
-                $special_futures = SpecialFutures::select()->where('id', '=', $request['id'])->first();
+                $special_futures = SpecialFutures::findOrFail($request['id']);
                 // その後、クーポンとユーザ情報に合致する条件で検索
                 $q = Coupons::select(
                     'coupons.*',
@@ -526,13 +543,13 @@ class SiteController extends Controller
                 }
 
                 // 特集に開始日時の指定がある場合
-                if ($special_futures->coupon_date_start > 0) {
-                    $q->where('coupons.cource_time', '<=', $date);
+                if (!empty($special_futures->coupon_date_start)) {
+                    $q->where('coupons.cource_start', '>=', $special_futures->coupon_date_start);
                 }
 
                 // 特集に終了日付の指定がある場合
-                if ($special_futures->coupon_date_start > 0) {
-                    $q->where('coupons.cource_time', '>=', $date);
+                if (!empty($special_futures->coupon_date_end)) {
+                    $q->where('coupons.cource_start', '<=', $special_futures->coupon_date_end);
                 }
 
                 // 特集に性別の指定がある場合
@@ -629,7 +646,7 @@ class SiteController extends Controller
             ->limit(4)->get();
 
         foreach ($same_area_coupons as $same_area_coupon) {
-            $same_area_coupon->format_cource_start = Carbon::parse($same_area_coupon->cource_start_time)->format('Y年n月j日 G時i分～');
+            $same_area_coupon->format_cource_start = Carbon::parse($same_area_coupon->cource_start)->format('Y年n月j日 G時i分～');
         }
 
         return view('site.coupondetail', compact('user', 'coupon', 'same_area_coupons'));

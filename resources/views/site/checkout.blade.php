@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}">
-    <title>ナウポンTOP</title>
+    <title>お支払い | ナウポン</title>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="{{ asset('js/site/checkout.js') }}" defer></script>

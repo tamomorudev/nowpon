@@ -18,11 +18,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!carousel) return;
 
+        const slideCount = carousel.querySelectorAll('.swiper-slide').length;
+
         new Swiper('.js-home-carousel', {
             slidesPerView: 4,
             spaceBetween: 20,
             centeredSlides: false,
-            loop: true,
+            // 表示枚数より少ない時にloopを有効にするとSwiperが警告を出し、操作が不安定になる。
+            loop: slideCount > 4,
             autoplay: {
                 delay: 2500,
                 disableOnInteraction: false
@@ -31,14 +34,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 nextEl: carousel.querySelector('.swiper-button-next'),
                 prevEl: carousel.querySelector('.swiper-button-prev')
             },
+            pagination: {
+                el: carousel.querySelector('.swiper-pagination'),
+                clickable: true
+            },
             breakpoints: {
                 0: {
-                    slidesPerView: 2,
-                    spaceBetween: 20
+                    slidesPerView: 1.1,
+                    spaceBetween: 12
                 },
                 480: {
-                    slidesPerView: 2,
-                    spaceBetween: 20
+                    slidesPerView: 1.25,
+                    spaceBetween: 16
                 },
                 768: {
                     slidesPerView: 2.5

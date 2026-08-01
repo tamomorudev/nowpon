@@ -90,16 +90,21 @@ body {
 }
 
 .site-button:hover,
-.site-button:focus,
+.site-button:focus-visible,
 .site-button.is-active {
     background: var(--site-color-brand);
     color: #ffffff;
-    outline: none;
+}
+
+.site-button:focus-visible {
+    outline: 3px solid var(--site-color-brand);
+    outline-offset: 3px;
 }
 
 .site-button--primary,
 .site-button--primary:link,
 .site-button--primary:visited {
+    border-color: var(--site-color-brand);
     background: var(--site-color-brand);
     color: #ffffff;
 }
@@ -110,6 +115,26 @@ body {
     border-color: #cccccc;
     background: #ffffff;
     color: var(--site-color-muted);
+}
+
+.site-button--danger,
+.site-button--danger:link,
+.site-button--danger:visited {
+    border-color: var(--site-color-danger);
+    background: var(--site-color-danger);
+    color: #ffffff;
+}
+
+.site-button--danger:hover,
+.site-button--danger:focus-visible {
+    border-color: #b42318;
+    background: #b42318;
+    color: #ffffff;
+}
+
+:is(a, button):focus-visible {
+    outline: 3px solid var(--site-color-brand-dark);
+    outline-offset: 3px;
 }
 
 /* カードやクーポン行をリンク化するときの共通リセット */

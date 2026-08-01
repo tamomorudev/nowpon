@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/home.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
     <script src="{{ asset('js/site/search.js') }}" defer></script>
     <script src="{{ asset('js/site/home.js') }}" defer></script>
 
@@ -90,6 +92,7 @@
             </div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
+            <div class="swiper-pagination" aria-label="新着クーポンのページ切り替え"></div>
         </div>
     </div>
 
@@ -193,7 +196,7 @@
                 <!-- 下段：キーワード + 検索ボタン -->
                 <div class="search-keyword-row">
                     <div class="search-keyword-box">
-                        <input type="text" name="keyword" placeholder="キーワードを入力" />
+                        <input type="text" name="keyword" placeholder="店舗名/クーポン名を入力" />
                     </div>
                     <button type="submit" class="search-icon-box keyword-search-button">
                         検索
@@ -240,6 +243,6 @@
         @endif
     </div>
 </div>
-</body>
 @include('layouts.footer')
+</body>
 </html>

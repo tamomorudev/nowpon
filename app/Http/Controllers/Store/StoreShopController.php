@@ -380,28 +380,39 @@ class StoreShopController extends Controller
 
     public function checkStation(Request $request)
     {
-        $user = Auth::guard('store_user')->user(); //ユーザー情報
+        $type = (int)$request->input('type');
 
-        $request = $request->all();
-
-        if ($_POST) {
-            //ajax 路線
-            if (isset($request['type']) && isset($request['prefecture']) && $request['type'] == 1) {
-                $prefecture = config('commons.prefectures')[$request['prefecture']];
-                $lines = Stations::select('line')->where('prefecture', $prefecture)->groupBy('line')->get()->toArray();
-                $lines = json_decode(json_encode($lines), true);
-
-                return response()->json(['lines' => $lines]);
+        if ($type === 1) {
+            $prefectureKey = $request->input('prefecture');
+            $prefectures = config('commons.prefectures', []);
+            if (!array_key_exists($prefectureKey, $prefectures)) {
+                return response()->json(['message' => '都道府県の選択が不正です。'], 422);
             }
-            //ajax 駅
-            if (isset($request['type']) && isset($request['line']) && $request['type'] == 2) {
-                $stations = Stations::select('name')->where('line', $request['line'])->groupBy('name')->get()->toArray();
-                $stations = json_decode(json_encode($stations), true);
 
-                return response()->json(['stations' => $stations]);
-            }
+            $lines = Stations::select('line')
+                ->where('prefecture', $prefectures[$prefectureKey])
+                ->groupBy('line')
+                ->get()
+                ->toArray();
+
+            return response()->json(['lines' => $lines]);
         }
 
-        return response()->json(['status' => 1]);
+        if ($type === 2) {
+            $line = trim((string)$request->input('line'));
+            if ($line === '' || mb_strlen($line) > 100) {
+                return response()->json(['message' => '路線の選択が不正です。'], 422);
+            }
+
+            $stations = Stations::select('name')
+                ->where('line', $line)
+                ->groupBy('name')
+                ->get()
+                ->toArray();
+
+            return response()->json(['stations' => $stations]);
+        }
+
+        return response()->json(['message' => 'リクエストが不正です。'], 422);
     }
 }

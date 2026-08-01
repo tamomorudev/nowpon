@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalImage = document.getElementById("cancelModalImage");
     const cancelForm = document.querySelector(".cancel-modal-bottom form");
     const cancelMsg = document.getElementById("cancelMessage");
+    let lastFocusedElement = null;
 
     // モーダル内の同じclassを持つ表示箇所をまとめて更新する。
     const setTextAll = function (selector, value) {
@@ -25,7 +26,33 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!modal) return;
 
         modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
         document.body.classList.remove("modal-open");
+
+        if (lastFocusedElement) {
+            lastFocusedElement.focus();
+            lastFocusedElement = null;
+        }
+    };
+
+    const trapModalFocus = function (event) {
+        if (!modal || !modal.classList.contains("is-open") || event.key !== "Tab") return;
+
+        const focusable = Array.from(modal.querySelectorAll(
+            'a[href], button:not([disabled]), select:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter(function (element) { return !element.hidden && element.offsetParent !== null; });
+
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     };
 
     // 購入履歴カードをクリックした時に、data属性からモーダルへ情報を流し込む。
@@ -33,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         openButtons.forEach(function (button) {
             button.addEventListener("click", function () {
                 const d = button.dataset;
+                lastFocusedElement = button;
 
                 if (modalImage) {
                     modalImage.src = d.image;
@@ -70,7 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 setTextAll(".modal-address", d.address);
 
                 modal.classList.add("is-open");
+                modal.setAttribute("aria-hidden", "false");
                 document.body.classList.add("modal-open");
+                if (closeButton) closeButton.focus();
             });
         });
 
@@ -84,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.addEventListener("keydown", function (event) {
             if (event.key === "Escape") closeModal();
+            trapModalFocus(event);
         });
     }
 

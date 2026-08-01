@@ -107,6 +107,7 @@
         /* ===== Actions ===== */
         .form-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; padding: 0 16px; border-radius: 9999px; font-weight: 700; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: transform .02s ease, background .2s ease, color .2s ease, border-color .2s ease; user-select: none; border: 1px solid transparent; }
+        .btn { min-height: 44px; }
         .btn-primary { background: var(--site-color-brand, #c5a067); color: #fff; border-color: var(--site-color-brand, #c5a067); }
         .btn-primary:hover { background: var(--site-color-brand, #c5a067); border-color: var(--site-color-brand, #c5a067); opacity: 0.88; }
         .btn-ghost { background: #fffaf5; color: #6b4e3d; border-color: #e4d2bf; }

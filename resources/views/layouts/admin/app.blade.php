@@ -11,7 +11,7 @@
 <title>@yield('title')</title>
 
 <!-- Custom fonts for this template-->
-<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" type="text/css">
 <link
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet">
@@ -40,7 +40,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color:rgb(17, 10, 6);background-image: linear-gradient(180deg,rgb(146, 146, 146) 10%,rgb(14, 12, 11) 100%);">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/store">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.home') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -51,7 +51,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item {{ request()->is('admin') || request()->is('admin/home') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>ダッシュボード</span></a>
@@ -66,7 +66,7 @@
             </div>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/user*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/user">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>ユーザー一覧</span></a>
@@ -81,13 +81,13 @@
             </div>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/shop*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/shop">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗一覧</span></a>
             </li>
 
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/account*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/account">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>店舗ユーザー一覧</span></a>
@@ -102,7 +102,7 @@
                 お知らせ管理
             </div>
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/information*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/information">
                     <i class="fas fa-fw fa-table"></i>
                     <span>お知らせ一覧</span></a>
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/coupon*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/coupon">
                     <i class="fas fa-fw fa-table"></i>
                     <span>クーポン一覧</span></a>
@@ -132,7 +132,7 @@
             </div>
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/special_future*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/special_future">
                     <i class="fas fa-fw fa-table"></i>
                     <span>特集一覧</span></a>
@@ -150,14 +150,14 @@
             </div>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/store_images*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/store_images">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>画像 店舗</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('admin/coupon_images*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/coupon_images">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>画像 クーポン</span></a>
@@ -542,14 +542,9 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <?php /*
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    */ ?>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -55,6 +56,12 @@ class RegisterController extends Controller
         if (isset($data['postal_code'])) {
             $data['postal_code'] = preg_replace('/[^0-9]/', '', $data['postal_code']);
         }
+        if (isset($data['phone_number'])) {
+            $data['phone_number'] = preg_replace('/[^0-9]/', '', $data['phone_number']);
+        }
+
+        $prefectureKeys = array_keys(config('commons.prefectures', []));
+        $sexKeys = array_keys(config('commons.sexs', []));
 
         return Validator::make($data, [
             //'name' => ['required', 'string', 'max:255'],
@@ -65,14 +72,14 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'postal_code' => [
                 'required',
-                'max:20',
+                'digits:7',
                 'exists:zipcodes,zipcode',
             ],
-            'prefecture' => ['required'],
+            'prefecture' => ['required', Rule::in($prefectureKeys)],
             'city' => ['required', 'string', 'max:50'],
-            'phone_number' => ['required', 'max:50'],
-            'sex' => ['required'],
-            'birth_date' => ['required'],
+            'phone_number' => ['required', 'digits_between:10,11'],
+            'sex' => ['required', Rule::in($sexKeys)],
+            'birth_date' => ['required', 'date', 'before_or_equal:today'],
         ], [
             'name.required' => '氏名を入力してください。',
             'name.string' => '氏名は文字列で入力してください。',
@@ -94,21 +101,25 @@ class RegisterController extends Controller
             'password.confirmed' => 'パスワードが一致しません。',
 
             'postal_code.required' => '郵便番号を入力してください。',
-            'postal_code.max' => '郵便番号は20文字以内で入力してください。',
+            'postal_code.digits' => '郵便番号は7桁で入力してください。',
             'postal_code.exists' => '設定できない郵便番号です。',
 
             'prefecture.required' => '都道府県を選択してください。',
+            'prefecture.in' => '都道府県の選択が不正です。',
 
             'city.required' => '市区町村を入力してください。',
             'city.string' => '市区町村は文字列で入力してください。',
             'city.max' => '市区町村は50文字以内で入力してください。',
 
             'phone_number.required' => '電話番号を入力してください。',
-            'phone_number.max' => '電話番号は50文字以内で入力してください。',
+            'phone_number.digits_between' => '電話番号は10桁または11桁で入力してください。',
 
             'sex.required' => '性別を選択してください。',
+            'sex.in' => '性別の選択が不正です。',
 
             'birth_date.required' => '生年月日を入力してください。',
+            'birth_date.date' => '生年月日は正しい日付で入力してください。',
+            'birth_date.before_or_equal' => '生年月日は今日以前の日付を入力してください。',
         ]);
     }
 
@@ -120,6 +131,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $data['postal_code'] = preg_replace('/[^0-9]/', '', (string)$data['postal_code']);
+        $data['phone_number'] = preg_replace('/[^0-9]/', '', (string)$data['phone_number']);
+
         if(!isset($data['email'])) {
             $data['email'] = null; //メールは一旦取得しない？
         }

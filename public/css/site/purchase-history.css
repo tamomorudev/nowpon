@@ -50,7 +50,6 @@
     display: block;
     transition: transform 0.2s ease, opacity 0.2s ease;
     border: none;
-    outline: none;
     box-shadow: none;
     background: transparent;
     padding: 0;
@@ -62,6 +61,14 @@
 .purchase-card:hover {
     transform: translateY(-3px);
     opacity: 0.95;
+}
+
+.purchase-card:focus-visible,
+.cancel-modal-close:focus-visible,
+.cancel-submit-button:focus-visible,
+.pager-btn:focus-visible {
+    outline: 3px solid var(--site-color-brand-dark);
+    outline-offset: 3px;
 }
 
 .purchase-card-image-wrap {
@@ -142,7 +149,7 @@
     background: transparent;
     font-size: 34px;
     line-height: 1;
-    color: #b5412e;
+    color: var(--site-color-danger);
     cursor: pointer;
 }
 
@@ -270,7 +277,6 @@
     padding: 0 22px;
     font-size: 18px;
     color: #333;
-    outline: none;
 }
 
 .cancel-submit-button {

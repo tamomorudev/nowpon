@@ -97,6 +97,15 @@
     right: 10px;
 }
 
+.js-home-carousel .swiper-pagination {
+    position: relative;
+    margin-top: 14px;
+}
+
+.js-home-carousel .swiper-pagination-bullet-active {
+    background: var(--site-color-brand);
+}
+
 .swiper-wrapper {
     padding: 0;
 }
@@ -260,10 +269,9 @@
 }
 
 .home-coupon-list-nav__link:hover,
-.home-coupon-list-nav__link:focus {
+.home-coupon-list-nav__link:focus-visible {
     color: var(--site-color-brand);
     opacity: 0.75;
-    outline: none;
 }
 
 .home-coupon-list-section .coupon-list {
@@ -314,12 +322,11 @@
 }
 
 .category-item:hover,
-.category-item:focus {
+.category-item:focus-visible {
     color: var(--site-color-brand);
-    outline: none;
 }
 
-/* カテゴリ検索の左右送りボタン。カルーセルと同じ青い矢印で操作方向を分かりやすくする。 */
+/* カテゴリ検索の左右送りボタン。操作方向を分かりやすく示す。 */
 .category-scroll-button {
     top: 54px;
     z-index: 20;
@@ -348,9 +355,8 @@
 }
 
 .category-scroll-button:hover,
-.category-scroll-button:focus {
+.category-scroll-button:focus-visible {
     color: #0062cc;
-    outline: none;
 }
 
 .category-scroll-button--prev {

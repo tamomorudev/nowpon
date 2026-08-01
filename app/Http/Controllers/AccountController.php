@@ -29,18 +29,13 @@ class AccountController extends Controller
         $prefKeys = array_keys(config('commons.prefectures', []));
         $sexKeys  = array_keys(config('commons.sexs', []));
 
-        // 軽い正規化
+        // 保存値も検索キーと同じ形式に正規化する。
         $input = $request->all();
         if (isset($input['postal_code'])) {
-            $input['postal_code'] = preg_replace('/[^0-9\-]/', '', (string)$input['postal_code']);
+            $input['postal_code'] = preg_replace('/[^0-9]/', '', (string)$input['postal_code']);
         }
         if (isset($input['phone_number'])) {
-            $input['phone_number'] = preg_replace('/[^\d\-\+\(\) ]/', '', (string)$input['phone_number']);
-        }
-
-        //postal_code整形
-        if (isset($input['postal_code'])) {
-            $input['postal_code_convert'] = str_replace('-', '', $input['postal_code']);
+            $input['phone_number'] = preg_replace('/[^0-9]/', '', (string)$input['phone_number']);
         }
 
         // バリデーションルール
@@ -48,13 +43,12 @@ class AccountController extends Controller
             'name'         => ['required','string','max:30'],
             'nickname'     => ['required','string','max:30'],
             'email'        => ['required','string','email:filter','max:255', Rule::unique('users','email')->ignore($user->id)],
-            'postal_code'  => ['required','string','max:20'],
-            'postal_code_convert' => ['required','string','exists:zipcodes,zipcode'],
+            'postal_code'  => ['required','digits:7','exists:zipcodes,zipcode'],
             'prefecture'   => ['required', Rule::in($prefKeys)],
             'city'         => ['required','string','max:255'],
-            'phone_number' => ['required','string','max:50'],
+            'phone_number' => ['required','digits_between:10,11'],
             'sex'          => ['required', Rule::in($sexKeys)],
-            'birth_date'   => ['required','date'],
+            'birth_date'   => ['required','date','before_or_equal:today'],
             'password'     => ['nullable','min:8'], // 未入力なら更新しない
         ];
 
@@ -65,12 +59,15 @@ class AccountController extends Controller
             'email'    => ':attribute の形式が正しくありません。',
             'unique'   => ':attribute は既に使用されています。',
             'date'     => ':attribute は正しい日付で入力してください。',
+            'before_or_equal' => ':attribute は今日以前の日付を入力してください。',
+            'digits' => ':attribute は :digits 桁で入力してください。',
+            'digits_between' => ':attribute は :min 桁または :max 桁で入力してください。',
             'min'      => ':attribute は :min 文字以上で入力してください。',
             'in'       => ':attribute の選択が不正です。',
             'password.min'  => 'パスワードは8文字以上で入力してください。',
             'prefecture.in' => '都道府県の選択が不正です。',
             'sex.in'        => '性別の選択が不正です。',
-            'postal_code_convert.exists' => '設定できない郵便番号です。',
+            'postal_code.exists' => '設定できない郵便番号です。',
         ];
 
         // 属性名（日本語化）
@@ -85,12 +82,9 @@ class AccountController extends Controller
             'sex'          => '性別',
             'birth_date'   => '生年月日',
             'password'     => 'パスワード',
-            'postal_code_convert' => '郵便番号'
         ];
 
         $validated = validator($input, $rules, $messages, $attributes)->validate();
-
-        unset($validated['postal_code_convert']);
 
         $emailChanged = isset($validated['email']) && $validated['email'] !== $user->email;
 

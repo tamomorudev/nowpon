@@ -4,10 +4,6 @@
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-<!-- Swiper -->
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
 <style>
     html, body {
         height: 100%;
@@ -96,6 +92,40 @@
         outline-offset: 2px;
     }
 
+    .username {
+        display: block;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid #d4a373;
+        border-radius: 9999px;
+        color: #6b4e3d;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .header-action--primary {
+        border-color: #c5a067;
+        background: #c5a067;
+        color: #ffffff;
+    }
+
     .user-icon {
         font-size: 20px;
         color: var(--site-color-brand, #c5a067);
@@ -103,39 +133,77 @@
 
     @media screen and (max-width: 767px) {
         .header {
-            flex-direction: column;
-            align-items: stretch;
+            min-height: 64px;
+            flex-direction: row;
+            align-items: center;
             gap: 10px;
-            padding: 0 16px 10px;
+            margin-top: 0;
+            padding: 10px 16px;
+            border-bottom-width: 1px;
         }
 
         .header-logo {
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         .header-logo img {
-            height: 38px;
+            height: 30px;
         }
 
         .header-right {
-            width: 100%;
-            margin-left: 0;
-            justify-content: space-between;
-            gap: 12px;
+            width: auto;
+            margin-left: auto;
+            justify-content: flex-end;
+            flex-wrap: nowrap;
+            gap: 8px;
         }
 
         .header-nav {
-            gap: 12px;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 12px;
         }
 
         .header-user {
-            font-size: 13px;
-            gap: 4px;
+            gap: 3px;
+            font-size: 12px;
+            max-width: 100%;
+        }
+
+        .username { max-width: 72px; }
+
+        .header-actions {
+            width: auto;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .header-action {
+            min-height: 40px;
+            padding: 0 11px;
+            font-size: 12px;
         }
 
         .user-icon {
-            font-size: 16px;
+            font-size: 18px;
+        }
+    }
+
+    @media screen and (max-width: 359px) {
+        .header {
+            padding-inline: 12px;
+        }
+
+        .header-logo img {
+            height: 27px;
+        }
+
+        .header-actions {
+            gap: 4px;
+        }
+
+        .header-action {
+            padding-inline: 8px;
+            font-size: 11px;
         }
     }
 </style>
@@ -149,14 +217,10 @@
 
     <div class="header-right">
         <div class="header-nav">
-            <a href="/" class="{{ isActive(['/']) }}">HOME</a>
-
             @if(Auth::guard('web')->check())
                 {{-- <a href="/site/cart" class="{{ isActive(['site/cart', 'site/checkout']) }}">カート</a> --}}
                 <a href="/site/purchase_history" class="{{ isActive(['site/purchase_history']) }}">購入履歴</a>
             @endif
-
-            <a href="/site/contact" class="{{ isActive(['site/contact']) }}">CONTACT</a>
         </div>
 
         @if(Auth::guard('web')->check())
@@ -165,6 +229,11 @@
                 <a class="username" href="{{ url('/account') }}">
                     {{ Auth::guard('web')->user()->name }}
                 </a>
+            </div>
+        @else
+            <div class="header-actions" aria-label="アカウント操作">
+                <a class="header-action" href="{{ route('login') }}">ログイン</a>
+                <a class="header-action header-action--primary" href="{{ route('register') }}">会員登録</a>
             </div>
         @endif
     </div>

@@ -46,6 +46,8 @@
     border: none;
     background: transparent;
     font-size: 14px;
+}
+.search-select-box select:focus-visible {
     outline: none;
 }
 .search-icon-box {
@@ -88,8 +90,10 @@
     border: none;
     flex: 1;
     background: none;
-    outline: none;
     font-size: 14px;
+}
+.search-keyword-box input:focus-visible {
+    outline: none;
 }
 
 /* 検索ボタン */

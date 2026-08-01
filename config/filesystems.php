@@ -43,7 +43,8 @@ return [
         ],
 
         's3' => [
-            'driver' => 's3',
+            'driver' => env('APP_ENV') === 'local' ? 'local' : 's3',
+            'root' => env('S3_LOCAL_ROOT', public_path('assets/images')),
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
@@ -57,7 +58,9 @@ return [
             'driver' => 'local',
             'root' => public_path('assets/images'),
             'url' => env('APP_URL') . '/assets/images',
-            'visibility' => 'public',
+            // Windows の Docker 共有フォルダでは chmod が使えないため、ローカル環境では
+            // 可視性の設定を省略する。公開環境では従来どおり public を設定する。
+            'visibility' => env('PUBLIC_IMAGES_VISIBILITY', env('APP_ENV') === 'local' ? null : 'public'),
         ],
 
     ],

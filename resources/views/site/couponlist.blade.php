@@ -10,7 +10,7 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ナウポンTOP</title>
+    <title>クーポン一覧 | ナウポン</title>
 </head>
 <body>
 <div class="container">
@@ -100,7 +100,7 @@
                         <div class="search-keyword-box">
                             <input type="text"
                                    name="keyword"
-                                   placeholder="キーワードを入力"
+                                   placeholder="店舗名/クーポン名を入力"
                                    value="{{ $searchKeyword ?? '' }}" />
                         </div>
                         <button type="submit" class="search-icon-box keyword-search-button">
@@ -150,6 +150,6 @@
     </div>
 </div>
 
-</body>
 @include('layouts.footer')
+</body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <title>ナウポンログイン</title>
 </head>
 <body>
@@ -72,7 +73,6 @@
         border: 1px solid #d9d9d9;
         border-radius: 8px;
         font-size: 15px;
-        outline: none;
         transition: box-shadow .15s, border-color .15s, background-color .15s;
         background: #fff;
         box-sizing: border-box;          /* 横幅突き抜け防止 */
@@ -81,6 +81,9 @@
         border-color: var(--site-color-brand, #c5a067);
         box-shadow: 0 0 0 3px rgba(194,150,99,.2);
         background-color: #fffefd;
+    }
+    .login-input:focus-visible {
+        outline: none;
     }
     .login-error {
         margin-top: 6px;
@@ -153,12 +156,13 @@
                 <label for="email" class="login-label">メールアドレス</label>
                 <input
                     id="email"
-                    type="text"
+                    type="email"
                     class="login-input @error('email') is-invalid @enderror"
                     name="email"
                     value="{{ old('email') }}"
                     required
                     autofocus
+                    autocomplete="email"
                 >
                 @error('email')
                     <div class="login-error">{{ $message }}</div>

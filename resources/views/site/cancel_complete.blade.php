@@ -10,7 +10,7 @@
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ナウポンTOP</title>
+    <title>キャンセル完了 | ナウポン</title>
 </head>
 <body>
     <div class="container">
@@ -21,7 +21,6 @@
         <a href="{{ route('purchaseHistory') }}">購入履歴に戻る</a>
     </div>
     </div>
-</body>
-
 @include('layouts.footer')
+</body>
 </html>

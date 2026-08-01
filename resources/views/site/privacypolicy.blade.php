@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/content-page.css') }}">
-    <title>利用規約 | ナウポン</title>
+    <title>プライバシーポリシー | ナウポン</title>
 </head>
 
 <body>

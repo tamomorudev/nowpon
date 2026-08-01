@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}">
-    <title>ナウポンTOP</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <title>カート | ナウポン</title>
 </head>
 <body>
 <div class="container">

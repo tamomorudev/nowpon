@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
         spaceBetween: 12,
         loop: true,
         centeredSlides: true,
-        autoHeight: true,
         pagination: { el: ".swiper-pagination", clickable: true },
         navigation: {
             nextEl: ".swiper-button-next",

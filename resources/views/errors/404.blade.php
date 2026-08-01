@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>404 Page Not Found | nowpon</title>
+    <title>ページが見つかりません | ナウポン</title>
      <style>
         /* カルーセル ここから */
         .carousel-wrapper {
@@ -418,6 +418,6 @@
         </div>
     </div>
 </div>
-</body>
 @include('layouts.footer')
+</body>
 </html>
