@@ -8,7 +8,7 @@
     <title>お支払い | ナウポン</title>
 
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="{{ asset('js/site/checkout.js') }}" defer></script>
+    <script src="{{ asset('js/site/checkout.js') }}?v={{ filemtime(public_path('js/site/checkout.js')) }}" defer></script>
 </head>
 <body>
 <div class="container">

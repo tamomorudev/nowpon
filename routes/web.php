@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +38,8 @@ Route::get('site/terms', [App\Http\Controllers\SiteController::class, 'terms'])-
 // プライバシーポリシー
 Route::get('site/privacypolicy', [App\Http\Controllers\SiteController::class, 'privacypolicy'])->name('privacypolicy');
 // お問い合わせ
-Route::get('site/contact', [App\Http\Controllers\SiteController::class, 'contact'])->name('contact');
+Route::get('site/contact', [ContactController::class, 'create'])->name('contact');
+Route::post('site/contact', [ContactController::class, 'store'])->name('contact.submit');
 //駅取得
 Route::post('/check_station', [StoreShopController::class, 'checkStation'])->name('check_station');
 Auth::routes();

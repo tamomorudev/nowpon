@@ -7,22 +7,72 @@ document.addEventListener("DOMContentLoaded", function () {
     const payButton = document.getElementById("pay-button");
     const loading = document.getElementById("pay-loading");
     const errors = document.getElementById("card-errors");
+    const cardElementContainer = document.getElementById("card-element");
+    const cardLabel = root ? root.querySelector(".checkout-card-label") : null;
 
-    if (!root || !payButton || !loading || !errors || typeof Stripe === "undefined") return;
+    if (!root || !payButton || !loading || !errors || !cardElementContainer) return;
 
-    const stripe = Stripe(root.dataset.stripeKey);
-    const elements = stripe.elements();
-    const cardElement = elements.create("card", {
-        hidePostalCode: true,
-        style: {
-            base: {
-                fontSize: "16px",
-                color: "#333"
-            }
+    let cardLoadFailed = false;
+    let cardReady = false;
+    let cardReadyTimer = null;
+
+    const showCardLoadError = function () {
+        if (cardLoadFailed) return;
+
+        cardLoadFailed = true;
+        if (cardReadyTimer) {
+            window.clearTimeout(cardReadyTimer);
         }
-    });
+        if (cardLabel) {
+            cardLabel.hidden = true;
+        }
+        cardElementContainer.replaceChildren();
+        cardElementContainer.hidden = true;
+        errors.textContent = "カード情報を読み込めませんでした。時間をおいてお試しください。";
+        payButton.disabled = true;
+    };
 
-    cardElement.mount("#card-element");
+    const stripeKey = root.dataset.stripeKey ? root.dataset.stripeKey.trim() : "";
+    if (!stripeKey || typeof Stripe === "undefined") {
+        showCardLoadError();
+        return;
+    }
+
+    let stripe;
+    let cardElement;
+    try {
+        stripe = Stripe(stripeKey);
+        const elements = stripe.elements();
+        cardElement = elements.create("card", {
+            hidePostalCode: true,
+            style: {
+                base: {
+                    fontSize: "16px",
+                    color: "#333"
+                }
+            }
+        });
+
+        payButton.disabled = true;
+        cardElement.on("ready", function () {
+            if (cardLoadFailed) return;
+
+            cardReady = true;
+            if (cardReadyTimer) {
+                window.clearTimeout(cardReadyTimer);
+            }
+            payButton.disabled = false;
+        });
+        cardElement.mount("#card-element");
+        cardReadyTimer = window.setTimeout(function () {
+            if (!cardReady) {
+                showCardLoadError();
+            }
+        }, 5000);
+    } catch (error) {
+        showCardLoadError();
+        return;
+    }
 
     const setLoading = function (isLoading) {
         payButton.disabled = isLoading;
