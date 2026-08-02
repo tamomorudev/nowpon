@@ -41,10 +41,7 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/store">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">Nowpon店舗管理</div>
+                <div class="sidebar-brand-text">Nowpon店舗管理</div>
             </a>
 
             <!-- Divider -->
