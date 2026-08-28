@@ -1,49 +1,188 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <title>ナウポンパスワード変更</title>
+</head>
+<body>
+{{-- 共通ヘッダー（ヘッダー側でhtml/bodyのCSSは定義済み想定） --}}
+@include('layouts.header')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Confirm Password') }}</div>
+<style>
+    /* ===== Page layout ===== */
+    main.page-main {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        padding: 48px 16px;
+    }
 
-                <div class="card-body">
-                    {{ __('Please confirm your password before continuing.') }}
+    /* ===== Card ===== */
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        background: #fffaf5;
+        border: 1px solid #ead8c6;
+        border-radius: 12px;
+        box-shadow:
+            0 10px 24px rgba(0,0,0,0.10),
+            0 1px 0 rgba(255,255,255,0.8) inset;
+        padding: 28px;
+        box-sizing: border-box;
+        position: relative;
+    }
 
-                    <form method="POST" action="{{ route('password.confirm') }}">
-                        @csrf
+    .login-card::before {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 64px;
+        height: 4px;
+        background: var(--site-color-brand, #c5a067);
+        border-radius: 9999px;
+        opacity: 0.9;
+    }
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+    .login-title {
+        margin: 14px 0 18px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 22px;
+        color: #6b4e3d;
+    }
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+    .login-description {
+        margin: 0 0 18px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #6b4e3d;
+        text-align: center;
+    }
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    /* ===== Form ===== */
+    .login-field { margin-bottom: 16px; }
+    .login-label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6b4e3d;
+    }
+    .login-input {
+        width: 100%;
+        height: 44px;
+        padding: 10px 12px;
+        border: 1px solid #d9d9d9;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: box-shadow .15s, border-color .15s, background-color .15s;
+        background: #fff;
+        box-sizing: border-box;
+    }
+    .login-input:focus {
+        border-color: var(--site-color-brand, #c5a067);
+        box-shadow: 0 0 0 3px rgba(194,150,99,.2);
+        background-color: #fffefd;
+    }
+    .login-input:focus-visible {
+        outline: none;
+    }
+    .login-error {
+        margin-top: 6px;
+        color: #c0392b;
+        font-size: 12px;
+    }
 
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Confirm Password') }}
-                                </button>
+    .login-actions { display: grid; gap: 10px; margin-top: 4px; }
 
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
+    /* ===== Button（中央揃え） ===== */
+    .login-button {
+        width: 100%;
+        height: 44px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        border: 0;
+        border-radius: 9999px;
+        background: var(--site-color-brand, #c5a067);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform .02s ease, background .2s ease;
+        box-sizing: border-box;
+    }
+    .login-button:hover { background: var(--site-color-brand, #c5a067); opacity: 0.88; }
+    .login-button:active { transform: translateY(1px); }
+
+    .login-links {
+        display: flex;
+        justify-content: center;
+        margin-top: 6px;
+        font-size: 13px;
+    }
+    .login-link {
+        text-decoration: none;
+        color: #6b4e3d;
+        white-space: nowrap;
+    }
+    .login-link:hover { text-decoration: underline; }
+
+    /* 小さめ端末 */
+    @media (max-width: 480px) {
+        .login-card { padding: 22px; }
+    }
+</style>
+
+<main class="page-main">
+    <div class="login-card" role="main" aria-labelledby="confirmTitle">
+        <h1 id="confirmTitle" class="login-title">{{ __('Confirm Password') }}</h1>
+
+        <p class="login-description">{{ __('Please confirm your password before continuing.') }}</p>
+
+        <form method="POST" action="{{ route('password.confirm') }}">
+            @csrf
+
+            <div class="login-field">
+                <label for="password" class="login-label">{{ __('Password') }}</label>
+                <input
+                    id="password"
+                    type="password"
+                    class="login-input @error('password') is-invalid @enderror"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                >
+                @error('password')
+                    <div class="login-error">{{ $message }}</div>
+                @enderror
             </div>
-        </div>
+
+            <div class="login-actions">
+                <button type="submit" class="login-button">
+                    {{ __('Confirm Password') }}
+                </button>
+
+                @if (Route::has('password.request'))
+                    <div class="login-links">
+                        <a class="login-link" href="{{ route('password.request') }}">
+                            {{ __('Forgot Your Password?') }}
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </form>
     </div>
-</div>
-@endsection
+</main>
+
+{{-- 共通フッター（body 内、最後に置く） --}}
+@include('layouts.footer')
+</body>
+</html>

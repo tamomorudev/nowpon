@@ -287,7 +287,7 @@
                 let breakdown = '';
 
                 services = Math.round(commit_store_pay_price * 0.15);
-                breakdown = '(店舗支払金額:'+commit_store_pay_price+'円 + サービス手数料(15%):'+services+')円';
+                breakdown = '(店舗支払金額:'+commit_store_pay_price+'円 + 予約料(15%):'+services+')円';
                 commit = parseInt(commit_store_pay_price) + parseInt(services);
 
                 if (current_price <= 0 || commit_store_pay_price <= 0 || commit <= 0) {

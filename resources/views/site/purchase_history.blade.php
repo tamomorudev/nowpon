@@ -31,7 +31,7 @@
                         <p>注文日:　　<span class="modal-pdate"></span></p>
                         <p>注文番号:　<span class="modal-code"></span></p>
                         <p>店舗支払金額:　<span class="modal-storeprice"></span>円</p>
-                        <p>サービス手数料:　<span class="modal-serviceprice"></span>円</p>
+                        <p>予約料:　<span class="modal-serviceprice"></span>円</p>
                         <p>注文合計　<span class="modal-totalprice"></span>円</p>
                     </div>
 
@@ -45,7 +45,7 @@
                     <div class="cancel-info-box">
                         <p>領収書/明細書</p>
                         <p>商品: <span class="modal-genre"></span></p>
-                        <p>サービス手数料:<span class="modal-serviceprice2"></span>円</p>
+                        <p>予約料:<span class="modal-serviceprice2"></span>円</p>
                         <p class="cancel-info-total">合計:<span class="modal-price"></span>円</p>
                     </div>
                 </div>

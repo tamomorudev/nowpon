@@ -41,33 +41,58 @@
 
         <div id="pay-loading" class="checkout-loading" hidden>決済処理中です。そのままでしばらくお待ちください。</div>
 
-        <!-- 🔻 線追加（ボタン下） -->
+        <div class="checkout-highlight-box">
+            本日カードに請求される金額は
+            ¥{{ number_format($coupon->service_price) }}
+            です
+        </div>
+
         <hr class="checkout-divider" />
 
         <table class="checkout-summary-table">
             <tr>
-                <td class="checkout-summary-label">店舗支払金額：</td>
+                <td class="checkout-summary-label">
+                    本日カードでのお支払い
+                    <div class="checkout-summary-sublabel">
+                        予約料（店舗価格の15%）
+                    </div>
+                </td>
+                @if ($coupon->discount_rate > 0)
+                    <td class="checkout-summary-price">￥{{ number_format($coupon->service_price) }}</td>
+                @else
+                    <td class="checkout-summary-price">￥{{ number_format($coupon->original_service_price) }}</td>
+                @endif
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <hr class="checkout-divider--lighter" />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="checkout-summary-label">
+                    店舗でのお支払い
+                    <div class="checkout-summary-sublabel">
+                        ご来店時に店舗でお支払いください
+                    </div>
+                </td>
                 @if ($coupon->discount_rate > 0)
                     <td class="checkout-summary-price">￥{{ number_format(round($coupon->store_pay_price)) }}</td>
                 @else
                     <td class="checkout-summary-price">￥{{ number_format($coupon->price) }}</td>
                 @endif
             </tr>
-            <tr>
-                <td class="checkout-summary-label">手数料：</td>
-                @if ($coupon->discount_rate > 0)
-                    <td class="checkout-summary-price">￥{{ number_format($coupon->service_price) }}</td>
-                @else
-                    <td class="checkout-summary-price">￥{{ number_format($coupon->original_service_price) }}</td>
-                @endif
-            </tr>
+        </table>
+
+        <hr class="checkout-divider--light" />
+
+        <table class="checkout-summary-table">
             <tr class="checkout-summary-total">
-                <td class="checkout-summary-label">ご請求：</td>
-                @if ($coupon->discount_rate > 0)
-                    <td class="checkout-summary-price">￥{{ number_format($coupon->service_price) }}</td>
-                @else
-                    <td class="checkout-summary-price">￥{{ number_format($coupon->original_service_price) }}</td>
-                @endif
+                <td class="checkout-summary-label">ご利用総額</td>
+                <td class="checkout-summary-price">
+                    ￥{{ number_format(round($coupon->store_pay_price) + $coupon->service_price) }}
+                </td>
             </tr>
         </table>
 

@@ -54,7 +54,7 @@
                                     <td>{{ round($coupon_data->store_pay_price) }}円</td>
                                 </tr>
                                 <tr>
-                                    <th>サービス料(手数料)</th>
+                                    <th>予約料</th>
                                     <td>{{$coupon_data->service_price}}円</td>
                                 </tr>
                                 <tr>
