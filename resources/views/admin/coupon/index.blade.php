@@ -82,7 +82,7 @@
                                 <th>クーポンコード</th>
                                 <th>定価</th>
                                 <th class="highlight-payment"><b>店舗支払金額</b></th>
-                                <th class="highlight-payment">サービス料(手数料)</th>
+                                <th class="highlight-payment">予約料</th>
                                 <th>掲載金額</th>
                                 <th>コース時間</th>
                                 <th>コース開始時間</th>

@@ -200,8 +200,9 @@
 .checkout-summary-table {
     width: 100%;
     max-width: 400px;
-    margin: 0 auto 30px;
+    margin: 0 auto 10px;
     font-size: 16px;
+    table-layout: fixed;   /* ← 追加 */
 }
 
 .checkout-summary-label {
@@ -235,6 +236,74 @@
 .checkout-payment-change a {
     color: #555;
     text-decoration: underline;
+}
+
+.checkout-highlight-box {
+    background-color: #fdf6e3;
+    border: 1px solid #e8d9a0;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 auto 16px;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.checkout-summary-label {
+    font-weight: bold;
+    padding: 8px 0;
+}
+
+.checkout-summary-sublabel {
+    font-weight: normal;
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.checkout-summary-price {
+    text-align: right;
+    font-weight: bold;
+    padding: 8px 0;
+}
+
+.checkout-divider {
+    border: none;
+    border-top: 3px solid var(--site-color-brand);
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.checkout-divider--light {
+    border: none;
+    border-top: 3px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.checkout-divider--lighter {
+    border: none;
+    border-top: 2px solid #eee;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.checkout-summary-total .checkout-summary-label,
+.checkout-summary-total .checkout-summary-price {
+    font-size: 16px;
 }
 
 /* 購入完了ページ */

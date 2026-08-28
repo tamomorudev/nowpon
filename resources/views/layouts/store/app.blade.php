@@ -31,6 +31,8 @@
 }
 </style>
 
+<link rel="stylesheet" href="{{ asset('css/store/dashboard.css') }}">
+
 </head>
 <body>
     <!-- Page Wrapper -->
@@ -237,6 +239,7 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
+                        <?php /*
                         <li class="nav-item dropdown no-arrow mx-1">
                             <?php /*
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -245,7 +248,6 @@
                                 <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
-                            */ ?>
                             <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="alertsDropdown">
@@ -287,6 +289,7 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                             </div>
+                            */ ?>
                         </li>
 
                         <!-- Nav Item - Messages -->
@@ -298,7 +301,7 @@
                                 <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">7</span>
                             </a>
-                            */ ?>
+                            
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="messagesDropdown">
@@ -355,6 +358,7 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
+                            */ ?>
                         </li>
 
                         <div class="topbar-divider d-none d-sm-block"></div>
@@ -552,6 +556,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Page level plugins -->
     <?php /*<script src="vendor/chart.js/Chart.min.js"></script> 
@@ -560,5 +565,7 @@
     <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
     */?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+@stack('js')
 </body>
 </html>
