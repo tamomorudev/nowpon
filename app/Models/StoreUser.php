@@ -12,6 +12,14 @@ class StoreUser extends Authenticatable
 
     protected $guard = 'store_user';
 
+    protected static function booted()
+    {
+        // 一覧だけでなく、既存セッション・再ログインでも削除済みユーザーを除外する。
+        static::addGlobalScope('active', function ($query) {
+            $query->where('store_users.delete_flg', 0);
+        });
+    }
+
     protected $fillable = [
         'name',
         'email',

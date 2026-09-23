@@ -372,6 +372,52 @@ class StoreShopController extends Controller
         return view('store.shop.account', compact('user', 'store_users'));
     }
 
+    public function accountEdit(Request $request)
+    {
+        $user = Auth::guard('store_user')->user();
+        $request->validate(['ui' => 'required|integer|min:1']);
+        $store_user = StoreUser::where('company_id', $user->company_id)->findOrFail($request->input('ui'));
+
+        if ($request->isMethod('post')) {
+            $data = $request->validate([
+                'name' => ['required', 'string', 'max:100',
+                    \Illuminate\Validation\Rule::unique('store_users', 'name')->ignore($store_user->id)],
+                'password' => 'nullable|string|min:10|max:100',
+            ], [
+                'name.required' => 'ユーザー名を入力してください。',
+                'name.max' => 'ユーザー名は100文字以内で入力してください。',
+                'name.unique' => 'このユーザー名は既に使用されています。',
+                'password.min' => 'パスワードは10文字以上で入力してください。',
+                'password.max' => 'パスワードは100文字以内で入力してください。',
+            ]);
+            $store_user->name = $data['name'];
+            if (!empty($data['password'])) {
+                $store_user->password = Hash::make($data['password']);
+                $store_user->remember_token = null;
+            }
+            $store_user->updated_by = $user->id;
+            $store_user->save();
+            return redirect()->route('store.account.index')->with('account_success', '店舗ユーザーを更新しました。');
+        }
+
+        return view('store.shop.account_edit', compact('user', 'store_user'));
+    }
+
+    public function accountDelete(Request $request)
+    {
+        $user = Auth::guard('store_user')->user();
+        $request->validate(['ui' => 'required|integer|min:1']);
+        $store_user = StoreUser::where('company_id', $user->company_id)->findOrFail($request->input('ui'));
+        if ((int) $store_user->id === (int) $user->id) {
+            return redirect()->route('store.account.index')->with('account_error', 'ログイン中のユーザーは削除できません。');
+        }
+        $store_user->delete_flg = 1;
+        $store_user->remember_token = null;
+        $store_user->updated_by = $user->id;
+        $store_user->save();
+        return redirect()->route('store.account.index')->with('account_success', '店舗ユーザーを削除しました。');
+    }
+
     public function accountCreate(Request $request)
     {
         $user = Auth::guard('store_user')->user();  //ユーザー情報

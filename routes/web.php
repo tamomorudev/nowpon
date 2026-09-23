@@ -89,6 +89,8 @@ Route::group(['prefix' => 'store'], function () {
         Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
         Route::match(['get', 'post'], '/shop/edit', 'App\Http\Controllers\Store\StoreShopController@edit')->name('store.shop.edit');
         Route::get('/account', 'App\Http\Controllers\Store\StoreShopController@account')->name('store.account.index');
+        Route::match(['get', 'post'], '/account/edit', 'App\Http\Controllers\Store\StoreShopController@accountEdit')->name('store.account.edit');
+        Route::post('/account/delete', 'App\Http\Controllers\Store\StoreShopController@accountDelete')->name('store.account.delete');
         Route::match(['get', 'post'], '/account/create', 'App\Http\Controllers\Store\StoreShopController@accountCreate')->name('store.account.create');
         // クーポン
         Route::get('/coupon', 'App\Http\Controllers\Store\StoreCouponController@index')->name('store.coupon');
