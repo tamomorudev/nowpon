@@ -4,12 +4,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- ▼ 詳細検索パーツ ▼ --}}
     <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/home.css') }}?v={{ filemtime(public_path('css/site/home.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
     <script src="{{ asset('js/site/search.js') }}" defer></script>
-    <script src="{{ asset('js/site/home.js') }}" defer></script>
+    <script src="{{ asset('js/site/home.js') }}?v={{ filemtime(public_path('js/site/home.js')) }}" defer></script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -18,48 +18,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!carousel) return;
 
-        const slideCount = carousel.querySelectorAll('.swiper-slide').length;
+        const wrapper = carousel.querySelector('.swiper-wrapper');
+        const slides = Array.from(wrapper.querySelectorAll('.swiper-slide'));
+        const slideCount = slides.length;
+        const pagination = carousel.querySelector('.swiper-pagination');
+        const canLoop = slideCount > 1;
 
-        new Swiper('.js-home-carousel', {
-            slidesPerView: 4,
+        if (!slideCount) {
+            carousel.querySelectorAll('.swiper-button-prev, .swiper-button-next, .swiper-pagination').forEach(function (element) {
+                element.style.display = 'none';
+            });
+            return;
+        }
+
+        // 最大4枚表示 + 次の1枚を確保。少数件でも元の順番のまま循環させる。
+        // 一周単位で複製し、画面幅の変更時にもループの必要枚数を満たす。
+        if (canLoop) {
+            while (wrapper.children.length < 5) {
+                slides.forEach(function (slide) {
+                    wrapper.appendChild(slide.cloneNode(true));
+                });
+            }
+        }
+        const totalSlides = wrapper.children.length;
+        const pageButtons = [];
+        if (pagination && canLoop) {
+            slides.forEach(function (_, index) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'swiper-pagination-bullet';
+                button.setAttribute('aria-label', 'クーポン ' + (index + 1) + ' を表示');
+                pagination.appendChild(button);
+                pageButtons.push(button);
+            });
+        }
+        const syncPagination = function (swiper) {
+            pageButtons.forEach(function (button, index) {
+                const active = index === swiper.realIndex % slideCount;
+                button.classList.toggle('swiper-pagination-bullet-active', active);
+                button.setAttribute('aria-current', active ? 'true' : 'false');
+            });
+        };
+
+        const swiper = new Swiper(carousel, {
+            slidesPerView: Math.min(4, slideCount),
             spaceBetween: 20,
             centeredSlides: false,
-            // 表示枚数より少ない時にloopを有効にするとSwiperが警告を出し、操作が不安定になる。
-            loop: slideCount > 4,
-            autoplay: {
+            loop: canLoop,
+            watchOverflow: true,
+            autoplay: canLoop ? {
                 delay: 2500,
+                pauseOnMouseEnter: true,
                 disableOnInteraction: false
-            },
+            } : false,
             navigation: {
                 nextEl: carousel.querySelector('.swiper-button-next'),
                 prevEl: carousel.querySelector('.swiper-button-prev')
             },
-            pagination: {
-                el: carousel.querySelector('.swiper-pagination'),
-                clickable: true
-            },
+            on: { init: syncPagination, slideChange: syncPagination },
             breakpoints: {
                 0: {
-                    slidesPerView: 1.1,
+                    slidesPerView: Math.min(1.1, slideCount),
                     spaceBetween: 12
                 },
                 480: {
-                    slidesPerView: 1.25,
+                    slidesPerView: Math.min(1.25, slideCount),
                     spaceBetween: 16
                 },
                 768: {
-                    slidesPerView: 2.5
+                    slidesPerView: Math.min(2.5, slideCount)
                 },
                 1024: {
-                    slidesPerView: 3.5
+                    slidesPerView: Math.min(3.5, slideCount)
                 },
                 1280: {
-                    slidesPerView: 4
+                    slidesPerView: Math.min(4, slideCount)
                 },
                 1440: {
-                    slidesPerView: 4
+                    slidesPerView: Math.min(4, slideCount)
                 }
             }
+        });
+        pageButtons.forEach(function (button, index) {
+            button.addEventListener('click', function () {
+                const offset = (index - swiper.realIndex % slideCount + slideCount) % slideCount;
+                swiper.slideToLoop((swiper.realIndex + offset) % totalSlides);
+            });
         });
     };
 

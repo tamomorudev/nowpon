@@ -1,302 +1,110 @@
-/*
- * クーポン詳細ページ用スタイル。
- * 詳細情報、画像カルーセル、同エリアおすすめクーポンをまとめる。
- */
-
-/* クーポン詳細の外枠 */
+/* クーポン詳細: 購入判断と店舗情報を別のセクションにまとめる。 */
 .coupon-detail {
-    margin: 40px 16px;
+    --detail-border: #e7e1d8;
+    --detail-muted: #66615b;
+    margin: 36px 16px 64px;
+    color: #302b26;
 }
-
-.coupon-detail h2 {
-    text-align: left;
-    margin-left: 24px;
+.coupon-detail *, .coupon-detail *::before, .coupon-detail *::after { box-sizing: border-box; }
+.coupon-heading { margin: 0; }
+.coupon-heading h1 { margin: 0 0 10px; font-size: clamp(22px, 2.1vw, 28px); line-height: 1.5; font-weight: 700; overflow-wrap: anywhere; }
+.coupon-heading p { margin: 0; font-size: 14px; color: var(--detail-muted); }
+.coupon-heading a, .store-facts a { color: var(--site-color-brand-dark); text-underline-offset: 4px; }
+.coupon-overview { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.coupon-gallery { min-width: 0; }
+.coupon-detail .swiper-main { width: 100%; aspect-ratio: 3 / 2; border: 1px solid var(--detail-border); border-radius: 12px; background: #f7f6f3; overflow: hidden; }
+.coupon-detail .swiper-main .swiper-slide { display: flex; align-items: center; justify-content: center; height: 100%; }
+.coupon-detail .swiper-main .swiper-slide > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.coupon-detail .swiper-button-prev, .coupon-detail .swiper-button-next { --swiper-navigation-size: 16px; width: 40px; height: 40px; margin-top: -20px; border: 1px solid var(--detail-border); border-radius: 50%; background: #fff; color: #493a2e; }
+.coupon-detail .swiper-button-prev::after, .coupon-detail .swiper-button-next::after { font-size: 16px; }
+.coupon-detail .swiper-button-prev svg, .coupon-detail .swiper-button-next svg { width: 16px; height: 16px; }
+.coupon-detail .swiper-pagination { --swiper-theme-color: #6b4e3d; }
+.coupon-detail .swiper-thumbs { width: 100%; margin-top: 12px; padding: 4px; }
+.coupon-detail .swiper-thumbs .swiper-slide { height: 64px; width: 20%; }
+.coupon-gallery-thumb { display: block; width: 100%; height: 100%; padding: 2px; border: 2px solid transparent; border-radius: 8px; background: #f7f6f3; cursor: pointer; }
+.coupon-gallery-thumb img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+.coupon-gallery-thumb[aria-pressed="true"] { border-color: var(--site-color-brand-dark); }
+.coupon-gallery-thumb:focus-visible { outline: 2px solid var(--site-color-brand-dark); outline-offset: 1px; }
+.coupon-purchase { --ticket-border: #c5a067; --ticket-padding: 28px; min-width: 0; border: 1px solid var(--ticket-border); border-top: 4px solid var(--ticket-border); border-radius: 12px; background: #faf8f4; }
+.coupon-ticket-details { padding: 24px var(--ticket-padding) 28px; }
+.coupon-ticket-description { margin-top: 24px; }
+.coupon-detail .coupon-ticket-description h2 { margin: 0 0 8px; font-size: 14px; line-height: 1.6; }
+.coupon-ticket-perforation { position: relative; margin: 0; border-top: 1px dashed var(--ticket-border); }
+.coupon-ticket-perforation::before, .coupon-ticket-perforation::after { content: ""; position: absolute; top: -13px; width: 26px; height: 26px; border: 1px solid var(--ticket-border); border-radius: 50%; background: #fff; pointer-events: none; }
+.coupon-ticket-perforation::before { left: -14px; clip-path: inset(0 0 0 50%); }
+.coupon-ticket-perforation::after { right: -14px; clip-path: inset(0 50% 0 0); }
+.coupon-ticket-purchase { padding: 26px var(--ticket-padding) 28px; }
+.coupon-price-label { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+.coupon-price-comparison { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: var(--detail-muted); font-size: 14px; }
+.coupon-discount { color: #a0332c; font-weight: 700; }
+.coupon-price { display: flex; align-items: baseline; gap: 6px; margin: 4px 0 24px; font-size: 42px; font-weight: 700; line-height: 1.25; color: #6b4e3d; overflow-wrap: anywhere; }
+.coupon-price > span { font-size: 18px; }
+.coupon-booking { margin: 0; padding-top: 20px; border-top: 1px solid var(--detail-border); font-size: 14px; }
+.coupon-booking > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; margin-bottom: 14px; }
+.coupon-booking dt { color: var(--detail-muted); }
+.coupon-booking dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.coupon-detail-buy-button { display: flex; justify-content: center; align-items: center; width: 100%; min-height: 56px; margin-top: 24px; padding: 14px 16px; border: 1px solid #c5a067; border-radius: 8px; background: #c5a067; color: #282018; font-size: 16px; line-height: 1.5; font-weight: 700; text-align: center; text-decoration: none; transition: background-color .15s ease; }
+.coupon-detail-buy-button:hover { background: #b58e54; }
+.coupon-detail-buy-button:focus-visible { outline: 3px solid #6b4e3d; outline-offset: 4px; }
+.coupon-detail h2 { margin: 0 0 24px; font-size: 22px; line-height: 1.5; font-weight: 700; }
+.coupon-store, .coupon-detail .recommend-section { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--detail-border); }
+.coupon-description-text { max-width: 800px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.coupon-store { scroll-margin-top: 24px; }
+.coupon-store-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.coupon-store-layout--text-only { grid-template-columns: minmax(0, 1fr); }
+.coupon-store-details h3 { margin: 0 0 24px; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
+.store-facts { margin: 0; font-size: 14px; }
+.store-facts > div { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--detail-border); }
+.store-facts dt { color: var(--detail-muted); }
+.store-facts dd { margin: 0; line-height: 1.8; overflow-wrap: anywhere; }
+.store-postal { display: block; }
+.store-access-secondary { display: block; margin-top: 10px; }
+.coupon-store-media { display: grid; gap: 12px; min-width: 0; }
+.coupon-detail .store-image { display: block; width: 100%; height: 180px; object-fit: cover; border-radius: 8px; }
+.coupon-detail .location-map iframe { display: block; width: 100%; height: 240px; border: 0; border-radius: 8px; }
+.coupon-detail-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #f7f6f3; color: var(--detail-muted); }
+.coupon-detail-placeholder__title { color: var(--site-color-brand-dark); font-size: 24px; font-weight: 700; }
+.coupon-detail-placeholder__text { font-size: 14px; }
+.coupon-detail-placeholder--main { height: 100%; }
+.coupon-detail-placeholder--store { height: 180px; border-radius: 8px; }
+.coupon-detail-placeholder--recommend { height: 100%; }
+.coupon-detail .recommend-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.coupon-detail .recommend-item { min-width: 0; overflow: hidden; border: 1px solid var(--detail-border); border-radius: 10px; background: #fff; text-decoration: none; color: inherit; }
+.coupon-detail .recommend-item:hover { border-color: var(--site-color-brand); }
+.coupon-detail .card-wrapper { aspect-ratio: 3 / 2; background: #f7f6f3; }
+.coupon-detail .card-wrapper img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.coupon-detail .recommend-info { padding: 18px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.coupon-detail .recommend-info p { margin: 0 0 8px; }
+.coupon-detail .recommend-info p:last-child { margin-bottom: 0; }
+.coupon-detail .recommend-info .shop-name, .coupon-detail .recommend-info .shop-access, .coupon-detail .recommend-info .date { color: var(--detail-muted); }
+.coupon-detail .recommend-info .course { font-size: 15px; font-weight: 700; }
+.coupon-detail .recommend-info .price { font-size: 20px; font-weight: 700; color: var(--site-color-brand-dark); }
+.coupon-detail .recommend-info .price span { font-size: 12px; }
+.coupon-empty-message { margin: 0; color: var(--detail-muted); }
+/* PCでは右の内容量に追従し、サムネイルを含む画像エリアの下端を揃える。 */
+@media (min-width: 801px) {
+    .coupon-gallery { display: flex; flex-direction: column; align-self: stretch; min-height: 0; }
+    .coupon-detail .swiper-main { flex: 1 1 0; min-height: 0; aspect-ratio: auto; }
+    .coupon-detail .swiper-main .swiper-wrapper { position: absolute; inset: 0; }
+    .coupon-detail .swiper-thumbs { flex: 0 0 auto; }
 }
-
-/* 購入アクション */
-.coupon-detail .btn-group {
-    display: flex;
-    justify-content: flex-start;
-    gap: 12px;
-    margin-bottom: 24px;
+@media (max-width: 800px) {
+    .coupon-detail { margin: 28px 0 48px; }
+    .coupon-overview, .coupon-store-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .coupon-purchase { --ticket-padding: 24px; }
+    .coupon-store, .coupon-detail .recommend-section { margin-top: 36px; padding-top: 28px; }
+    .coupon-detail h2 { font-size: 20px; margin-bottom: 20px; }
+    .coupon-store-media { max-width: 100%; }
+    .coupon-detail .store-image { height: 200px; }
+    .coupon-detail .recommend-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 }
-
-.coupon-detail .btn-group button,
-.coupon-detail-buy-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #fde68a;
-    border: none;
-    border-radius: 24px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #555;
-    cursor: pointer;
-    text-decoration: none;
+@media (max-width: 480px) {
+    .coupon-purchase { --ticket-padding: 20px; }
+    .coupon-price { font-size: 38px; }
+    .coupon-booking > div { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+    .store-facts > div { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
+    .coupon-detail .recommend-grid { grid-template-columns: minmax(0, 1fr); }
 }
-
-/* 画像カルーセルと商品情報の2カラム */
-.coupon-detail .detail-body {
-    display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-}
-
-.coupon-detail .carousel-wrapper {
-    flex: 1;
-    min-width: 320px;
-    max-width: 600px;
-}
-
-.coupon-detail .info-panel {
-    flex: 1;
-    min-width: 280px;
-    max-width: 350px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.coupon-detail .info-panel .tab {
-    align-self: flex-start;
-    padding: 6px 80px;
-    border: 2px solid var(--site-color-brand);
-    border-radius: 9999px;
-    color: var(--site-color-brand);
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.coupon-detail .store-image {
-    margin: 8px 0 14px;
-}
-
-.coupon-detail .store-image img {
-    width: 100%;
-    max-height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-    display: block;
-}
-
-/* 詳細ページで画像が未設定・未配置のときの代替表示 */
-.coupon-detail-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    box-sizing: border-box;
-    width: 100%;
-    border: 1px dashed #d9c6b1;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
-    color: var(--site-color-brand);
-    text-align: center;
-}
-
-.coupon-detail-placeholder__title {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-}
-
-.coupon-detail-placeholder__text {
-    color: var(--site-color-muted);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.coupon-detail-placeholder--main {
-    height: 100%;
-    min-height: 340px;
-}
-
-.coupon-detail-placeholder--thumb {
-    height: 80px;
-}
-
-.coupon-detail-placeholder--thumb .coupon-detail-placeholder__text {
-    font-size: 11px;
-}
-
-.coupon-detail-placeholder--store {
-    min-height: 120px;
-}
-
-.coupon-detail .info-panel .info {
-    line-height: 1.6;
-    color: #333;
-    font-size: 14px;
-}
-
-/* Swiper本体とサムネイル */
-.swiper {
-    position: relative;
-}
-
-.swiper-button-prev,
-.swiper-button-next {
-    color: #1e40af;
-}
-
-.swiper-main {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    min-height: 340px;
-    margin-bottom: 12px;
-}
-
-.swiper-main .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.swiper-main .swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 8px;
-    display: block;
-}
-
-.swiper-thumbs {
-    width: 100%;
-    height: 80px;
-}
-
-.swiper-thumbs .swiper-slide {
-    width: 20%;
-    opacity: 0.4;
-}
-
-.swiper-thumbs .swiper-slide-thumb-active {
-    opacity: 1;
-}
-
-.swiper-thumbs .swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
-/* 同じエリアのおすすめクーポン */
-.recommend-section {
-    max-width: 1200px;
-    margin: 60px auto;
-}
-
-.recommend-separator {
-    border: none;
-    border-top: 2px solid var(--site-color-brand);
-    margin-bottom: 16px;
-}
-
-.recommend-title {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 24px;
-}
-
-.recommend-grid {
-    display: grid;
-    gap: 24px;
-    grid-template-columns: repeat(4, 1fr);
-}
-
-a.recommend-item {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-
-a.recommend-item:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-.recommend-grid a.recommend-item {
-    width: 100%;
-}
-
-.card-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    background: #fff8f0;
-}
-
-.card-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.coupon-detail-placeholder--recommend {
-    height: 100%;
-    border-radius: 0;
-}
-
-.recommend-info {
-    padding: 12px;
-    font-size: 13px;
-    line-height: 1.4;
-    color: #333;
-}
-
-.recommend-info .price {
-    font-weight: bold;
-    margin: 4px 0;
-}
-
-.recommend-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px 12px;
-}
-
-.icons {
-    display: flex;
-    gap: 8px;
-}
-
-.icon-btn {
-    border: none;
-    background: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.icon-btn.heart {
-    color: #e74c3c;
-}
-
-.icon-btn.share {
-    color: #555;
-}
-
-@media (max-width: 1024px) {
-    .recommend-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .recommend-grid {
-        grid-template-columns: 1fr;
-    }
+@media (prefers-reduced-motion: reduce) {
+    .coupon-detail-buy-button { transition: none; }
 }

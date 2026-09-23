@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Models\Stores;
 use App\Models\StoreServices;
@@ -41,6 +42,38 @@ class StoreShopController extends Controller
         return view('store.shop.index', compact('user', 'stores'));
     }
 
+    public function delete(Request $request)
+    {
+        $validated = $request->validate(['si' => 'required|integer|min:1']);
+        $user = Auth::guard('store_user')->user();
+
+        return DB::transaction(function () use ($validated, $user) {
+            $store = Stores::where('id', $validated['si'])
+                ->where('company_id', $user->company_id)
+                ->lockForUpdate()->firstOrFail();
+
+            // 履歴・紐づけを孤立させない。公開終了や無効状態のデータも含めて保護する。
+            $relations = [
+                'coupons' => 'クーポン',
+                'purchase_coupons' => '購入履歴',
+                'store_users' => '店舗ユーザー',
+                'store_services' => '店舗サービス',
+                'store_user_permissions' => '店舗ユーザー権限',
+                'relation_favorites' => 'お気に入り',
+            ];
+            foreach ($relations as $table => $label) {
+                if (DB::table($table)->where('store_id', $store->id)->exists()) {
+                    return redirect()->route('store.shop.index')->with('shop_error',
+                        'この店舗には'.$label.'が紐づいているため削除できません。関連データは削除していません。');
+                }
+            }
+
+            $name = $store->store_name;
+            $store->delete();
+            return redirect()->route('store.shop.index')->with('shop_success', '「'.$name.'」を削除しました。');
+        });
+    }
+
     public function create(Request $request, ImageService $imageService)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
@@ -60,6 +93,14 @@ class StoreShopController extends Controller
                 'station'        => 'required',
                 'transportation' => 'required',
                 'time'           => 'required',
+                'google_map_embed_url' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (trim((string) $value) !== '' && $this->extractGoogleMapEmbedUrl($value) === null) {
+                            $fail('Google マップの「地図を埋め込む」からコピーした iframe、または Google Maps の埋め込み URL を入力してください。');
+                        }
+                    },
+                ],
                 'images'         => 'required|image',
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
@@ -114,6 +155,7 @@ class StoreShopController extends Controller
             $create_shop_array['address2'] = $request['address2'];
             $create_shop_array['address3'] = $request['address3'];
             $create_shop_array['url'] = $request['url'];
+            $create_shop_array['google_map_embed_url'] = $this->extractGoogleMapEmbedUrl($request->input('google_map_embed_url'));
             $create_shop_array['genre'] = $request['genre'];
             $create_shop_array['line'] = $request['station_line'];
             $create_shop_array['station'] = $request['station'];
@@ -170,6 +212,14 @@ class StoreShopController extends Controller
                 'station'        => 'required',
                 'transportation' => 'required',
                 'time'           => 'required',
+                'google_map_embed_url' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (trim((string) $value) !== '' && $this->extractGoogleMapEmbedUrl($value) === null) {
+                            $fail('Google マップの「地図を埋め込む」からコピーした iframe、または Google Maps の埋め込み URL を入力してください。');
+                        }
+                    },
+                ],
                 'images'         => $image_rules,
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
@@ -232,6 +282,7 @@ class StoreShopController extends Controller
             $create_shop_array['address2'] = $request['address2'];
             $create_shop_array['address3'] = $request['address3'];
             $create_shop_array['url'] = $request['url'];
+            $create_shop_array['google_map_embed_url'] = $this->extractGoogleMapEmbedUrl($request->input('google_map_embed_url'));
             $create_shop_array['genre'] = $request['genre'];
             $create_shop_array['line'] = $request['station_line'];
             $create_shop_array['station'] = $request['station'];
@@ -254,6 +305,46 @@ class StoreShopController extends Controller
         }
 
         return view('store.shop.edit', compact('user', 'store_data'));
+    }
+
+    /**
+     * Return a Google Maps embed URL from a copied iframe or an embed URL.
+     *
+     * Only Google Maps embed URLs are persisted so a pasted iframe cannot add
+     * arbitrary HTML to a store page.
+     */
+    private function extractGoogleMapEmbedUrl($value)
+    {
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        $url = $value;
+        if (stripos($value, '<iframe') !== false) {
+            if (!preg_match('/<iframe\\b[^>]*\\bsrc\\s*=\\s*(["\\\'])(.*?)\\1/i', $value, $matches)) {
+                return null;
+            }
+
+            $url = html_entity_decode($matches[2], ENT_QUOTES, 'UTF-8');
+        }
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $parts = parse_url($url);
+        $host = strtolower($parts['host'] ?? '');
+        $path = $parts['path'] ?? '';
+
+        if (($parts['scheme'] ?? '') !== 'https'
+            || !preg_match('/(^|\\.)google\\.(com|co\\.jp)$/', $host)
+            || strpos($path, '/maps/embed') !== 0) {
+            return null;
+        }
+
+        return $url;
     }
 
     public function detail(Request $request)

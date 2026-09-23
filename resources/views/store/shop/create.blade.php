@@ -129,6 +129,16 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="google_map_embed_url" class="col-md-4 col-form-label text-md-end">Google マップ</label>
+                <div class="col-sm-10 mb-3 mb-sm-0">
+                    <textarea id="google_map_embed_url" name="google_map_embed_url" rows="4" class="form-control @error('google_map_embed_url') is-invalid @enderror" placeholder="Google マップの「共有」→「地図を埋め込む」→「HTML をコピー」で取得した iframe を貼り付けてください。">{{ old('google_map_embed_url') }}</textarea>
+                    <small class="form-text text-muted">iframe 全体、または iframe 内の src URL を貼り付けられます。</small>
+                    @error('google_map_embed_url')
+                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="genre" class="col-md-4 col-form-label text-md-end">ジャンル<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <select name="genre" id="genre" class="form-control @error('genre') is-invalid @enderror">

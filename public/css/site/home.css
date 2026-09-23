@@ -105,6 +105,18 @@
 .js-home-carousel .swiper-pagination-bullet-active {
     background: var(--site-color-brand);
 }
+.js-home-carousel button.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+}
+.js-home-carousel button.swiper-pagination-bullet:focus-visible {
+    outline: 2px solid var(--site-color-brand-dark);
+    outline-offset: 3px;
+}
 
 .swiper-wrapper {
     padding: 0;

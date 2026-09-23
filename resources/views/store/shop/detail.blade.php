@@ -1,7 +1,7 @@
 @extends('layouts.store.app', ['authgroup'=>'store_user'])
 
 @section('title')
-クーポン詳細
+店舗詳細
 @endsection
 
 
@@ -15,6 +15,16 @@
 <style>
     .btn-space {
         margin-right: 10px;
+    }
+    .store-detail-map {
+        display: block;
+        width: 100%;
+        height: 300px;
+        border: 0;
+        border-radius: 4px;
+    }
+    @media (max-width: 575.98px) {
+        .store-detail-map { height: 240px; }
     }
 </style>
 
@@ -88,6 +98,21 @@
                                             <div class="col-sm-10 mb-3 mb-sm-0">
                                                 <img width="50" height="50" src="{{ asset('/assets/images/'. $store_data->image) }}" >
                                             </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Google マップ</th>
+                                    <td>
+                                        @if (!empty($store_data->google_map_embed_url))
+                                            <iframe class="store-detail-map"
+                                                src="{{ $store_data->google_map_embed_url }}"
+                                                title="{{ $store_data->store_name }}の地図"
+                                                loading="lazy"
+                                                allowfullscreen
+                                                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                                        @else
+                                            <span class="text-muted">未登録</span>
                                         @endif
                                     </td>
                                 </tr>

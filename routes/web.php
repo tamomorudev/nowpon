@@ -84,6 +84,7 @@ Route::group(['prefix' => 'store'], function () {
         Route::get('/home', 'App\Http\Controllers\Store\StoreHomeController@index')->name('store.home2');
         // 店舗
         Route::get('/shop', 'App\Http\Controllers\Store\StoreShopController@index')->name('store.shop.index');
+        Route::post('/shop/delete', 'App\Http\Controllers\Store\StoreShopController@delete')->name('store.shop.delete');
         Route::get('/shop/detail', 'App\Http\Controllers\Store\StoreShopController@detail')->name('store.shop.detail');
         Route::match(['get', 'post'], '/shop/create', 'App\Http\Controllers\Store\StoreShopController@create')->name('store.shop.create');
         Route::match(['get', 'post'], '/shop/edit', 'App\Http\Controllers\Store\StoreShopController@edit')->name('store.shop.edit');

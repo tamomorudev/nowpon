@@ -34,8 +34,8 @@
             @if (!empty($coupon->line_2))
                 {{$coupon->line_2}}線 {{$coupon->station_2}}駅 {{config('commons.transportation')[$coupon->transportation_2]}}{{$coupon->time_2}}分<br>
             @endif
-            @if (!empty($coupon->map))
-                Map:{{$coupon->map}}<br>
+            @if (!empty($coupon->google_map_embed_url))
+                <a href="{{ $coupon->google_map_embed_url }}" target="_blank" rel="noopener noreferrer">Google マップを開く</a><br>
             @endif
             @if (!empty($coupon->phone_number))
                 TEL：{{$coupon->phone_number}}<br>
