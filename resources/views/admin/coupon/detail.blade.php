@@ -77,6 +77,10 @@
                                     <td>{{$coupon_data->expire_end_date}}</td>
                                 </tr>
                                 <tr>
+                                    <th>クーポン分類</th>
+                                    <td>{{$coupon_data->category_name}}</td>
+                                </tr>
+                                <tr>
                                     <th>画像</th>
                                     <td>
                                         @if($coupon_data->img_url)
@@ -141,7 +145,7 @@
                 @endif
 
                 <div class="text-left d-flex">
-                    <form action="{{ route('admin.coupon.delete') }}" method="POST" class="btn-space">
+                    <form action="{{ route('admin.coupon.delete') }}" method="POST" class="btn-space" onsubmit="return confirm('本当に削除しますか？');">
                         @csrf
                         <div>
                             <input type="hidden" id="p_type" name="p_type" value="edit">

@@ -65,7 +65,7 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('admin/user*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/user">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-users"></i>
                     <span>ユーザー一覧</span></a>
             </li>
 
@@ -80,13 +80,13 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('admin/shop*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/shop">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-store"></i>
                     <span>店舗一覧</span></a>
             </li>
 
             <li class="nav-item {{ request()->is('admin/account*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/account">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-users"></i>
                     <span>店舗ユーザー一覧</span></a>
             </li>
 
@@ -101,10 +101,10 @@
             <!-- Nav Item - Tables -->
             <li class="nav-item {{ request()->is('admin/information*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/information">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-bullhorn"></i>
                     <span>お知らせ一覧</span></a>
                 <a class="nav-link" href="/admin/information/create">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-bullhorn"></i>
                     <span>お知らせ作成</span></a>
             </li>
 
@@ -119,7 +119,7 @@
             <!-- Nav Item - Tables -->
             <li class="nav-item {{ request()->is('admin/coupon*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/coupon">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-ticket-alt"></i>
                     <span>クーポン一覧</span></a>
             </li>
 
@@ -131,10 +131,10 @@
             <!-- Nav Item - Tables -->
             <li class="nav-item {{ request()->is('admin/special_future*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/special_future">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-star"></i>
                     <span>特集一覧</span></a>
                 <a class="nav-link" href="/admin/special_future/create">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-plus-circle"></i>
                     <span>特集作成</span></a>
             </li>
 
@@ -149,14 +149,14 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('admin/store_images*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/store_images">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-images"></i>
                     <span>画像 店舗</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('admin/coupon_images*') ? 'active' : '' }}">
                 <a class="nav-link" href="/admin/coupon_images">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-ticket-alt"></i>
                     <span>画像 クーポン</span></a>
             </li>
 
