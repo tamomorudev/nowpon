@@ -78,6 +78,10 @@
                                     <td>{{$coupon_data->expire_end_date}}</td>
                                 </tr>
                                 <tr>
+                                    <th>クーポン分類</th>
+                                    <td>{{$coupon_data->category_name}}</td>
+                                </tr>
+                                <tr>
                                     <th>画像</th>
                                     <td>
                                         @if($coupon_data->img_url)

@@ -146,6 +146,22 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン分類</label>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <select name="category" id="name" class="form-control">
+                            <option value="0"
+                                {{ old('category', $re_coupon->category_id ?? '') == 0 ? 'selected' : '' }}>
+                            </option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('category', $re_coupon->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->category_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="images" class="col-md-4 col-form-label text-md-end">クーポン画像</label>
                     @if (isset($re_coupon) && $re_coupon && $re_coupon->id)
                         <input type="hidden" name="image_re" value="{{ $re_coupon->id }}">

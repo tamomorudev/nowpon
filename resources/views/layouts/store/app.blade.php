@@ -67,26 +67,26 @@
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('store/shop') || request()->is('store/shop/detail') || request()->is('store/shop/edit') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/shop">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-store"></i>
                     <span>店舗一覧</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('store/shop/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/shop/create">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-plus-circle"></i>
                     <span>店舗登録</span></a>
             </li>
 
             <li class="nav-item {{ request()->is('store/account') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/account">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-users"></i>
                     <span>店舗ユーザー一覧</span></a>
             </li>
 
             <li class="nav-item {{ request()->is('store/account/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/account/create">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-user-plus"></i>
                     <span>店舗ユーザー登録</span></a>
             </li>
 
@@ -157,15 +157,22 @@
             <!-- Nav Item - Tables -->
             <li class="nav-item {{ request()->is('store/coupon') || request()->is('store/coupon/detail') || request()->is('store/coupon/edit') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/coupon">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-ticket-alt"></i>
                     <span>クーポン一覧</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item {{ request()->is('store/coupon/create') ? 'active' : '' }}">
                 <a class="nav-link" href="/store/coupon/create">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-plus-square"></i>
                     <span>クーポン登録</span></a>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item {{ request()->is('store/coupon/category') ? 'active' : '' }}">
+                <a class="nav-link" href="/store/coupon/category">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>分類登録</span></a>
             </li>
 
 
@@ -175,7 +182,7 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item {{ request()->is('site/contact') ? 'active' : '' }}">
                 <a class="nav-link" href="/site/contact" target="_blank">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-envelope"></i>
                     <span>お問い合わせ</span></a>
             </li>
 

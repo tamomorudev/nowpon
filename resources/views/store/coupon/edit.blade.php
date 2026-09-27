@@ -130,6 +130,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="name" class="col-md-4 col-form-label text-md-end">クーポン分類<span class="text-danger">*</span></label>
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <select name="category" id="name" class="form-control">
+                            <option value="0" @if($coupon_data->category_id == 0) selected @endif ></option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}" @if($coupon_data->category_id == $category->id) selected @endif >{{$category->category_name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="images" class="col-md-4 col-form-label text-md-end">クーポン画像</label>
                     <div class="col-sm-10 mb-3 mb-sm-3">
                         @php

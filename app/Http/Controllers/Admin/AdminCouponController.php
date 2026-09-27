@@ -80,7 +80,10 @@ class AdminCouponController extends Controller
         }
 
         $coupon_id = $request['ci'];
-        $coupon_data = Coupons::select('coupons.*', 'stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.id', $coupon_id)->first(); //クーポン情報
+        $coupon_data = Coupons::select('coupons.*', 'stores.store_name', 'coupon_categories.category_name')
+                        ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                        ->leftjoin('coupon_categories', 'coupons.category_id', '=', 'coupon_categories.id')
+                        ->where('coupons.id', $coupon_id)->first(); //クーポン情報
 
         if(!$coupon_data) {
             abort(404);

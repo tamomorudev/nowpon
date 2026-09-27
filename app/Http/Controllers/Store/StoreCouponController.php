@@ -17,6 +17,7 @@ use App\Models\Coupons;
 use App\Models\Stores;
 use App\Models\StoreServices;
 use App\Models\PurchaseCoupos;
+use App\Models\CouponCategories;
 use App\Services\ImageService;
 use Carbon\Carbon;
 
@@ -41,11 +42,13 @@ class StoreCouponController extends Controller
         $user = Auth::guard('store_user')->user(); //ユーザー情報
         //$coupons = Coupons::select('coupons.*','stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.company_id', $user->company_id)->orderBy('created_at', 'DESC')->paginate(50); //クーポン情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $categories = CouponCategories::where('company_id', $user->company_id)->get(); //分類情報
 
         $coupon_name = $request->coupon_name;
         $coupon_code = $request->coupon_code;
         $store_id = $request->store_name;
         $status = $request->status;
+        $category = $request->category;
 
         $date = date('Y-m-d H:i:s');
 
@@ -67,17 +70,21 @@ class StoreCouponController extends Controller
                 $coupons->where('coupons.status', 2);
             }
         }
+        if ($category) {
+            $coupons->where('coupons.category_id', $category);
+        }
 
         $coupons = $coupons->orderBy('coupons.created_at', 'DESC')->paginate(50);
 
 
-        return view('store.coupon.index', compact('user', 'stores', 'coupons'));
+        return view('store.coupon.index', compact('user', 'stores', 'categories', 'coupons'));
     }
 
     public function create(Request $request)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $categories = CouponCategories::where('company_id', $user->company_id)->get(); //分類情報
         $request = $request->all();
 
         if (isset($request['store_name'])) {
@@ -198,6 +205,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['detail'] = $request['detail'];
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;
+                $create_coupon_array['category_id'] = $request['category'];
                 foreach ($coupon_image_array as $field_name => $coupon_image_path) {
                     $create_coupon_array[$field_name] = $coupon_image_path;
                 }
@@ -246,6 +254,7 @@ class StoreCouponController extends Controller
                 'cource_time' => null,
                 'expire_start_date' => null,
                 'expire_end_date' => null,
+                'category_id' => null,
                 'img_url' => null,
                 'img_url_2' => null,
                 'img_url_3' => null,
@@ -254,13 +263,14 @@ class StoreCouponController extends Controller
             ];
         }
 
-        return view('store.coupon.create', compact('user', 'stores', 're_coupon'));
+        return view('store.coupon.create', compact('user', 'stores', 'categories', 're_coupon'));
     }
 
     public function edit(Request $request)
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->get(); //stores情報
+        $categories = CouponCategories::where('company_id', $user->company_id)->get(); //分類情報
         $request = $request->all();
 
         if(!isset($request['ci'])) {
@@ -397,6 +407,7 @@ class StoreCouponController extends Controller
                 $create_coupon_array['detail'] = $request['detail'];
                 $create_coupon_array['expire_start_date'] = $start_date;
                 $create_coupon_array['expire_end_date'] = $end_date;
+                $create_coupon_array['category_id'] = $request['category'];
                 foreach ($coupon_image_array as $field_name => $coupon_image_path) {
                     $create_coupon_array[$field_name] = $coupon_image_path;
                 }
@@ -416,7 +427,7 @@ class StoreCouponController extends Controller
             return redirect('/store/coupon');
         }
 
-        return view('store.coupon.edit', compact('user', 'stores', 'coupon_data'));
+        return view('store.coupon.edit', compact('user', 'stores', 'categories', 'coupon_data'));
     }
 
     private function couponImageFields()
@@ -595,13 +606,17 @@ class StoreCouponController extends Controller
     {
         $user = Auth::guard('store_user')->user(); //ユーザー情報
         $stores = Stores::select()->where('company_id', $user->company_id)->where('company_id', $user->company_id)->get(); //stores情報
+        $categories = CouponCategories::where('company_id', $user->company_id)->get(); //分類情報
 
         if(!isset($request['ci'])) {
             abort(404);
         }
 
         $coupon_id = $request['ci'];
-        $coupon_data = Coupons::select('coupons.*', 'stores.store_name')->join('stores', 'coupons.store_id', '=', 'stores.id')->where('coupons.id', $coupon_id)->where('coupons.company_id', $user->company_id)->first(); //クーポン情報
+        $coupon_data = Coupons::select('coupons.*', 'stores.store_name', 'coupon_categories.category_name')
+                        ->join('stores', 'coupons.store_id', '=', 'stores.id')
+                        ->leftjoin('coupon_categories', 'coupons.category_id', '=', 'coupon_categories.id')
+                        ->where('coupons.id', $coupon_id)->where('coupons.company_id', $user->company_id)->first(); //クーポン情報
 
         if(!$coupon_data) {
             abort(404);
@@ -615,5 +630,88 @@ class StoreCouponController extends Controller
             ->get();
 
         return view('store.coupon.detail', compact('user', 'stores', 'coupon_data', 'purchase_coupon_data'));
+    }
+
+    //クーポン分類
+    public function category(Request $request)
+    {
+        $user = Auth::guard('store_user')->user();
+        $stores = Stores::select()->where('company_id', $user->company_id)->get();
+
+        $coupon_categories = CouponCategories::select('coupon_categories.*')
+            ->where('coupon_categories.company_id', $user->company_id)
+            ->orderBy('coupon_categories.created_at', 'DESC')
+            ->paginate(10);
+
+        return view('store.coupon.category', compact('user', 'stores', 'coupon_categories'));
+    }
+
+    //分類登録
+    public function categoryStore(Request $request)
+    {
+        $user = Auth::guard('store_user')->user();
+        $stores = Stores::select()->where('company_id', $user->company_id)->get();
+
+        $request->validate([
+            'category_name' => 'required|string|max:100',
+        ], [
+            'category_name.required' => '分類名を入力してください。',
+            'category_name.max' => '分類名は100文字以内で入力してください。',
+        ]);
+
+        $user = Auth::guard('store_user')->user();
+
+        CouponCategories::create([
+            'company_id'    => $user->company_id,
+            'category_name' => $request->category_name,
+            'created_by' => $user->id,
+        ]);
+
+        return redirect()->route('store.coupon.category')->with('success', 'クーポン分類を追加しました。');
+    }
+
+    //分類編集
+    public function categoryUpdate(Request $request, $id)
+    {
+        $user = Auth::guard('store_user')->user();
+        $stores = Stores::select()->where('company_id', $user->company_id)->get();
+        
+        $request->validate([
+            'category_name' => 'required|string|max:100',
+        ], [
+            'category_name.required' => '分類名を入力してください。',
+            'category_name.max' => '分類名は100文字以内で入力してください。',
+        ]);
+
+        $user = Auth::guard('store_user')->user();
+
+        $category = CouponCategories::where('company_id', $user->company_id)->find($id);
+
+        if (!$category) {
+            return redirect()->route('store.coupon.category')->with('error', '対象のクーポン分類が見つかりませんでした。');
+        }
+
+        $category->category_name = $request->category_name;
+        $category->updated_by = $user->id;
+        $category->save();
+
+        return redirect()->route('store.coupon.category')->with('success', 'クーポン分類を更新しました。');
+    }
+
+    //分類削除
+    public function categoryDelete($id)
+    {
+        $user = Auth::guard('store_user')->user();
+        $stores = Stores::select()->where('company_id', $user->company_id)->get();
+
+        $category = CouponCategories::where('company_id', $user->company_id)->find($id);
+
+        if (!$category) {
+            return redirect()->route('store.coupon.category')->with('error', '対象のクーポン分類が見つかりませんでした。');
+        }
+
+        $category->delete();
+
+        return redirect()->route('store.coupon.category')->with('success', 'クーポン分類を削除しました。');
     }
 }

@@ -25,9 +25,8 @@
             <div class="card-body">
                 <form method="GET" action="{{ route('store.coupon') }}">
 
-                    <!-- 1行目：検索項目 -->
+                    <!-- 検索項目 -->
                     <div class="form-row">
-
                         <div class="col-md-3 mb-3">
                             <label for="coupon_name">クーポン名</label>
                             <input type="text" name="coupon_name" id="coupon_name"
@@ -41,7 +40,9 @@
                                 value="{{ request('coupon_code') }}"
                                 class="form-control">
                         </div>
+                    </div>
 
+                    <div class="form-row mt-2">
                         <div class="col-md-3 mb-3">
                             <label for="store_name">店舗名</label>
                             <select name="store_name" id="store_name" class="form-control">
@@ -66,9 +67,20 @@
                             </select>
                         </div>
 
+                        <div class="col-md-3 mb-3">
+                            <label for="category">クーポン分類</label>
+                            <select name="category" id="category" class="form-control">
+                                <option value="">すべて</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->category_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- 2行目：ボタン -->
                     <div class="form-row mt-2">
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary btn-block">検索</button>

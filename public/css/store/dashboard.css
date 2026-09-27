@@ -97,6 +97,10 @@
     font-weight: bold;
 }
 
+.kpi-sub--down {
+    color: #e74a3b;
+}
+
 /* ===== 汎用パネル ===== */
 .dashboard-panel {
     background-color: #fff;

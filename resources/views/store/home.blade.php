@@ -8,26 +8,34 @@
 
     <div class="container-fluid dashboard-wrap">
 
-        <!-- ヘッダー：タイトル＋期間切り替え -->
-        <div class="dashboard-header d-flex align-items-center justify-content-between mb-4">
+        <div class="dashboard-header mb-4">
             <h1 class="dashboard-title">店舗管理ダッシュボード</h1>
+        </div>
 
-            <div class="dashboard-header-actions d-flex align-items-center">
-                <div class="btn-group period-switch mr-3" role="group">
-                    <button type="button" class="btn btn-period active">今日</button>
-                    <button type="button" class="btn btn-period">7日間</button>
-                    <button type="button" class="btn btn-period">30日間</button>
-                    <button type="button" class="btn btn-period">
-                        期間指定 <i class="fas fa-calendar-alt ml-1"></i>
-                    </button>
+        <div class="row mb-4">
+            <div class="col-xl-6 col-lg-8">
+                <div class="dashboard-panel h-100">
+                    <div class="dashboard-panel-header">
+                        発行中クーポン
+                    </div>
+                    <div class="dashboard-panel-body p-0">
+                        <ul class="alert-list list-unstyled mb-0">
+                            @foreach ($sell_coupons as $category_key => $sell_coupon)
+                                <li class="alert-item">
+                                    <span>{{$category_key}}</span>
+                                    @if ($sell_coupon <= 5)
+                                        <span class="alert-badge alert-badge--danger">残り {{$sell_coupon}}枚</span>
+                                    @else
+                                        <span class="alert-badge alert-badge--warning">残り {{$sell_coupon}}枚</span>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-export">
-                    <i class="fas fa-download mr-1"></i> CSVエクスポート
-                </button>
             </div>
         </div>
 
-        <!-- KPIカード -->
         <div class="row mb-4">
 
             <div class="col-xl-3 col-md-6 mb-4">
@@ -37,8 +45,16 @@
                     </div>
                     <div class="kpi-body">
                         <div class="kpi-label">本日の売上</div>
-                        <div class="kpi-value">¥42,680</div>
-                        <div class="kpi-sub kpi-sub--up">前日比 +12.4%</div>
+                        <div class="kpi-value">¥{{ number_format($todaySalesAmount) }}</div>
+                        @if (is_null($salesChangeRate))
+                            <div class="kpi-sub">前日実績なし</div>
+                        @elseif ($salesChangeRate > 0)
+                            <div class="kpi-sub kpi-sub--up">前日比 +{{ $salesChangeRate }}%</div>
+                        @elseif ($salesChangeRate < 0)
+                            <div class="kpi-sub kpi-sub--down">前日比 {{ $salesChangeRate }}%</div>
+                        @else
+                            <div class="kpi-sub">前日比 ±0%</div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -50,8 +66,8 @@
                     </div>
                     <div class="kpi-body">
                         <div class="kpi-label">累計売上</div>
-                        <div class="kpi-value">¥1,248,500</div>
-                        <div class="kpi-sub">今月 ¥368,200</div>
+                        <div class="kpi-value">¥{{ number_format($allSalesAmount) }}</div>
+                        <div class="kpi-sub">今月 ¥{{ number_format($monthSalesAmount) }}</div>
                     </div>
                 </div>
             </div>
@@ -63,8 +79,8 @@
                     </div>
                     <div class="kpi-body">
                         <div class="kpi-label">本日の販売数</div>
-                        <div class="kpi-value">18枚</div>
-                        <div class="kpi-sub">利用済み 12枚</div>
+                        <div class="kpi-value">{{ number_format($todayCreatedCount) }}枚</div>
+                        <div class="kpi-sub">利用済み {{ number_format($todayPurchasedCount) }}枚</div>
                     </div>
                 </div>
             </div>
@@ -76,104 +92,120 @@
                     </div>
                     <div class="kpi-body">
                         <div class="kpi-label">消化率</div>
-                        <div class="kpi-value">66.7%</div>
-                        <div class="kpi-sub">未利用 6枚</div>
+                        <div class="kpi-value">{{ number_format($digestionRate) }}%</div>
+                        <div class="kpi-sub">未利用 {{ number_format($todayCreatedCount - $todayPurchasedCount) }}枚</div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- グラフ＋在庫アラート -->
-        <div class="row mb-4">
+        <div class="dashboard-period-tabs mb-2">
+            <div class="btn-group period-switch" role="group">
+                <a href="{{ url()->current() }}?period=today"
+                class="btn btn-period {{ $period === 'today' ? 'active' : '' }}">今日</a>
+                <a href="{{ url()->current() }}?period=7days"
+                class="btn btn-period {{ $period === '7days' ? 'active' : '' }}">7日間</a>
+                <a href="{{ url()->current() }}?period=30days"
+                class="btn btn-period {{ $period === '30days' ? 'active' : '' }}">30日間</a>
+                <button type="button"
+                class="btn btn-period {{ $period === 'custom' ? 'active' : '' }}"
+                data-toggle="modal" data-target="#customPeriodModal">
+                    期間指定 <i class="fas fa-calendar-alt ml-1"></i>
+                </button>
+            </div>
+        </div>
 
-            <div class="col-xl-8 col-lg-7 mb-4">
+        @if ($period === 'custom')
+        <div class="text-muted mb-4">
+            表示期間: {{ $rangeStart->format('Y/m/d') }} 〜 {{ $rangeEnd->format('Y/m/d') }}
+        </div>
+        @endif
+
+        <!-- 期間モーダル -->
+        <div class="modal fade" id="customPeriodModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="{{ url()->current() }}" method="GET">
+                        <div class="modal-header">
+                            <h5 class="modal-title">期間を指定</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="period" value="custom">
+                            <div class="form-group">
+                                <label for="custom_start">開始日</label>
+                                <input type="date" class="form-control" id="custom_start" name="start"
+                                    value="{{ $period === 'custom' ? $rangeStart->format('Y-m-d') : now()->subDays(6)->format('Y-m-d') }}"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="custom_end">終了日</label>
+                                <input type="date" class="form-control" id="custom_end" name="end"
+                                    value="{{ $period === 'custom' ? $rangeEnd->format('Y-m-d') : now()->format('Y-m-d') }}"
+                                    required>
+                            </div>
+                            <small class="text-muted">最大1ヶ月間まで選択できます(超える場合は自動的に開始日から31日間に調整されます)。</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                            <button type="submit" class="btn btn-primary">表示</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- グラフ -->
+        <div class="row mb-4">
+            <div class="col-12">
                 <div class="dashboard-panel h-100">
                     <div class="dashboard-panel-header">
                         売上・利用数の推移
                     </div>
                     <div class="dashboard-panel-body">
-                        <canvas id="salesTrendChart" height="110"></canvas>
+                        <canvas id="salesTrendChart" height="90"></canvas>
                     </div>
                 </div>
             </div>
-
-            <div class="col-xl-4 col-lg-5 mb-4">
-                <div class="dashboard-panel h-100">
-                    <div class="dashboard-panel-header">
-                        アラート
-                    </div>
-                    <div class="dashboard-panel-body p-0">
-                        <ul class="alert-list list-unstyled mb-0">
-                            <li class="alert-item">
-                                <span>トリミング予約</span>
-                                <span class="alert-badge alert-badge--danger">残り 3枚</span>
-                            </li>
-                            <li class="alert-item">
-                                <span>ゴルフレッスン</span>
-                                <span class="alert-badge alert-badge--warning">残り 8枚</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <!-- クーポン別実績テーブル -->
+        <!-- クーポン別実績 -->
         <div class="dashboard-panel mb-4">
             <div class="dashboard-panel-header d-flex align-items-center justify-content-between">
                 <span>クーポン別実績</span>
-                <div class="d-flex align-items-center">
-                    <div class="coupon-search mr-3">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="クーポン名を検索">
-                    </div>
-                    <a href="#" class="dashboard-link">すべて表示 <i class="fas fa-chevron-right"></i></a>
-                </div>
             </div>
             <div class="dashboard-panel-body p-0">
                 <div class="table-responsive">
                     <table class="table dashboard-table mb-0">
                         <thead>
                             <tr>
-                                <th>クーポン名</th>
-                                <th>販売数</th>
-                                <th>売上</th>
-                                <th>利用数</th>
-                                <th>消化率</th>
+                                <th>分類名</th>
                                 <th>発行数</th>
+                                <th>利用数</th>
+                                <th>売上</th>
+                                <th>消化率</th>
+                                <th>期限切れ</th>
                                 <th>残り枚数</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>トリミング予約</td>
-                                <td>12枚</td>
-                                <td>¥96,324</td>
-                                <td>8枚</td>
-                                <td>66.7%</td>
-                                <td>20枚</td>
-                                <td>8枚</td>
-                            </tr>
-                            <tr>
-                                <td>ゴルフレッスン</td>
-                                <td>8枚</td>
-                                <td>¥71,760</td>
-                                <td>6枚</td>
-                                <td>75.0%</td>
-                                <td>15枚</td>
-                                <td>7枚</td>
-                            </tr>
-                            <tr>
-                                <td>激安マッサージ</td>
-                                <td>5枚</td>
-                                <td>¥575</td>
-                                <td>4枚</td>
-                                <td>80.0%</td>
-                                <td>30枚</td>
-                                <td>25枚</td>
-                            </tr>
+                            @if (isset($categoryStats) && $categoryStats)
+                                @foreach($categoryStats as $sumcate_key => $categoryStat)
+                                    <tr>
+                                        <td>{{ $categoryStat['category_name'] }}</td>
+                                        <td>{{ $categoryStat['total_count'] }}枚</td>
+                                        <td>{{ $categoryStat['use_count'] }}枚</td>
+                                        <td>¥{{ number_format($categoryStat['sales_amount']) }}</td>
+                                        <td>{{ $categoryStat['digestion_rate'] }}%</td>
+                                        <td>{{ $categoryStat['expired_count'] }}枚</td>
+                                        <td>{{ $categoryStat['remaining_count'] }}枚</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -181,70 +213,64 @@
         </div>
 
     </div>
-@endsection
 
-@push('js')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('salesTrendChart').getContext('2d');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('salesTrendChart').getContext('2d');
+            const chartType = @json($chartType); //'bar' or 'line'
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['7/20', '7/21', '7/22', '7/23', '7/24', '7/25', '7/26'],
-            datasets: [
-                {
-                    label: '売上',
-                    data: [32000, 28000, 45000, 38000, 52000, 68000, 42680],
-                    borderColor: '#4e73df',
-                    backgroundColor: 'rgba(78,115,223,0.05)',
-                    yAxisID: 'y',
-                    tension: 0.3,
-                    pointRadius: 3,
+            new Chart(ctx, {
+                type: chartType === 'bar' ? 'bar' : 'line',
+                data: {
+                    labels: {!! json_encode($chartLabels) !!},
+                    datasets: [
+                        {
+                            type: chartType,
+                            label: '売上',
+                            data: {!! json_encode($chartSales) !!},
+                            borderColor: '#4e73df',
+                            backgroundColor: chartType === 'bar' ? 'rgba(78,115,223,0.6)' : 'rgba(78,115,223,0.05)',
+                            yAxisID: 'y',
+                            tension: 0.3,
+                            pointRadius: 3,
+                        },
+                        {
+                            type: chartType,
+                            label: '利用数',
+                            data: {!! json_encode($chartUsage) !!},
+                            borderColor: '#1cc88a',
+                            backgroundColor: chartType === 'bar' ? 'rgba(28,200,138,0.6)' : 'rgba(28,200,138,0.05)',
+                            yAxisID: 'y1',
+                            tension: 0.3,
+                            pointRadius: 3,
+                        }
+                    ]
                 },
-                {
-                    label: '利用数',
-                    data: [8, 7, 10, 9, 12, 18, 12],
-                    borderColor: '#1cc88a',
-                    backgroundColor: 'rgba(28,200,138,0.05)',
-                    yAxisID: 'y1',
-                    tension: 0.3,
-                    pointRadius: 3,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                }
-            },
-            scales: {
-                y: {
-                    type: 'linear',
-                    position: 'left',
-                    title: { display: true, text: '円' },
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString();
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top', align: 'end' } },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 0,
+                            title: { display: true, text: '円' },
+                            ticks: { precision: 0, callback: function (value) { return value.toLocaleString(); } }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            title: { display: true, text: '枚' },
+                            ticks: {
+                                precision: 0
+                            },
+                            grid: { drawOnChartArea: false },
                         }
                     }
-                },
-                y1: {
-                    type: 'linear',
-                    position: 'right',
-                    title: { display: true, text: '枚' },
-                    grid: { drawOnChartArea: false },
                 }
-            }
-        }
-    });
-});
-</script>
-@endpush
+            });
+        });
+    </script>
+@endsection

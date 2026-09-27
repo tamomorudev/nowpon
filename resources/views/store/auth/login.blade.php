@@ -80,7 +80,7 @@
                                 @endif
                                 */ ?>
                                 <a class="btn btn-link" href="{{ route('store.register') }}">
-                                        【test】ストアアカウント登録
+                                        店舗アカウント登録
                                 </a>
                             </div>
                         </div>
