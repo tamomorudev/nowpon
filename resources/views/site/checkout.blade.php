@@ -3,16 +3,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}?v={{ filemtime(public_path('css/site/purchase-flow.css')) }}">
     <title>お支払い | ナウポン</title>
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="{{ asset('js/site/checkout.js') }}?v={{ filemtime(public_path('js/site/checkout.js')) }}" defer></script>
 </head>
 <body>
-<div class="container">
 @include('layouts.header')
+<div class="container">
     <div class="cart-section cart-section--center container" id="checkoutPayment" data-stripe-key="{{ config('services.stripe.key') }}" data-charge-url="{{ route('checkout.charge') }}" data-csrf-token="{{ csrf_token() }}" data-coupon-code="{{ $coupon->coupon_code }}">
         <p class="checkout-note">
             「注文を確定する」ボタンを押してご注文いただくことで、お客様は当サイトの各種規約、プライバシー規約および当サイト上の販売条件に同意の上、商品をご注文されたことになります。価格については必ず商品ページおよびこちらをご確認ください。カードをご利用の場合、お客様のご注文に関する情報を、不正検出・防止のため、カード発行会社（「発行会社」）に提供します。発行会社が外国に所在する場合には、当該外国への情報提供となる場合があります。

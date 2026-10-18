@@ -22,16 +22,42 @@
 }
 
 /* ページ全体の基本レイアウトとフォント */
+/* 幅100%の部品に余白と枠線を含め、狭い画面でのはみ出しを防ぐ。 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 html,
 body {
     min-height: 100%;
 }
 
+/* ページの長さでスクロールバーの有無が変わっても、中央位置を揃える。 */
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
     color: var(--site-color-text);
     font-family: 'Nunito', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif;
     line-height: 1.6;
+}
+
+img {
+    max-width: 100%;
+}
+
+input,
+select,
+textarea {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .container {
@@ -40,6 +66,11 @@ body {
     margin-inline: auto;
     padding-inline: clamp(16px, 4vw, 24px);
     box-sizing: border-box;
+}
+
+/* 本文だけを伸ばし、共通ヘッダーとフッターの間を埋める。 */
+body > .container {
+    flex: 1;
 }
 
 /* 表側ページで使う共通セクション見出し */
@@ -85,6 +116,7 @@ body {
     font-weight: 700;
     text-align: center;
     text-decoration: none;
+    white-space: nowrap;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
@@ -168,6 +200,7 @@ body {
 
 /* クーポン一覧内のタイトル・価格表示 */
 .coupon-title {
+    overflow-wrap: anywhere;
     margin-bottom: 6px;
     color: var(--site-color-text);
     font-size: 14px;
@@ -178,6 +211,19 @@ body {
 .coupon-price {
     color: #555555;
     font-size: 14px;
+}
+
+/* 一覧の価格は金額ごとに折り返し、「円」だけが次の行へ落ちるのを避ける。 */
+.coupon-list .coupon-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
+}
+
+.coupon-list .coupon-price > span {
+    display: inline-block;
+    margin-right: 0;
 }
 
 /* 割引率、通常価格、販売価格などの価格ラベル */

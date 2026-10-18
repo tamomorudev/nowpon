@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/content-page.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/content-page.css') }}?v={{ filemtime(public_path('css/site/content-page.css')) }}">
     <title>プライバシーポリシー | ナウポン</title>
 </head>
 
 <body>
+@include('layouts.header')
 <div class="container">
-    @include('layouts.header')
 
     <main class="terms-page">
 
@@ -131,7 +131,7 @@
 
     </main>
 
-    @include('layouts.footer')
 </div>
+@include('layouts.footer')
 </body>
 </html>

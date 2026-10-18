@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
     <title>システムエラー | ナウポン</title>
      <style>
         /* カルーセル ここから */
@@ -347,7 +348,8 @@
             padding: 60px 20px 80px;
         }
         .error-code {
-            font-size: 120px;
+            /* 狭い画面でもエラー表示を本文の幅に収める。 */
+            font-size: clamp(72px, 24vw, 120px);
             font-weight: bold;
             color: #f9e98f;
             line-height: 1;
@@ -374,12 +376,17 @@
             margin-bottom: 40px;
         }
         .error-back-button {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 100%;
+            min-height: 44px;
             background-color: #d2a679;
             color: #fff;
             font-weight: bold;
             font-size: 16px;
-            padding: 14px 48px;
+            /* 画面幅に応じて余白を減らし、戻る操作を押しやすく保つ。 */
+            padding: 12px clamp(16px, 5vw, 48px);
             border-radius: 9999px;
             text-decoration: none;
             transition: opacity 0.2s;
@@ -402,8 +409,8 @@
     </style>
 </head>
 <body>
+@include('layouts.header')
 <div class="container">
-    @include('layouts.header')
     <div class="error-section">
         <p class="error-code">Error</p>
         <div class="error-border"></div>

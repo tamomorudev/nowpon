@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
     <title>マイページ</title>
 
     <style>
         /* ※ layouts.header 側と被らないように、ページ専用のクラスのみ定義 */
 
-        /* コンテナ(.container)は layouts.header 側にあるので触らない */
+        /* 外側の余白は共通コンテナに合わせる。 */
         .page-body{
             /* 画面中央寄せ用の内側ラッパー（container とは別名にする） */
             display: grid;
             place-items: center;
-            padding: 48px 16px;
+            padding: 32px 0;
             width: 100%;
             box-sizing: border-box;
         }
@@ -51,6 +52,7 @@
             margin: 14px 0 12px;
         }
         .avatar {
+            flex-shrink: 0;
             width: 56px;
             height: 56px;
             border-radius: 50%;
@@ -68,10 +70,10 @@
 
         /* ===== Form ===== */
         .form-list { margin-top: 12px; border-top: 1px dashed #e6c7a8; }
-        .form-row  { display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px dashed #f0dcc7; }
+        .form-row  { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px dashed #f0dcc7; }
         .form-label { color: #7a5b49; font-weight: 600; font-size: 14px; align-self: center; }
-        .form-field { display: grid; gap: 8px; }
-        .input, .select { width: 100%; padding: 10px 12px; border: 1px solid #e0cdb9; border-radius: 8px; background: #fff; font-size: 15px; box-sizing: border-box; }
+        .form-field { display: grid; gap: 8px; min-width: 0; }
+        .input, .select { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid #e0cdb9; border-radius: 8px; background: #fff; font-size: 16px; box-sizing: border-box; }
         .help { font-size: 12px; color: #7e6a5e; }
 
         /* 必須マーク（パスワードは必須ではない） */
@@ -107,7 +109,7 @@
         /* ===== Actions ===== */
         .form-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; padding: 0 16px; border-radius: 9999px; font-weight: 700; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: transform .02s ease, background .2s ease, color .2s ease, border-color .2s ease; user-select: none; border: 1px solid transparent; }
-        .btn { min-height: 44px; }
+        .btn { min-height: 44px; white-space: nowrap; }
         .btn-primary { background: var(--site-color-brand, #c5a067); color: #fff; border-color: var(--site-color-brand, #c5a067); }
         .btn-primary:hover { background: var(--site-color-brand, #c5a067); border-color: var(--site-color-brand, #c5a067); opacity: 0.88; }
         .btn-ghost { background: #fffaf5; color: #6b4e3d; border-color: #e4d2bf; }
@@ -115,16 +117,18 @@
 
         /* ===== Responsive ===== */
         @media (max-width: 640px) {
-            .form-row { grid-template-columns: 1fr; gap: 4px; }
+            .form-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+            .mypage-card { padding: 20px 16px; }
+            .form-actions .btn { flex: 1 1 180px; }
             .avatar { width: 48px; height: 48px; font-size: 18px; }
             .mypage-title { font-size: 20px; }
         }
     </style>
 </head>
 <body>
+@include('layouts.header')
 
 <div class="container">
-    @include('layouts.header')
 
     <div class="page-body">
         <section class="mypage-card" role="main" aria-labelledby="mypageTitle">

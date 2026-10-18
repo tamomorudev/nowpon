@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}?v={{ filemtime(public_path('css/site/purchase-flow.css')) }}">
     <title>購入完了 | ナウポン</title>
 </head>
 <body>
-<div class="container">
 @include('layouts.header')
+<div class="container">
     <div class="cart-section cart-section--center container">
         <p class="checkout-complete-title">
             注文が確定しました。<br>

@@ -3,9 +3,9 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- ▼ 詳細検索パーツ ▼ --}}
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/coupon-list.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}?v={{ filemtime(public_path('css/site/search.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/coupon-list.css') }}?v={{ filemtime(public_path('css/site/coupon-list.css')) }}">
     <script src="{{ asset('js/site/search.js') }}" defer></script>
 
     <meta charset="utf-8" />
@@ -13,8 +13,8 @@
     <title>クーポン一覧 | ナウポン</title>
 </head>
 <body>
+@include('layouts.header')
 <div class="container">
-    @include('layouts.header')
 
     @if (!empty($special_futures))
         <!-- 特集検索 -->

@@ -15,10 +15,13 @@
     height: 80px;
     object-fit: cover;
     border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .coupon-text {
     flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 /* 特集検索の概要表示 */

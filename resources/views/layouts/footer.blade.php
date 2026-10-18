@@ -2,6 +2,7 @@
     /* フッターここから */
     .site-footer {
         --site-color-brand: #c5a067;
+        flex-shrink: 0;
         background-color: var(--site-color-brand, #c5a067);
         color: white;
         padding: 24px 0;
@@ -9,20 +10,23 @@
     }
 
     .footer-container {
-        max-width: 1200px;
-        margin: 0 auto;
+        /* 内容の左右位置は、ヘッダー・本文と同じ共通コンテナで揃える。 */
         text-align: center;
     }
 
     .footer-links {
         display: flex;
         justify-content: center;
-        gap: 24px;
+        gap: 8px 24px;
         flex-wrap: wrap;
         margin-bottom: 12px;
     }
 
     .footer-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        white-space: nowrap;
         color: white;
         text-decoration: none;
         font-weight: bold;
@@ -42,7 +46,7 @@
 </style>
 
 <footer class="site-footer">
-    <div class="footer-container">
+    <div class="container footer-container">
         <div class="footer-links">
             <a href="/site/terms">利用規約</a>
             <a href="/site/privacypolicy">プライバシーポリシー</a>

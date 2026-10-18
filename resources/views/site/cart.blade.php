@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/purchase-flow.css') }}?v={{ filemtime(public_path('css/site/purchase-flow.css')) }}">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <title>カート | ナウポン</title>
 </head>
 <body>
-<div class="container">
 @include('layouts.header')
+<div class="container">
     <!-- カートセクション -->
     <div class="cart-section container">
         <div class="cart-header">カート内の商品に関する情報</div>

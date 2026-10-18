@@ -7,7 +7,7 @@
 .purchase-history-section {
     max-width: 1200px;
     margin: 40px auto 0;
-    padding: 0 24px;
+    padding: 0;
 }
 
 .purchase-history-head {
@@ -54,6 +54,7 @@
     background: transparent;
     padding: 0;
     width: 100%;
+    min-width: 0;
     text-align: left;
     cursor: pointer;
 }
@@ -61,6 +62,11 @@
 .purchase-card:hover {
     transform: translateY(-3px);
     opacity: 0.95;
+}
+
+/* ページ切り替えで隠したカードを、上のdisplay指定で再表示しない。 */
+.purchase-card[hidden] {
+    display: none;
 }
 
 .purchase-card:focus-visible,
@@ -86,6 +92,8 @@
 }
 
 .purchase-card-body {
+    /* 英数字が続く店舗名・駅名も、カードの横幅の中で折り返す。 */
+    overflow-wrap: anywhere;
     text-align: center;
     padding-top: 18px;
 }
@@ -116,7 +124,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: clamp(12px, 3vw, 24px);
     z-index: 9999;
 }
 
@@ -128,6 +136,11 @@
     position: relative;
     width: 100%;
     max-width: 980px;
+    /* 小さい画面でも閉じる操作と末尾の入力欄まで到達できるようにする。 */
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
     background: #f8f8f8;
     border-radius: 20px;
     padding: 28px 28px 24px;
@@ -135,6 +148,7 @@
 }
 
 .cancel-modal-title {
+    padding-right: 32px;
     margin: 0 0 18px;
     font-size: 22px;
     color: #333;
@@ -155,7 +169,7 @@
 
 .cancel-modal-top {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
     margin-bottom: 18px;
 }
@@ -186,7 +200,7 @@
 
 .cancel-item-box {
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 220px minmax(0, 1fr);
     gap: 32px;
     padding: 22px;
     margin-bottom: 18px;
@@ -213,6 +227,7 @@
 }
 
 .cancel-item-content {
+    min-width: 0;
     display: flex;
     align-items: center;
 }
@@ -269,6 +284,8 @@
 }
 
 .cancel-reason-select {
+    min-width: 0;
+    max-width: 100%;
     width: 350px;
     height: 54px;
     border: 1px solid #8d8d8d;
@@ -302,6 +319,7 @@ body.modal-open {
 /* JavaScriptで生成する購入履歴ページャー */
 .purchase-pager {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 8px;
@@ -350,12 +368,13 @@ body.modal-open {
 /* キャンセル完了ページの中央メッセージ */
 .cancel-complete-message {
     text-align: center;
-    padding: 60px 24px;
+    padding: 40px 0;
+    overflow-wrap: anywhere;
 }
 
 @media screen and (max-width: 768px) {
     .purchase-history-section {
-        padding: 0 16px;
+        padding: 0;
         margin-top: 28px;
     }
 
@@ -383,6 +402,12 @@ body.modal-open {
 
     .cancel-item-box {
         grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .cancel-item-right p {
+        font-size: 15px;
     }
 
     .cancel-item-image-wrap {

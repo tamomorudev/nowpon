@@ -19,10 +19,11 @@
 
 /* 都道府県・路線・駅のセレクト行 */
 .search-tags {
-    display: flex;
+    display: grid;
+    /* 3列分の幅がないときは、項目の最小幅に合わせて自然に折り返す。 */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
     gap: 12px;
     margin-bottom: 16px;
-    flex-wrap: wrap;
 }
 
 /* セレクトボックスの見た目 */
@@ -36,16 +37,18 @@
     font-size: 13px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
     border: 1px solid #eee;
-    min-width: 160px;
+    min-width: 0;
 }
 .search-select-box label {
     font-size: 12px;
     color: #6b7280;
 }
 .search-select-box select {
+    width: 100%;
+    min-height: 32px;
     border: none;
     background: transparent;
-    font-size: 14px;
+    font-size: 16px;
 }
 .search-select-box select:focus-visible {
     outline: none;
@@ -90,17 +93,25 @@
     border: none;
     flex: 1;
     background: none;
-    font-size: 14px;
+    font-size: 16px;
+    width: 100%;
+    min-width: 0;
 }
 .search-keyword-box input:focus-visible {
     outline: none;
 }
 
+/* 入力欄の枠全体を強調し、キーボード操作でも現在位置を見失わないようにする。 */
+.search-select-box:focus-within,
+.search-keyword-box:focus-within {
+    outline: 2px solid var(--site-color-brand-dark);
+    outline-offset: 2px;
+}
+
 /* 検索ボタン */
 .keyword-search-button {
     width: 100%;
-    max-width: 300px;
-    align-self: center;
+    white-space: nowrap;
 }
 
 /* スマホでは検索条件を縦積みにする */
@@ -109,8 +120,7 @@
         padding: 12px;
     }
     .search-tags {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr);
     }
     .search-select-box {
         width: 100%;
@@ -121,12 +131,11 @@
 /* タブレット以上ではキーワード入力と検索ボタンを横並びにする */
 @media (min-width: 768px) {
     .search-keyword-row {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(160px, 0.4fr);
         align-items: center;
     }
     .keyword-search-button {
-        margin-left: 12px;
         padding: 0 32px;
-        min-width: 160px;
     }
 }

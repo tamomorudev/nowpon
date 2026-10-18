@@ -37,6 +37,8 @@
 /* 本文カード */
 .terms-page__card,
 .contact-page__card {
+    min-width: 0;
+    overflow-wrap: anywhere;
     background: #ffffff;
     border-radius: 16px;
     padding: 24px 20px;
@@ -192,6 +194,7 @@
 
 .contact-form__input {
     width: 100%;
+    min-width: 0;
     min-height: 46px;
     padding: 10px 12px;
     border: 1px solid #decdbd;
@@ -199,6 +202,8 @@
     background: #ffffff;
     color: #2f2721;
     font: inherit;
+    /* 他の会員向けフォームと揃え、小さい画面でも入力文字を読みやすくする。 */
+    font-size: 16px;
     line-height: 1.5;
     box-sizing: border-box;
 }
@@ -363,6 +368,7 @@
     .contact-form__actions,
     .contact-form__submit {
         width: 100%;
+        min-width: 0;
     }
 
     .contact-page {

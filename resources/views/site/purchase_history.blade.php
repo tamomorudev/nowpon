@@ -3,9 +3,9 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- ▼ 詳細検索パーツ ▼ --}}
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/site/purchase-history.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/search.css') }}?v={{ filemtime(public_path('css/site/search.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/site/purchase-history.css') }}?v={{ filemtime(public_path('css/site/purchase-history.css')) }}">
     <script src="{{ asset('js/site/search.js') }}" defer></script>
     <script src="{{ asset('js/site/purchase-history.js') }}" defer></script>
 
@@ -14,8 +14,8 @@
     <title>購入履歴 | ナウポン</title>
 </head>
 <body>
+@include('layouts.header')
 <div class="container">
-    @include('layouts.header')
 
     <div class="purchase-history-section">
 

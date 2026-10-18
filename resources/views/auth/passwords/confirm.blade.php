@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
     <title>ナウポンパスワード変更</title>
 </head>
 <body>
-{{-- 共通ヘッダー（ヘッダー側でhtml/bodyのCSSは定義済み想定） --}}
+{{-- 共通ヘッダー（ページ全体の配置は共通CSSで定義） --}}
 @include('layouts.header')
 
 <style>
@@ -16,7 +16,7 @@
         flex: 1;
         display: grid;
         place-items: center;
-        padding: 48px 16px;
+        padding: clamp(24px, 5vw, 48px) 16px;
     }
 
     /* ===== Card ===== */
@@ -79,7 +79,7 @@
         padding: 10px 12px;
         border: 1px solid #d9d9d9;
         border-radius: 8px;
-        font-size: 15px;
+        font-size: 16px;
         transition: box-shadow .15s, border-color .15s, background-color .15s;
         background: #fff;
         box-sizing: border-box;

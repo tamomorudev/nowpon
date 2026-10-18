@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" href="{{ asset('css/site/coupon-detail.css') }}?v={{ filemtime(public_path('css/site/coupon-detail.css')) }}">
     <title>{{ $coupon->coupon_name }} | ナウポン</title>
 </head>
 <body>
+@include('layouts.header')
 <div class="container">
-    @include('layouts.header')
 
     @php
         $validCouponImages = collect($coupon->coupon_images ?? [])->filter(function ($path) {

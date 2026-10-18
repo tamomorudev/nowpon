@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site/common.css') }}?v={{ filemtime(public_path('css/site/common.css')) }}">
     <title>新規会員登録</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
         flex: 1;
         display: grid;
         place-items: center;
-        padding: 48px 16px;
+        padding: clamp(24px, 5vw, 48px) 16px;
     }
 
     /* ===== Card ===== */
@@ -26,7 +26,7 @@
         border: 1px solid #ead8c6;
         border-radius: 12px;
         box-shadow: 0 10px 24px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.8) inset;
-        padding: 28px;
+        padding: clamp(18px, 4vw, 28px);
         box-sizing: border-box;
         position: relative;
     }
@@ -64,7 +64,7 @@
         padding: 10px 12px;
         border: 1px solid #d9d9d9;
         border-radius: 8px;
-        font-size: 15px;
+        font-size: 16px;
         box-sizing: border-box;
         background: #fff;
         transition: box-shadow .15s, border-color .15s;
@@ -104,8 +104,7 @@
         text-align: center;    /* 中央揃え */
     }
     .btn-primary {
-        width: auto;                 /* ← 幅を自動調整（テキストサイズに合わせる） */
-        min-width: 180px;             /* ← 最低幅を設定（見た目安定） */
+        width: min(100%, 300px);      /* カードの内側に収め、スマホでも押しやすい幅にする */
         height: 40px;                 /* ← 高さを少し低めに */
         padding: 0 20px;              /* ← 横の余白を少し少なめに */
         display: inline-flex;
