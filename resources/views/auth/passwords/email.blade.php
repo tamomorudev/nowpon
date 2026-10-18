@@ -11,7 +11,7 @@
 @include('layouts.header')
 
 <style>
-    /* ===== Page layout ===== */
+    /* ===== ページ全体の配置 ===== */
     main.page-main {
         flex: 1;
         display: grid;
@@ -19,7 +19,7 @@
         padding: 48px 16px;
     }
 
-    /* ===== Card ===== */
+    /* ===== カード ===== */
     .login-card {
         width: 100%;
         max-width: 420px;
@@ -56,7 +56,7 @@
         color: #6b4e3d;
     }
 
-    /* ===== Alert ===== */
+    /* ===== 通知 ===== */
     .login-alert {
         margin-bottom: 18px;
         padding: 12px 14px;
@@ -67,7 +67,7 @@
         color: #2e7d32;
     }
 
-    /* ===== Form ===== */
+    /* ===== フォーム ===== */
     .login-field { margin-bottom: 16px; }
     .login-label {
         display: block;
@@ -103,7 +103,16 @@
 
     .login-actions { display: grid; gap: 10px; margin-top: 4px; }
 
-    /* ===== Button（中央揃え） ===== */
+    /* ===== メールの受信設定に関する案内 ===== */
+    .login-note {
+        margin: 0 0 16px;
+        color: #6b4e3d;
+        font-size: 13px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    /* ===== ボタン（中央揃え） ===== */
     .login-button {
         width: 100%;
         height: 44px;
@@ -155,11 +164,17 @@
                     required
                     autofocus
                     autocomplete="email"
+                    aria-describedby="email-delivery-note"
                 >
                 @error('email')
                     <div class="login-error">{{ $message }}</div>
                 @enderror
             </div>
+
+            {{-- 送信前に読める位置に置き、案内する送信元は実際のメール設定と揃える --}}
+            <p id="email-delivery-note" class="login-note">
+                迷惑メール対策や受信制限をご利用の場合は、<strong>{{ config('mail.from.address') }}</strong> からのメールを受信できるように設定してください。メールが届かない場合は、迷惑メールフォルダもご確認ください。
+            </p>
 
             <div class="login-actions">
                 <button type="submit" class="login-button">

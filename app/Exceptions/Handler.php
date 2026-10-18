@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,6 +45,18 @@ class Handler extends ExceptionHandler
     //エラーページ制御
     public function render($request, Throwable $e)
     {
+        // メール送信フォームの期限切れは、新しいCSRFトークンで再入力できる画面へ戻す。
+        // 送信自体は実行せず、JSONと他のフォームは既存の例外処理に委ねる。
+        if ($e instanceof TokenMismatchException
+            && $request->isMethod('post')
+            && $request->routeIs('password.email')
+            && ! $request->expectsJson()) {
+            return redirect()->route('password.request')
+                // パスワードなどの不要な入力値をセッションに保存しない。
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => trans('passwords.session_expired', [], 'ja')]);
+        }
+
         if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException || $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
 
         $statusCode = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 404;

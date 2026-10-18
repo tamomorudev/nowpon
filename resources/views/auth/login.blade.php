@@ -11,7 +11,7 @@
 @include('layouts.header')
 
 <style>
-    /* ===== Page layout ===== */
+    /* ===== ページ全体の配置 ===== */
     /* header 側で body{display:flex;flex-direction:column;} がある前提 */
     main.page-main {
         flex: 1;                         /* ← これでフッターを下部に固定 */
@@ -20,7 +20,7 @@
         padding: 48px 16px;
     }
 
-    /* ===== Card ===== */
+    /* ===== カード ===== */
     .login-card {
         width: 100%;
         max-width: 420px;
@@ -57,7 +57,7 @@
         color: #6b4e3d;
     }
 
-    /* ===== Form ===== */
+    /* ===== フォーム ===== */
     .login-field { margin-bottom: 16px; }
     .login-label {
         display: block;
@@ -91,6 +91,18 @@
         font-size: 12px;
     }
 
+    /* ===== パスワード再設定・再ログインの案内 ===== */
+    .login-alert {
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        border: 1px solid #bfe3c4;
+        border-radius: 8px;
+        background: #eaf6ec;
+        color: #2e7d32;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
     .login-remember {
         display: flex; align-items: center; gap: 8px;
         margin: 4px 0 18px;
@@ -100,7 +112,7 @@
 
     .login-actions { display: grid; gap: 10px; }
 
-    /* ===== Button（中央揃え） ===== */
+    /* ===== ボタン（中央揃え） ===== */
     .login-button {
         width: 100%;
         height: 44px;
@@ -148,6 +160,13 @@
 <main class="page-main">
     <div class="login-card" role="main" aria-labelledby="loginTitle">
         <h1 id="loginTitle" class="login-title">ログイン</h1>
+
+        {{-- 再設定完了や認証失効の案内を、ログインフォームの前に表示する --}}
+        @if (session('status'))
+            <div class="login-alert" role="status">
+                {{ session('status') }}
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('login') }}">
             @csrf

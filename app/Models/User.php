@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\PasswordResetNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +12,14 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * 標準の再設定通知を、NowPonの日本語メールに差し替える。
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify((new PasswordResetNotification($token))->locale('ja'));
+    }
 
     /**
      * The attributes that are mass assignable.

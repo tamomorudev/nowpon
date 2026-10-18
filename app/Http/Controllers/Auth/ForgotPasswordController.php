@@ -3,20 +3,29 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\SetJapaneseLocale;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Password Reset Controller
+    | パスワード再設定メールの送信
     |--------------------------------------------------------------------------
     |
-    | This controller is responsible for handling password reset emails and
-    | includes a trait which assists in sending these notifications from
-    | your application to your users. Feel free to explore this trait.
+    | 入力検証、トークンの発行、同一メールアドレスへの再送制限は
+    | Laravel標準のトレイトとパスワードブローカーに委ねる。
     |
     */
 
     use SendsPasswordResetEmails;
+
+    public function __construct()
+    {
+        // 標準処理が返す入力エラーと送信結果を、この画面では日本語にする。
+        $this->middleware(SetJapaneseLocale::class);
+
+        // 同一IPからの連続送信を制限する。入力画面の表示は制限しない。
+        $this->middleware('throttle:password-reset')->only('sendResetLinkEmail');
+    }
 }

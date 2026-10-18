@@ -11,7 +11,7 @@
 @include('layouts.header')
 
 <style>
-    /* ===== Page layout ===== */
+    /* ===== ページ全体の配置 ===== */
     main.page-main {
         flex: 1;
         display: grid;
@@ -19,7 +19,7 @@
         padding: 48px 16px;
     }
 
-    /* ===== Card ===== */
+    /* ===== カード ===== */
     .login-card {
         width: 100%;
         max-width: 420px;
@@ -56,7 +56,7 @@
         color: #6b4e3d;
     }
 
-    /* ===== Form ===== */
+    /* ===== フォーム ===== */
     .login-field { margin-bottom: 16px; }
     .login-label {
         display: block;
@@ -92,7 +92,7 @@
 
     .login-actions { display: grid; gap: 10px; margin-top: 4px; }
 
-    /* ===== Button（中央揃え） ===== */
+    /* ===== ボタン（中央揃え） ===== */
     .login-button {
         width: 100%;
         height: 44px;
@@ -175,7 +175,7 @@
 
             <div class="login-actions">
                 <button type="submit" class="login-button">
-                    {{ __('Reset Password') }}
+                    パスワードを再設定する
                 </button>
             </div>
         </form>
