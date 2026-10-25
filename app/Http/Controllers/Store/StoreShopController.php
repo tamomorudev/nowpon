@@ -102,6 +102,7 @@ class StoreShopController extends Controller
                     },
                 ],
                 'images'         => 'required|image',
+                'url'            => 'nullable|url',
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
                 'email.required'          => 'メールアドレスを入力してください。',
@@ -119,9 +120,11 @@ class StoreShopController extends Controller
                 'station_line.required'   => '路線を選択してください。',
                 'station.required'        => '駅を選択してください。',
                 'transportation.required' => '交通手段を選択してください。',
-                'time.required'           => '時間を入力してください。',
+                'time.required'           => '所要時間を入力してください。',
                 'images.required'         => '画像を登録してください。',
                 'images.image'            => '画像ファイルを選択してください。',
+                'images.image'            => '画像ファイルを選択してください。',
+                'url.url'                 => '有効なURL形式で入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -139,8 +142,8 @@ class StoreShopController extends Controller
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
-                    return redirect()->route('store.shop.create')
-                    ->withErrors(['station_error' => 1])
+                    return redirect()->route('store.shop.create', $request->filled('si') ? ['si' => $request->get('si')] : [])
+                    ->withErrors(['station_error' => '最寄り駅2の設定に不備があります。'])
                     ->withInput();
                 }
             }
@@ -221,6 +224,7 @@ class StoreShopController extends Controller
                     },
                 ],
                 'images'         => $image_rules,
+                'url'         => 'nullable|url',
             ], [
                 'store_name.required'     => '店舗名を入力してください。',
                 'email.required'          => 'メールアドレスを入力してください。',
@@ -238,9 +242,10 @@ class StoreShopController extends Controller
                 'station_line.required'   => '路線を選択してください。',
                 'station.required'        => '駅を選択してください。',
                 'transportation.required' => '交通手段を選択してください。',
-                'time.required'           => '時間を入力してください。',
+                'time.required'           => '所要時間を入力してください。',
                 'images.required'         => '画像を登録してください。',
                 'images.image'            => '画像ファイルを選択してください。',
+                'url'                     => '有効なURL形式で入力してください。',
             ]);
 
             if ($validated_data->fails()) {
@@ -266,8 +271,8 @@ class StoreShopController extends Controller
 
             if (isset($request['station_line_2']) && $request['station_line_2']) {
                 if (!isset($request['station_2']) || !$request['station_2'] || !isset($request['time_2']) || !$request['time_2']) {
-                    return redirect()->route('store.shop.edit')
-                    ->withErrors(['station_error' => 1])
+                    return redirect()->route('store.shop.edit', $request->filled('si') ? ['si' => $request->get('si')] : [])
+                    ->withErrors(['station_error' => '最寄り駅2の設定に不備があります。'])
                     ->withInput();
                 }
             }
@@ -293,6 +298,11 @@ class StoreShopController extends Controller
                 $create_shop_array['station_2'] = $request['station_2'];
                 $create_shop_array['transportation_2'] = $request['transportation_2'];
                 $create_shop_array['time_2'] = $request['time_2'];
+            } else {
+                $create_shop_array['line_2'] = null;
+                $create_shop_array['station_2'] = null;
+                $create_shop_array['transportation_2'] = null;
+                $create_shop_array['time_2'] = 0;
             }
             $create_shop_array['image'] = $img_path;
             $create_shop_array['phone_number'] = $request['phone_number'];
@@ -381,14 +391,17 @@ class StoreShopController extends Controller
         if ($request->isMethod('post')) {
             $data = $request->validate([
                 'name' => ['required', 'string', 'max:100',
+                    'regex:/^[a-zA-Z0-9!-~]+$/',
                     \Illuminate\Validation\Rule::unique('store_users', 'name')->ignore($store_user->id)],
                 'password' => 'nullable|string|min:10|max:100',
             ], [
-                'name.required' => 'ユーザー名を入力してください。',
-                'name.max' => 'ユーザー名は100文字以内で入力してください。',
-                'name.unique' => 'このユーザー名は既に使用されています。',
-                'password.min' => 'パスワードは10文字以上で入力してください。',
-                'password.max' => 'パスワードは100文字以内で入力してください。',
+                'name.required' => 'ユーザーIDを入力してください。',
+                'name.string'   => 'ユーザーIDは文字列で入力してください。',
+                'name.max'      => 'ユーザーIDは100文字以内で入力してください。',
+                'name.unique'   => 'このユーザーIDは既に使用されています。',
+                'name.regex'    => 'ユーザーIDは半角のアルファベット、数字、記号のみで入力してください。',
+                'password.min'  => 'パスワードは10文字以上で入力してください。',
+                'password.max'  => 'パスワードは100文字以内で入力してください。',
             ]);
             $store_user->name = $data['name'];
             if (!empty($data['password'])) {
@@ -421,19 +434,30 @@ class StoreShopController extends Controller
     public function accountCreate(Request $request)
     {
         $user = Auth::guard('store_user')->user();  //ユーザー情報
+        $store_user = StoreUser::where('company_id', $user->company_id);
 
         if ($_POST) {
             if ($request->isMethod('post')) {
                 $validated_data = Validator::make($request->all(), [
-                    'name' => 'required|min:10|max:100:',
-                    'password' => 'required|min:10|max:100',
+                    'name' => [
+                        'required', 'string', 'max:100',
+                        'regex:/^[a-zA-Z0-9!-~]+$/',
+                        \Illuminate\Validation\Rule::unique('store_users', 'name')
+                        ->where(function ($query) use ($user) {
+                            return $query->where('company_id', $user->company_id);
+                        }),
+                    ],
+                    'password' => ['required', 'string', 'min:10', 'max:100'],
                 ], [
-                    'name.required'     => 'ユーザー名を入力してください。',
-                    'name.min'          => 'ユーザー名は10文字以上で入力してください',
-                    'name.max'          => 'ユーザー名は100文字以内で入力してください',
-                    'password.required'             => 'パスワードを入力してください。',
-                    'password.min'               => 'パスワードは10文字以上で入力してください。',
-                    'password.max'               => 'パスワードは100文字以下で入力してください。',
+                    'name.required'     => 'ユーザーIDを入力してください。',
+                    'name.string'       => 'ユーザーIDは文字列で入力してください。',
+                    'name.max'          => 'ユーザーIDは100文字以内で入力してください。',
+                    'name.unique'       => 'このユーザーIDは既に使用されています。',
+                    'name.regex'        => 'ユーザーIDは半角のアルファベット、数字、記号のみで入力してください。',
+                    'password.required' => 'パスワードを入力してください。',
+                    'password.min'      => 'パスワードは10文字以上で入力してください。',
+                    'password.max'      => 'パスワードは100文字以下で入力してください。',
+                    'password.string'   => 'パスワードは文字列で入力してください。',
                 ]);
 
                 if ($validated_data->fails()) {

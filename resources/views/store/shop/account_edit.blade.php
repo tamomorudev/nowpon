@@ -18,7 +18,7 @@
         <form method="POST" action="{{ route('store.account.edit', ['ui' => $store_user->id]) }}">
             @csrf
             <div class="form-group">
-                <label for="account-name">ユーザー名</label>
+                <label for="account-name">ユーザーID</label>
                 <input id="account-name" name="name" type="text" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $store_user->name) }}" maxlength="100" required autocomplete="username" aria-describedby="name-help">
                 <small id="name-help" class="form-text text-muted">ログインに使用するユーザー名です。</small>
             </div>

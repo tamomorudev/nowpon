@@ -31,10 +31,11 @@
         <form class="user" method="POST" action="{{ route('store.account.create') }}">
             @csrf
             <div class="form-group">
-                <label for="name" class="col-md-4 col-form-label text-md-end">ユーザー名</label>
+                <label for="name" class="col-md-4 col-form-label text-md-end">ユーザーID</label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" maxlength="100" required autocomplete="username" aria-describedby="name-help"
                         placeholder="">
+                    <small id="name-help" class="form-text text-muted">ログインに使用するユーザー名です。</small>
                     @error('name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -45,8 +46,9 @@
             <div class="form-group">
                 <label for="name" class="col-md-4 col-form-label text-md-end">パスワード</label>
                 <div class="col-sm-10 mb-3 mb-sm-0">
-                    <input type="text" class="form-control @error('password') is-invalid @enderror" name="password"
+                    <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" maxlength="100" minlength="10" autocomplete="new-password" aria-describedby="password-help"
                         placeholder="">
+                    <small id="password-help" class="form-text text-muted">10〜100文字で入力してください。</small>
                     @error('password')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

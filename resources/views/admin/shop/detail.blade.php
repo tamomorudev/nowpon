@@ -63,7 +63,7 @@
                                 </tr>
                                 <tr>
                                     <th>URL</th>
-                                    <td>{{$store_data->url}}分</td>
+                                    <td>{{$store_data->url}}</td>
                                 </tr>
                                 <tr>
                                     <th>ジャンル</th>
