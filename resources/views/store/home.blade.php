@@ -16,7 +16,11 @@
             <div class="col-xl-6 col-lg-8">
                 <div class="dashboard-panel h-100">
                     <div class="dashboard-panel-header">
-                        発行中クーポン
+                        @if (isset($sell_coupons) && $sell_coupons)
+                            発行中クーポン
+                        @else
+                            現在、発行中のクーポンはありません。
+                        @endif
                     </div>
                     <div class="dashboard-panel-body p-0">
                         <ul class="alert-list list-unstyled mb-0">

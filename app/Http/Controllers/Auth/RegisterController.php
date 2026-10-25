@@ -102,7 +102,7 @@ class RegisterController extends Controller
 
             'postal_code.required' => '郵便番号を入力してください。',
             'postal_code.digits' => '郵便番号は7桁で入力してください。',
-            'postal_code.exists' => '設定できない郵便番号です。',
+            'postal_code.exists' => '存在しない、または設定できない郵便番号です。',
 
             'prefecture.required' => '都道府県を選択してください。',
             'prefecture.in' => '都道府県の選択が不正です。',

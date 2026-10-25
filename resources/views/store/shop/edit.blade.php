@@ -158,7 +158,7 @@
                 <div class="row"style="margin-left:0px">
                     <div class="col-sm-3 mb-3 mb-sm-0">路線
                         <select name="station_line" id="station_line" class="form-control">
-                            <option selected disabled>都道府県を選択してください</option>
+                            <option value="" selected>路線を選択してください</option>
                         </select>
                         @error('station_line')
                             <span class="invalid-feedback" role="alert">
@@ -169,7 +169,7 @@
 
                     <div class="col-sm-3 mb-3 mb-sm-0">駅
                         <select name="station" id="station" class="form-control">
-                            <option selected disabled>路線を選択してください</option>
+                            <option value="" selected>駅を選択してください</option>
                         </select>
                         @error('station')
                             <span class="invalid-feedback" role="alert">
@@ -198,7 +198,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="time" class="col-md-4 col-form-label text-md-end">時間(分)<span class="text-danger">*</span></label>
+                <label for="time" class="col-md-4 col-form-label text-md-end">所要時間(分)<span class="text-danger">*</span></label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="number" class="form-control" name="time" id="time" min="1" value="{{ old('time', $store_data->time ?? '') }}" placeholder="">
                     @error('time')
@@ -213,13 +213,13 @@
                 <div class="row"style="margin-left:0px">
                     <div class="col-sm-3 mb-3 mb-sm-0">路線
                         <select name="station_line_2" id="station_line_2" class="form-control">
-                            <option selected disabled>都道府県を選択してください</option>
+                            <option value="" selected>路線を選択してください</option>
                         </select>
                     </div>
 
                     <div class="col-sm-3 mb-3 mb-sm-0">駅
                         <select name="station_2" id="station_2" class="form-control">
-                            <option selected disabled>路線を選択してください</option>
+                            <option value="" selected>駅を選択してください</option>
                         </select>
                     </div>
                 </div>
@@ -238,7 +238,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="time_2" class="col-md-4 col-form-label text-md-end">時間(分) 2</label>
+                <label for="time_2" class="col-md-4 col-form-label text-md-end">所要時間(分) 2</label>
                 <div class="col-sm-3 mb-3 mb-sm-0">
                     <input type="number" class="form-control" name="time_2" id="time_2" min="1" value="{{ old('time_2', $store_data->time_2 ?: '') }}" placeholder="">
                 </div>
@@ -385,9 +385,9 @@
                         let station_linedown = $('#station_line');
                         let station_linedown_2 = $('#station_line_2');
                         station_linedown.empty();
-                        station_linedown.append('<option value="">路線を選択</option>');
+                        station_linedown.append('<option value="">路線を選択してください</option>');
                         station_linedown_2.empty();
-                        station_linedown_2.append('<option value="">路線を選択</option>');
+                        station_linedown_2.append('<option value="">路線を選択してください</option>');
                         $.each(data['lines'], function (key, value) {
                             station_linedown.append('<option value="' + value.line + '">' + value.line + '</option>');
                             station_linedown_2.append('<option value="' + value.line + '">' + value.line + '</option>');
@@ -410,7 +410,7 @@
                         if (data['stations']) {
                             let station_down = $('#station');
                             station_down.empty();
-                            station_down.append('<option value="">駅を選択</option>');
+                            station_down.append('<option value="">駅を選択してください</option>');
                             $.each(data['stations'], function (key, value) {
                                 station_down.append('<option value="' + value.name + '">' + value.name + '</option>');
                             });
@@ -420,6 +420,10 @@
                     }).fail(function(){
                         alert('エラーが発生しました');
                     });
+                } else {
+                    $('#station').empty().append('<option value="" selected>路線を選択してください</option>');
+                    $('#transportation').prop('selectedIndex', 0);
+                    $('#time').val('');
                 }
             })
 
@@ -435,7 +439,7 @@
                         if (data['stations']) {
                             let station_down_2 = $('#station_2');
                             station_down_2.empty();
-                            station_down_2.append('<option value="">駅を選択</option>');
+                            station_down_2.append('<option value="">駅を選択してください</option>');
                             $.each(data['stations'], function (key, value) {
                                 station_down_2.append('<option value="' + value.name + '">' + value.name + '</option>');
                             });
@@ -445,6 +449,10 @@
                     }).fail(function(){
                         alert('エラーが発生しました');
                     });
+                } else {
+                    $('#station_2').empty().append('<option value="" selected>路線を選択してください</option>');
+                    $('#transportation_2').prop('selectedIndex', 0);
+                    $('#time_2').val('');
                 }
             })
 
@@ -469,68 +477,66 @@
                 }
 
                 $.ajax({
-                type: "POST",
-                url: "check_station",
-                data: { "prefecture" : d_pval, "type" : 1 },
-                dataType : "json"
+                    type: "POST",
+                    url: "check_station",
+                    data: { "prefecture" : d_pval, "type" : 1 },
+                    dataType : "json"
                 }).done(function(data) {
                     let station_linedown = $('#station_line');
                     let station_linedown_2 = $('#station_line_2');
+                    
                     station_linedown.empty();
-                    station_linedown.append('<option value="">路線を選択</option>');
+                    station_linedown.append('<option value="" selected>路線を選択してください</option>');
                     station_linedown_2.empty();
-                    station_linedown_2.append('<option value="">路線を選択</option>');
-                    $.each(data['lines'], function (key, value) {
-                        let selected = (selectedStationLine === value.line) ? ' selected' : '';
-                        let selected_2 = (selectedStationLine_2 === value.line) ? ' selected' : '';
-                        station_linedown.append('<option value="' + value.line + '"' + selected + '>' + value.line + '</option>');
-                        station_linedown_2.append('<option value="' + value.line + '"' + selected_2 + '>' + value.line + '</option>');
-                    });
+                    station_linedown_2.append('<option value="" selected>路線を選択してください</option>');
+                    
+                    if (data['lines']) {
+                        $.each(data['lines'], function (key, value) {
+                            let selected = (selectedStationLine === value.line) ? ' selected' : '';
+                            let selected_2 = (selectedStationLine_2 === value.line) ? ' selected' : '';
+                            station_linedown.append('<option value="' + value.line + '"' + selected + '>' + value.line + '</option>');
+                            station_linedown_2.append('<option value="' + value.line + '"' + selected_2 + '>' + value.line + '</option>');
+                        });
+                    }
                 }).fail(function(){
                     alert('エラーが発生しました');
                 });
 
                 if (selectedStationLine) {
-                    var d_lval = selectedStationLine;
                     $.ajax({
-                    type: "POST",
-                    url: "check_station",
-                    data: { "line" : d_lval, "type" : 2 },
-                    dataType : "json"
+                        type: "POST",
+                        url: "check_station",
+                        data: { "line" : selectedStationLine, "type" : 2 },
+                        dataType : "json"
                     }).done(function(data) {
+                        let station_down = $('#station');
+                        station_down.empty();
+                        station_down.append('<option value="" selected>駅を選択してください</option>');
                         if (data['stations']) {
-                            let station_down = $('#station');
-                            station_down.empty();
-                            station_down.append('<option value="">駅を選択</option>');
                             $.each(data['stations'], function (key, value) {
                                 let selected_s = (selectedStation === value.name) ? ' selected' : '';
                                 station_down.append('<option value="' + value.name + '"' + selected_s + '>' + value.name + '</option>');
                             });
-                        } else {
-                            alert('エラーが発生しました');
                         }
                     }).fail(function(){
                         alert('エラーが発生しました');
                     });
                 }
                 if (selectedStationLine_2) {
-                    var d_lval2 = selectedStationLine_2;
                     $.ajax({
-                    type: "POST",
-                    url: "check_station",
-                    data: { "line" : d_lval2, "type" : 2 },
-                    dataType : "json"
+                        type: "POST",
+                        url: "check_station",
+                        data: { "line" : selectedStationLine_2, "type" : 2 },
+                        dataType : "json"
                     }).done(function(data) {
+                        let station_down_2 = $('#station_2');
+                        station_down_2.empty();
+                        station_down_2.append('<option value="" selected>駅を選択してください</option>');
                         if (data['stations']) {
-                            let station_down_2 = $('#station_2');
-                            station_down_2.empty();
-                            station_down_2.append('<option value="">駅を選択</option>');
                             $.each(data['stations'], function (key, value) {
                                 let selected_s_2 = (selectedStation_2 === value.name) ? ' selected' : '';
                                 station_down_2.append('<option value="' + value.name + '"' + selected_s_2 + '>' + value.name + '</option>');
                             });
-                        } else {
-                            alert('エラーが発生しました');
                         }
                     }).fail(function(){
                         alert('エラーが発生しました');

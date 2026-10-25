@@ -45,7 +45,7 @@ class AccountController extends Controller
             'email'        => ['required','string','email:filter','max:255', Rule::unique('users','email')->ignore($user->id)],
             'postal_code'  => ['required','digits:7','exists:zipcodes,zipcode'],
             'prefecture'   => ['required', Rule::in($prefKeys)],
-            'city'         => ['required','string','max:255'],
+            'city'         => ['required','string','max:50'],
             'phone_number' => ['required','digits_between:10,11'],
             'sex'          => ['required', Rule::in($sexKeys)],
             'birth_date'   => ['required','date','before_or_equal:today'],
@@ -67,7 +67,7 @@ class AccountController extends Controller
             'password.min'  => 'パスワードは8文字以上で入力してください。',
             'prefecture.in' => '都道府県の選択が不正です。',
             'sex.in'        => '性別の選択が不正です。',
-            'postal_code.exists' => '設定できない郵便番号です。',
+            'postal_code.exists' => '存在しない、または設定できない郵便番号です。',
         ];
 
         // 属性名（日本語化）
